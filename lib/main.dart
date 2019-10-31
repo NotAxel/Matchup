@@ -48,7 +48,7 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState(){
     Firestore.instance.collection('Players').document()
-      .setData({ 'Username': 'Kyle', 'Main': 'Fox' });
+      .setData({ 'Username': 'Brendan', 'Main': 'Mr. Game & Watch' });
     super.initState();
   }
   /*
