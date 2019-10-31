@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 void main() => runApp(MyApp());
 
@@ -7,7 +8,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Matchup',
       theme: ThemeData(
         // This is the theme of your application.
         //
@@ -20,7 +21,7 @@ class MyApp extends StatelessWidget {
         // is not restarted.
         primarySwatch: Colors.blue,
       ),
-      home: MyHomePage(title: 'Flutter Demo Home Page'),
+      home: MyHomePage(title: 'Matchup Demo Home Page'),
     );
   }
 }
@@ -44,6 +45,13 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  @override
+  void initState(){
+    Firestore.instance.collection('Players').document()
+      .setData({ 'Username': 'Kyle', 'Main': 'Fox' });
+    super.initState();
+  }
+  /*
   int _counter = 0;
 
   void _incrementCounter() {
@@ -56,6 +64,7 @@ class _MyHomePageState extends State<MyHomePage> {
       _counter++;
     });
   }
+  */
 
   @override
   Widget build(BuildContext context) {
@@ -71,7 +80,9 @@ class _MyHomePageState extends State<MyHomePage> {
         // the App.build method, and use it to set our appbar title.
         title: Text(widget.title),
       ),
-      body: Center(
+      body: new Text("Testing firebase"),
+     /* 
+      Center(
         // Center is a layout widget. It takes a single child and positions it
         // in the middle of the parent.
         child: Column(
@@ -106,6 +117,7 @@ class _MyHomePageState extends State<MyHomePage> {
         tooltip: 'Increment',
         child: Icon(Icons.add),
       ), // This trailing comma makes auto-formatting nicer for build methods.
+      */
     );
   }
 }
