@@ -31,6 +31,7 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState(){
     super.initState();
+
     Auth auth = new Auth();
     auth.signUp("gpoole@calpoly.edu", "IsuckHa");
     //Firestore.instance.collection('Players').document()
