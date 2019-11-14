@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:matchup/authentication.dart';
 
 class LogInSignupPage extends StatefulWidget {
+  final BaseAuth auth;
+  final VoidCallback loginCallback;
+
+  LogInSignupPage({this.auth, this.loginCallback});
   
   @override
   _LogInSignupPageState createState() => _LogInSignupPageState();
@@ -14,13 +19,23 @@ class _LogInSignupPageState extends State<LogInSignupPage> {
   final passwordController = TextEditingController();
   String _email;
   String _password;
-  String _errorMessage = "(Example error message)";
-  bool _isLoginForm = true;
+  String _errorMessage;
+
+  bool _isLoginForm;
+  bool _isLoading;
   final _formKey = new GlobalKey<FormState>();
 
+  @override
+  void initState() {
+    _errorMessage = "";
+    _isLoading = false;
+    _isLoginForm = true;
+    super.initState();
+  }
+
   void resetForm(){
-    emailController.clear();
-    passwordController.clear();
+    _formKey.currentState.reset();
+    _errorMessage = "";
     _email = null;
     _password = null;
   }
@@ -95,7 +110,7 @@ class _LogInSignupPageState extends State<LogInSignupPage> {
             color: Colors.deepOrange,
             child: new Text(_isLoginForm ? 'Login' : 'Create account',
                 style: new TextStyle(fontSize: 20.0, color: Colors.white)),
-            onPressed: _submit,
+            onPressed: validateAndSubmit,
           ),
         ));
   }
@@ -128,9 +143,49 @@ class _LogInSignupPageState extends State<LogInSignupPage> {
     }
   }
 
-  void _submit(){
-    if (_formKey.currentState.validate()){
+// Check if form is valid before perform login or signup
+  bool validateAndSave() {
+    final form = _formKey.currentState;
+    if (form.validate()) {
+      form.save();
+      return true;
+    }
+    return false;
+  }
 
+  // Perform login or signup
+  void validateAndSubmit() async {
+    setState(() {
+      _errorMessage = "";
+      _isLoading = true;
+    });
+    if (validateAndSave()) {
+      String userId = "";
+      try {
+        if (_isLoginForm) {
+          userId = await widget.auth.signIn(_email, _password);
+          print('Signed in: $userId');
+        } else {
+          userId = await widget.auth.signUp(_email, _password);
+          //widget.auth.sendEmailVerification();
+          //_showVerifyEmailSentDialog();
+          print('Signed up user: $userId');
+        }
+        setState(() {
+          _isLoading = false;
+        });
+
+        if (userId.length > 0 && userId != null && _isLoginForm) {
+          widget.loginCallback();
+        }
+      } catch (e) {
+        print('Error: $e');
+        setState(() {
+          _isLoading = false;
+          _errorMessage = e.message;
+          _formKey.currentState.reset();
+        });
+      }
     }
   }
 

@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/material.dart';
+import 'Pages/rootPage.dart';
+import 'authentication.dart';
 
-import 'Pages/loginSignupPage.dart';
 
-// import 'loginPage.dart';
-
+// tutorial followed: https://medium.com/flutterpub/flutter-how-to-do-user-login-with-firebase-a6af760b14d5
+// credit: David Cheah at FlutterPub
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
@@ -26,9 +25,7 @@ class MyApp extends StatelessWidget {
         // is not restarted.
         primarySwatch: Colors.blue,
       ),
-      home: new LogInSignupPage(),
-      
-    );
+      home: new RootPage(auth: new Auth()));
   }
 }
 
