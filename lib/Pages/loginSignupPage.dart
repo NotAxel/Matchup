@@ -15,6 +15,21 @@ class _LogInSignupPageState extends State<LogInSignupPage> {
   final passwordController = TextEditingController();
   String _email;
   String _password;
+  String _errorMessage = "Field cannot be empty";
+  bool _isLoginForm = true;
+  final _formKey = new GlobalKey<FormState>();
+
+  void resetForm(){
+    _email = null;
+    _password = null;
+  }
+
+  void toggleFormMode() {
+    resetForm();
+    setState(() {
+      _isLoginForm = !_isLoginForm;
+    });
+  } 
 
   @override
   Widget build(BuildContext context) {
@@ -77,56 +92,55 @@ class _LogInSignupPageState extends State<LogInSignupPage> {
             shape: new RoundedRectangleBorder(
                 borderRadius: new BorderRadius.circular(30.0)),
             color: Colors.deepOrange,
-            child: new Text('LOGIN', 
+            child: new Text(_isLoginForm ? 'Login' : 'Create account',
                 style: new TextStyle(fontSize: 20.0, color: Colors.white)),
-            onPressed: (){}//validateAndSubmit,  validates TextFormField inputs and performs login/signup
+            onPressed: (){print(_email + " " + _password);}//validateAndSubmit,  validates TextFormField inputs and performs login/signup
           ),
         ));
   }
   
-  Widget showRegisterButton(){
+  Widget showSwitchButton(){
         return new FlatButton(
         child: new Text(
-            'Create an account',
+            _isLoginForm ? 'Create an account' : 'Have an account? Sign in',
             style: new TextStyle(fontSize: 18.0, fontWeight: FontWeight.w300)),
-        onPressed: (){
-          //where you put AXELS FUNCTIONS
-          //for FIRST PAGE...push is what procs next page
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => RegistrationPage()),
-          );
-        },
-        );
+        onPressed: toggleFormMode);
   }
   Widget showLogo(){
-    return new MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(
-          title: Text("Image from assets"),
-        ),
-        body: Image.asset('assets/images/logo.png'),
-      ),
-    );
+    return Image.asset('assets/images/logo.png');
+  }
+
+  Widget showErrorMessage() {
+    if (_errorMessage.length > 0 && _errorMessage != null) {
+      return new Text(
+        _errorMessage,
+        style: TextStyle(
+            fontSize: 13.0,
+            color: Colors.red,
+            height: 1.0,
+            fontWeight: FontWeight.w300),
+      );
+    } else {
+      return new Container(
+        height: 0.0,
+      );
+    }
   }
 
   Widget _showLogInForm() {
     return new Container(
         padding: EdgeInsets.all(16.0),
         child: new Form(
-          //key: _formKey,
+          key: _formKey,
           child: new ListView(
             shrinkWrap: true,
             children: <Widget>[
-              //showLogo(),
-              Image.asset(
-                'assets/images/logo.png',
-              ),
+              showLogo(),
               showEmailField(),
               showPasswordField(),
               showLogInButton(),
-              showRegisterButton(),
-              //showErrorMessage(),
+              showSwitchButton(),
+              showErrorMessage(),
             ],
           ),
         ));
