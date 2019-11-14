@@ -19,21 +19,21 @@ class RootPage extends StatefulWidget{
 }
 
 class _RootPageState extends State<RootPage>{
-  AuthStatus authStatus = AuthStatus.NOT_DETERMINED;
+  AuthStatus authStatus = AuthStatus.NOT_LOGGED_IN;
   String _userId = "";
 
   @override
   void initState() {
     super.initState();
-    widget.auth.getCurrentUser().then((user) {
-      setState(() {
-        if (user != null) {
-          _userId = user?.uid;
-        }
-        authStatus =
-            user?.uid == null ? AuthStatus.NOT_LOGGED_IN : AuthStatus.LOGGED_IN;
-      });
-    });
+    // widget.auth.getCurrentUser().then((user) {
+    //   setState(() {
+    //     if (user != null) {
+    //       _userId = user?.uid;
+    //     }
+    //     authStatus =
+    //         user?.uid == null ? AuthStatus.NOT_LOGGED_IN : AuthStatus.LOGGED_IN;
+    //   });
+    // });
   }
 
   void loginCallback() {
