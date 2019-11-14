@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
-import 'loginPage.dart';
+import 'Pages/loginPage.dart';
+
+// import 'loginPage.dart';
 
 void main() => runApp(MyApp());
 
