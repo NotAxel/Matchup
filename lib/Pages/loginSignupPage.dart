@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:matchup/authentication.dart';
+import 'userInfoEntryPage.dart';
 
 class LogInSignupPage extends StatefulWidget {
   final BaseAuth auth;
@@ -177,6 +178,11 @@ class _LogInSignupPageState extends State<LogInSignupPage> {
 
         if (userId.length > 0 && userId != null && _isLoginForm) {
           widget.loginCallback();
+        }
+        else if (_isLoginForm == false){
+          Navigator.push(context,
+          MaterialPageRoute(builder: (context) => UserInfoEntryPage())
+          );
         }
       } catch (e) {
         print('Error: $e');
