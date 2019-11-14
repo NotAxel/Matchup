@@ -79,15 +79,7 @@ class _LogInSignupPageState extends State<LogInSignupPage> {
             color: Colors.deepOrange,
             child: new Text('LOGIN', 
                 style: new TextStyle(fontSize: 20.0, color: Colors.white)),
-            onPressed: (){
-              //where you put AXELS FUNCTIONS
-              //for FIRST PAGE...can delete alert dialog
-              return AlertDialog(
-                title: Text(_email),
-                content: Text(_password), //implement firebase stuff here
-              ); 
-              
-            },
+            onPressed: (){}//validateAndSubmit,  validates TextFormField inputs and performs login/signup
           ),
         ));
   }

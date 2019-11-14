@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:matchup/Pages/loginSignupPage.dart';
 class RegistrationPage extends StatefulWidget {
   
   @override
@@ -106,6 +107,22 @@ class _RegistrationPageState extends State<RegistrationPage> {
           ),
         ));
   }
+
+  Widget showLoginButton(){
+        return new FlatButton(
+        child: new Text(
+            'Have an account? Sign in',
+            style: new TextStyle(fontSize: 18.0, fontWeight: FontWeight.w300)),
+        onPressed: (){
+          //where you put AXELS FUNCTIONS
+          //for FIRST PAGE...push is what procs next page
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => LogInSignupPage()),
+          );
+        },
+        );
+  }
   
   Widget _showRegistrationForm() {
     return new Container(
@@ -120,6 +137,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
               showPasswordField(),
               //showMainField(),
               showSignUpButton(),
+              showLoginButton(),
               //showErrorMessage(),
             ],
           ),
