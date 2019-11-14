@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
-import 'registrationPage.dart';
 class LogInSignupPage extends StatefulWidget {
   
   @override
@@ -15,11 +14,13 @@ class _LogInSignupPageState extends State<LogInSignupPage> {
   final passwordController = TextEditingController();
   String _email;
   String _password;
-  String _errorMessage = "Field cannot be empty";
+  String _errorMessage = "(Example error message)";
   bool _isLoginForm = true;
   final _formKey = new GlobalKey<FormState>();
 
   void resetForm(){
+    emailController.clear();
+    passwordController.clear();
     _email = null;
     _password = null;
   }
@@ -94,7 +95,7 @@ class _LogInSignupPageState extends State<LogInSignupPage> {
             color: Colors.deepOrange,
             child: new Text(_isLoginForm ? 'Login' : 'Create account',
                 style: new TextStyle(fontSize: 20.0, color: Colors.white)),
-            onPressed: (){print(_email + " " + _password);}//validateAndSubmit,  validates TextFormField inputs and performs login/signup
+            onPressed: _submit,
           ),
         ));
   }
@@ -124,6 +125,12 @@ class _LogInSignupPageState extends State<LogInSignupPage> {
       return new Container(
         height: 0.0,
       );
+    }
+  }
+
+  void _submit(){
+    if (_formKey.currentState.validate()){
+
     }
   }
 
