@@ -103,6 +103,16 @@ class _LogInSignupPageState extends State<LogInSignupPage> {
         },
         );
   }
+  Widget showLogo(){
+    return new MaterialApp(
+      home: Scaffold(
+        appBar: AppBar(
+          title: Text("Image from assets"),
+        ),
+        body: Image.asset('assets/images/logo.png'),
+      ),
+    );
+  }
 
   Widget _showLogInForm() {
     return new Container(
@@ -113,6 +123,9 @@ class _LogInSignupPageState extends State<LogInSignupPage> {
             shrinkWrap: true,
             children: <Widget>[
               //showLogo(),
+              Image.asset(
+                'assets/images/logo.png',
+              ),
               showEmailField(),
               showPasswordField(),
               showLogInButton(),
