@@ -31,7 +31,9 @@ class _LogInSignupPageState extends State<LogInSignupPage> {
       padding: EdgeInsets.fromLTRB(0.0, 250.0, 10.0, 0.0),
       child: new TextFormField(
           obscureText: false,
+          maxLines: 1,
           style: style,
+          autofocus: false,
           keyboardType: TextInputType.emailAddress,
           decoration: InputDecoration(
               hintText: "Email",
@@ -48,7 +50,9 @@ class _LogInSignupPageState extends State<LogInSignupPage> {
     return Padding(
       padding: EdgeInsets.fromLTRB(0.0, 15.0, 10.0, 0.0),
       child: new TextFormField(
+          maxLines: 1,
           obscureText: true,
+          autofocus: false,
           style: style,
           controller: passwordController,
           decoration: InputDecoration(
