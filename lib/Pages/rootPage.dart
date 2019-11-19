@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:matchup/Pages/userInfoEntryPage.dart';
 import '../authentication.dart';
 import 'homepage.dart';
 import 'loginSignupPage.dart';
@@ -77,11 +78,15 @@ class _RootPageState extends State<RootPage>{
         break;
       case AuthStatus.LOGGED_IN:
         if (_userId.length > 0 && _userId != null) {
-          return new HomePage(
+          return new UserInfoEntryPage(
             userId: _userId,
             auth: widget.auth,
-            logoutCallback: logoutCallback,
           );
+          // return new HomePage(
+          //   userId: _userId,
+          //   auth: widget.auth,
+          //   logoutCallback: logoutCallback,
+          // );
         } else
           return buildWaitingScreen();
         break;
