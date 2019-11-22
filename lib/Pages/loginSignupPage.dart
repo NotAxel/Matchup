@@ -11,10 +11,12 @@ class LogInSignupPage extends StatefulWidget {
   LogInSignupPage({this.auth, this.loginCallback});
   
   @override
-  _LogInSignupPageState createState() => _LogInSignupPageState();
+  _LogInSignupPageState createState() => _LogInSignupPageState(auth: auth);
 }
 
 class _LogInSignupPageState extends State<LogInSignupPage> {
+  final BaseAuth auth;
+  _LogInSignupPageState({this.auth});
   TextStyle style = TextStyle(fontFamily: 'Montserrat', fontSize: 20.0);
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
@@ -181,7 +183,7 @@ class _LogInSignupPageState extends State<LogInSignupPage> {
         }
         else if (_isLoginForm == false){
           Navigator.push(context,
-          MaterialPageRoute(builder: (context) => UserInfoEntryPage())
+          MaterialPageRoute(builder: (context) => UserInfoEntryPage(userId: userId, auth: auth))
           );
         }
       } catch (e) {

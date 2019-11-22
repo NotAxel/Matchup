@@ -24,6 +24,7 @@ class _UserInfoEntryPage extends State<UserInfoEntryPage> {
   String _region = 'Please select a region';
   String _nintendoID;
   String _userID;
+  String _userEmail = "waiting"; // used for testing
 
   bool _isLoading;
   bool _isUserForm;
@@ -181,6 +182,12 @@ class _UserInfoEntryPage extends State<UserInfoEntryPage> {
       )); 
   }
 
+  Widget showUserEmail() {
+    return new Center (
+      child: Text(_userEmail)
+    );
+  }
+
   Widget showSaveButton() {
     double height = 30.0;
     return new Padding(
@@ -210,8 +217,8 @@ class _UserInfoEntryPage extends State<UserInfoEntryPage> {
       try {
         FirebaseUser currUser = await widget.auth.getCurrentUser();
         userID = currUser.uid;
+        _userEmail = currUser.email;
         Firestore.instance.collection('Users').document(userID).setData({'Username' : _userName, 'Main' : _mainChar, 'Secondary' : _secondaryChar, 'Region' : _region, 'Username' : _userName, 'NintendoID' : _nintendoID});
-        
       } catch (e) {
         print('Error: $e');
         setState(() {
@@ -246,7 +253,9 @@ class _UserInfoEntryPage extends State<UserInfoEntryPage> {
               showNintendoIDEntryForm(),
               showUserNameField(),
               showSaveButton(),
-              showErrorMessage()
+              showErrorMessage(),
+              showUserEmail(),
+              
             ],
             
           ),
