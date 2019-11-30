@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import '../authentication.dart';
+import './friendPage.dart' as friendp;
+import './profilePage.dart' as profilep;
+import './messagePage.dart' as messagep;
 
 class HomePage extends StatelessWidget {
   final String userId;
@@ -14,15 +18,25 @@ class HomePage extends StatelessWidget {
       appBar: new AppBar(
         title: new Text("Matchup login demo"),
       ),
-      body: Stack(
-      children: <Widget>[
-        Text("You have successfully logged into Matchup"),
-          _showForm(),
-        ],
-      )
+      body: new MyTabs()
     );
   }
   
+  // @override
+  // Widget build(BuildContext context) {
+  //   return new Scaffold(
+  //     appBar: new AppBar(
+  //       title: new Text("Matchup login demo"),
+  //     ),
+  //     body: Stack(
+  //     children: <Widget>[
+  //       Text("You have successfully logged into Matchup"),
+  //         _showForm(),
+  //       ],
+  //     )
+  //   );
+  // }
+
   Widget showLogOutButton(){
     return new Padding(
         padding: EdgeInsets.fromLTRB(20.0, 45.0, 20.0, 0.0),
@@ -53,5 +67,53 @@ class HomePage extends StatelessWidget {
             ],
           ),
         ));
+  }
+}
+
+class MyTabs extends StatefulWidget {
+  @override
+  MyTabState createState() => new MyTabState();
+
+}
+
+class MyTabState extends State<MyTabs> with SingleTickerProviderStateMixin {
+
+  TabController controller;
+
+  @override
+  void initState() {
+    super.initState();
+    controller = new TabController(vsync: this, length: 3);
+  }
+
+  @override 
+  void dispose() {
+    controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return new Scaffold(
+      bottomNavigationBar: new Material(
+        color: Colors.blue,
+        child: new TabBar(
+          controller: controller,
+          tabs: <Tab>[
+            new Tab(icon: new Icon(Icons.arrow_back)),
+            new Tab(icon: new Icon(Icons.arrow_upward)),
+            new Tab(icon: new Icon(Icons.arrow_forward)),
+          ]
+        ),
+      ),
+      body: new TabBarView(
+        controller: controller,
+        children: <Widget>[
+          new profilep.ProfilePage(),
+          new friendp.FriendPage(),
+          new messagep.MessagePage(),
+        ]
+      )
+    );
   }
 }
