@@ -15,28 +15,13 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
-      appBar: new AppBar(
-        title: new Text("Matchup login demo"),
-      ),
+      // appBar: new AppBar(
+      //   title: new Text("Matchup login demo"),
+      // ),
       body: new MyTabs()
     );
   }
   
-  // @override
-  // Widget build(BuildContext context) {
-  //   return new Scaffold(
-  //     appBar: new AppBar(
-  //       title: new Text("Matchup login demo"),
-  //     ),
-  //     body: Stack(
-  //     children: <Widget>[
-  //       Text("You have successfully logged into Matchup"),
-  //         _showForm(),
-  //       ],
-  //     )
-  //   );
-  // }
-
   Widget showLogOutButton(){
     return new Padding(
         padding: EdgeInsets.fromLTRB(20.0, 45.0, 20.0, 0.0),
@@ -53,7 +38,6 @@ class HomePage extends StatelessWidget {
           ),
         ));
   }
-
 
   Widget _showForm() {
     return new Container(
@@ -100,9 +84,9 @@ class MyTabState extends State<MyTabs> with SingleTickerProviderStateMixin {
         child: new TabBar(
           controller: controller,
           tabs: <Tab>[
-            new Tab(icon: new Icon(Icons.arrow_back)),
-            new Tab(icon: new Icon(Icons.arrow_upward)),
-            new Tab(icon: new Icon(Icons.arrow_forward)),
+            new Tab(icon: new Icon(Icons.face)),
+            new Tab(icon: new Icon(Icons.pie_chart)),
+            new Tab(icon: new Icon(Icons.chat)),
           ]
         ),
       ),
