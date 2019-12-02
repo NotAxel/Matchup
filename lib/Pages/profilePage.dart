@@ -6,7 +6,7 @@ class ProfilePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return new Scaffold(
       appBar: new AppBar(
-        title: new Center(child: Text("Profile")),
+        title: new Center(child: Text("My Profile")),
       ),
       body: new ProfileDisplay()
     );
@@ -20,6 +20,8 @@ class ProfileDisplay extends StatefulWidget {
 
 class ProfileDisplayState extends State<ProfileDisplay> with SingleTickerProviderStateMixin {
 
+  var profStyle = TextStyle(fontSize: 25);
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -27,11 +29,14 @@ class ProfileDisplayState extends State<ProfileDisplay> with SingleTickerProvide
           child: Column(
             children: <Widget>[
               Text(''),
-              Text('Username', style: TextStyle(fontSize: 25)),
+              //Should get username from firebase
+              Text('Username', style: profStyle),
               Text(''),
+              //Should get profile pic from firebase
               Image.asset('assets/images/default_profile.jpg', height: 300),
               Text(''),
-              Text('Fox, Falco', style: TextStyle(fontSize: 25)),
+              //Should get mains from firebase
+              Text('Ness, King K', style: profStyle),
           ],)
         )
     );

@@ -4,6 +4,7 @@ import '../authentication.dart';
 import './friendPage.dart' as friendp;
 import './profilePage.dart' as profilep;
 import './messagePage.dart' as messagep;
+import './matchPage.dart' as matchp;
 
 class HomePage extends StatelessWidget {
   final String userId;
@@ -94,7 +95,7 @@ class MyTabState extends State<MyTabs> with SingleTickerProviderStateMixin {
         controller: controller,
         children: <Widget>[
           new profilep.ProfilePage(),
-          new friendp.FriendPage(),
+          new matchp.MatchPage(),
           new messagep.MessagePage(),
         ]
       )
