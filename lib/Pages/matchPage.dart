@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import './challengePage.dart' as cp;
 
 List<String> litems = ["1", "2", "3"];
 List<AccountListing> listings = [new AccountListing("John", "Marth"), johnny, jim];
@@ -12,7 +13,8 @@ class MatchPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return new Scaffold(
       appBar: new AppBar(
-        title: new Center(child: Text("MatchMaking")),
+        title: new Center(child: Text("MatchMaking     ")),
+        leading: Icon(Icons.refresh)
       ),
       // body: new MatchListing(name: johnny.name, main: johnny.main)
       body: new ListView.builder(
@@ -23,7 +25,11 @@ class MatchPage extends StatelessWidget {
               leading: Icon(Icons.pregnant_woman),
               title: MatchListing(name:listings[index].name, main:listings[index].main)
             ),
-            onTap: () {}
+            onTap: () {
+              Navigator.push(
+                context, 
+                MaterialPageRoute(builder: (context) => cp.ChallegePage()));
+            }
           );
         }
       )

@@ -6,7 +6,8 @@ class ProfilePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return new Scaffold(
       appBar: new AppBar(
-        title: new Center(child: Text("My Profile")),
+        title: new Center(child: Text("My Profile        ")),
+        leading: Icon(Icons.edit)
       ),
       body: new ProfileDisplay()
     );
