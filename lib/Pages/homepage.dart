@@ -4,6 +4,7 @@ import '../authentication.dart';
 import './friendPage.dart' as friendp;
 import './profilePage.dart' as profilep;
 import './messagePage.dart' as messagep;
+import './matchPage.dart' as matchp;
 
 class HomePage extends StatelessWidget {
   final String userId;
@@ -14,29 +15,9 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return new Scaffold(
-      appBar: new AppBar(
-        title: new Text("Matchup login demo"),
-      ),
-      body: new MyTabs()
-    );
+      return new MyTabs();
   }
   
-  // @override
-  // Widget build(BuildContext context) {
-  //   return new Scaffold(
-  //     appBar: new AppBar(
-  //       title: new Text("Matchup login demo"),
-  //     ),
-  //     body: Stack(
-  //     children: <Widget>[
-  //       Text("You have successfully logged into Matchup"),
-  //         _showForm(),
-  //       ],
-  //     )
-  //   );
-  // }
-
   Widget showLogOutButton(){
     return new Padding(
         padding: EdgeInsets.fromLTRB(20.0, 45.0, 20.0, 0.0),
@@ -53,7 +34,6 @@ class HomePage extends StatelessWidget {
           ),
         ));
   }
-
 
   Widget _showForm() {
     return new Container(
@@ -73,7 +53,6 @@ class HomePage extends StatelessWidget {
 class MyTabs extends StatefulWidget {
   @override
   MyTabState createState() => new MyTabState();
-
 }
 
 class MyTabState extends State<MyTabs> with SingleTickerProviderStateMixin {
@@ -100,9 +79,9 @@ class MyTabState extends State<MyTabs> with SingleTickerProviderStateMixin {
         child: new TabBar(
           controller: controller,
           tabs: <Tab>[
-            new Tab(icon: new Icon(Icons.arrow_back)),
-            new Tab(icon: new Icon(Icons.arrow_upward)),
-            new Tab(icon: new Icon(Icons.arrow_forward)),
+            new Tab(icon: new Icon(Icons.face)),
+            new Tab(icon: new Icon(Icons.pie_chart)),
+            new Tab(icon: new Icon(Icons.chat)),
           ]
         ),
       ),
@@ -110,7 +89,7 @@ class MyTabState extends State<MyTabs> with SingleTickerProviderStateMixin {
         controller: controller,
         children: <Widget>[
           new profilep.ProfilePage(),
-          new friendp.FriendPage(),
+          new matchp.MatchPage(),
           new messagep.MessagePage(),
         ]
       )
