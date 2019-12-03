@@ -23,13 +23,13 @@ class MatchPage extends StatelessWidget {
           return new InkWell(
             child: ListTile(
               leading: Icon(Icons.pregnant_woman),
-              title: MatchListing(name:listings[index].name, main:listings[index].main)
+              title: MatchListing(name:listings[index].name, main:listings[index].main),
+              onTap: () {
+                Navigator.push(
+                  context, 
+                  MaterialPageRoute(builder: (context) => cp.ChallengePage(name:listings[index].name, main:listings[index].main)));
+              }
             ),
-            onTap: () {
-              Navigator.push(
-                context, 
-                MaterialPageRoute(builder: (context) => cp.ChallegePage()));
-            }
           );
         }
       )

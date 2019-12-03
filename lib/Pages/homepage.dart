@@ -15,9 +15,7 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return new Scaffold(
-      body: new MyTabs()
-    );
+      return new MyTabs();
   }
   
   Widget showLogOutButton(){
@@ -55,7 +53,6 @@ class HomePage extends StatelessWidget {
 class MyTabs extends StatefulWidget {
   @override
   MyTabState createState() => new MyTabState();
-
 }
 
 class MyTabState extends State<MyTabs> with SingleTickerProviderStateMixin {

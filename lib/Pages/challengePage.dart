@@ -1,8 +1,15 @@
 import 'package:flutter/material.dart';
+import './chatPage.dart' as chatp; 
 
-class ChallegePage extends StatelessWidget {
+
+class ChallengePage extends StatelessWidget {
 
   final profStyle = TextStyle(fontSize: 25);
+
+  final String name;
+  final String main;
+
+  ChallengePage({@required this.name, @required this.main});
 
   @override
   Widget build(BuildContext context) {
@@ -17,15 +24,22 @@ class ChallegePage extends StatelessWidget {
               children: <Widget>[
                 Text(''),
                 //Should get username from firebase
-                Text('Username', style: profStyle),
+                Text(this.name, style: profStyle),
                 Text(''),
                 //Should get profile pic from firebase
                 Image.asset('assets/images/default_profile.jpg', height: 300),
                 Text(''),
                 //Should get mains from firebase
-                Text('Ness, King K', style: profStyle),
+                Text(this.main, style: profStyle),
                 RaisedButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.push(
+                      context, 
+                      MaterialPageRoute(builder: (context) => 
+                        chatp.ChatPage(
+                          name: this.name,
+                          main: this.main)));
+                  },
                   child: Text('Smash', style: TextStyle(fontSize: 30, color: Colors.white)),
                   color: Colors.redAccent,
                   ),

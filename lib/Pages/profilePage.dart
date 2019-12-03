@@ -26,20 +26,21 @@ class ProfileDisplayState extends State<ProfileDisplay> with SingleTickerProvide
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: new Center (
-          child: Column(
-            children: <Widget>[
-              Text(''),
-              //Should get username from firebase
-              Text('Username', style: profStyle),
-              Text(''),
-              //Should get profile pic from firebase
-              Image.asset('assets/images/default_profile.jpg', height: 300),
-              Text(''),
-              //Should get mains from firebase
-              Text('Ness, King K', style: profStyle),
-          ],)
+      body: new Center(
+        child: Column(
+          children: <Widget>[
+            Text(''),
+            //Should get username from firebase
+            Text('Username', style: profStyle),
+            Text(''),
+            //Should get profile pic from firebase
+            Image.asset('assets/images/default_profile.jpg', height: 300),
+            Text(''),
+            //Should get mains from firebase
+            Text('Ness, King K', style: profStyle),
+          ],
         )
+      )
     );
   }
 }

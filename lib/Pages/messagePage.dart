@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'chatPage.dart' as chatp;
 
 List<MessageListing> messageListings = [new MessageListing(name: "John", main:"Marth")];
 
@@ -23,7 +24,15 @@ class MessagePage extends StatelessWidget {
                 child: ListTile(
                   leading: Icon(Icons.chat_bubble_outline, size: 30,),
                   title: MessageListing(name:messageListings[index].name, 
-                                      main:messageListings[index].main)
+                                      main:messageListings[index].main),
+                onTap: () {
+                  Navigator.push(
+                    context, 
+                    MaterialPageRoute(builder: (context) => 
+                      chatp.ChatPage(
+                        name:messageListings[index].name, 
+                        main:messageListings[index].main)));
+                }
                 ),
               )
             ),
