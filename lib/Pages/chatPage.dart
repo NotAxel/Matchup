@@ -23,20 +23,13 @@ class ChatPage extends StatelessWidget {
               ],
             )
           ),
-          bottomNavigationBar: Container(
-            child: TextField(
+          bottomNavigationBar: TextField(
               decoration: InputDecoration(
-                border: InputBorder.none,
+                border: OutlineInputBorder(),
                 hintText: 'chat', 
               ),
             ),
-            decoration: BoxDecoration(
-                border: Border(
-                  bottom: BorderSide(width: 1.0, color: Colors.grey),
-                ),
             )
-          )
-        )
       ),
     );
   }
