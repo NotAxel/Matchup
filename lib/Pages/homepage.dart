@@ -12,12 +12,22 @@ class HomePage extends StatelessWidget {
   final VoidCallback logoutCallback;
 
   HomePage({this.userId, this.auth, this.logoutCallback});
-
+  
   @override
   Widget build(BuildContext context) {
-      return new MyTabs();
+    return new Scaffold(
+      appBar: new AppBar(
+        title: new Text("Matchup login demo"),
+      ),
+      body: Stack(
+      children: <Widget>[
+        Text("You have successfully logged into Matchup"),
+          _showForm(),
+        ],
+      )
+    );
   }
-  
+
   Widget showLogOutButton(){
     return new Padding(
         padding: EdgeInsets.fromLTRB(20.0, 45.0, 20.0, 0.0),
@@ -35,6 +45,7 @@ class HomePage extends StatelessWidget {
         ));
   }
 
+
   Widget _showForm() {
     return new Container(
         padding: EdgeInsets.all(16.0),
@@ -48,15 +59,16 @@ class HomePage extends StatelessWidget {
           ),
         ));
   }
+
 }
 
 class MyTabs extends StatefulWidget {
+
   @override
   MyTabState createState() => new MyTabState();
 }
 
 class MyTabState extends State<MyTabs> with SingleTickerProviderStateMixin {
-
   TabController controller;
 
   @override
@@ -70,6 +82,7 @@ class MyTabState extends State<MyTabs> with SingleTickerProviderStateMixin {
     controller.dispose();
     super.dispose();
   }
+
 
   @override
   Widget build(BuildContext context) {

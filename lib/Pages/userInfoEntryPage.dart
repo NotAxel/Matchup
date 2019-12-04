@@ -211,32 +211,21 @@ class _UserInfoEntryPage extends State<UserInfoEntryPage> {
       _errorMessage = "";
       _isLoading = true;
     });
-    if(validateAndSave()) {
-      print('worked');
-      String userID = '';
-      try {
-        FirebaseUser currUser = await widget.auth.getCurrentUser();
-        userID = currUser.uid;
-        _userEmail = currUser.email;
-        Firestore.instance.collection('Users').document(userID).setData({'Username' : _userName, 'Main' : _mainChar, 'Secondary' : _secondaryChar, 'Region' : _region, 'Username' : _userName, 'NintendoID' : _nintendoID});
-      } catch (e) {
-        print('Error: $e');
-        setState(() {
-          _isLoading = false;
-          _errorMessage = e.message;
-          _formKey.currentState.reset();
-        });
-      }
-    }
-  }
-
-  bool validateAndSave() {
-    final form = _formKey.currentState;
-    if(form.validate()) {
-      form.save();
-      return true;
+    try {
+      FirebaseUser currUser = await widget.auth.getCurrentUser();
+      _userID = currUser.uid;
+      _userEmail = currUser.email;
+      Firestore.instance.collection('Users').document(_userID).setData({'Username' : _userName, 'Main' : _mainChar, 'Secondary' : _secondaryChar, 'Region' : _region, 'Username' : _userName, 'NintendoID' : _nintendoID, 'chattingWith' : null});
+      // nothing happens after this and username and id are not successfully sent
     } 
-    return false;
+    catch (e) {
+      print('Error: $e');
+      setState(() {
+        _isLoading = false;
+        _errorMessage = e.message;
+        _formKey.currentState.reset();
+      });
+    }
   }
 
   Widget _showUserInfoEntryForm() {

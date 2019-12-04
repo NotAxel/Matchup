@@ -163,6 +163,7 @@ class _LogInSignupPageState extends State<LogInSignupPage> {
       _isLoading = true;
     });
     if (validateAndSave()) {
+      print("passed validate and save");
       String userId = "";
       try {
         if (_isLoginForm) {
@@ -182,12 +183,14 @@ class _LogInSignupPageState extends State<LogInSignupPage> {
           widget.loginCallback();
         }
         else if (_isLoginForm == false){
+          // return new user info entry
           Navigator.push(context,
           MaterialPageRoute(builder: (context) => UserInfoEntryPage(userId: userId, auth: auth))
           );
         }
       } catch (e) {
         print('Error: $e');
+        print("IN ERROR HANDLER");
         setState(() {
           _isLoading = false;
           _errorMessage = e.message;
