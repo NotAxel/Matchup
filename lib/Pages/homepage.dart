@@ -6,69 +6,39 @@ import './profilePage.dart' as profilep;
 import './messagePage.dart' as messagep;
 import './matchPage.dart' as matchp;
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget{
   final String userId;
   final BaseAuth auth;
   final VoidCallback logoutCallback;
 
   HomePage({this.userId, this.auth, this.logoutCallback});
-  
+
   @override
-  Widget build(BuildContext context) {
-    return new Scaffold(
-      appBar: new AppBar(
-        title: new Text("Matchup login demo"),
-      ),
-      body: Stack(
-      children: <Widget>[
-        Text("You have successfully logged into Matchup"),
-          _showForm(),
-        ],
-      )
-    );
+  HomePageState createState() => new HomePageState();
+}
+
+// this class will be used to pass the callback to the tabs created by homepage
+class HomePageProvider extends InheritedWidget{
+  final String userId;
+  final BaseAuth auth;
+  final VoidCallback logoutCallback;
+  final Widget child;
+
+  HomePageProvider(this.userId, this.auth, this.logoutCallback, this.child);
+
+  @override
+  bool updateShouldNotify(InheritedWidget oldWidget) {
+    return true;
   }
 
-  Widget showLogOutButton(){
-    return new Padding(
-        padding: EdgeInsets.fromLTRB(20.0, 45.0, 20.0, 0.0),
-        child: SizedBox(
-          height: 40.0,
-          child: new RaisedButton(
-            elevation: 5.0,
-            shape: new RoundedRectangleBorder(
-                borderRadius: new BorderRadius.circular(30.0)),
-            color: Colors.deepOrange,
-            child: new Text('Logout',
-                style: new TextStyle(fontSize: 20.0, color: Colors.white)),
-            onPressed: logoutCallback,
-          ),
-        ));
-  }
-
-
-  Widget _showForm() {
-    return new Container(
-        padding: EdgeInsets.all(16.0),
-        child: new Form(
-          //key: _formKey,
-          child: new ListView(
-            shrinkWrap: true,
-            children: <Widget>[
-              showLogOutButton()
-            ],
-          ),
-        ));
-  }
+  // by using this function to add the call back to the context in the tabstate build,
+  // should be able to ref the call back in a tab class
+  static HomePageProvider of(BuildContext context) =>
+    context.inheritFromWidgetOfExactType(HomePageProvider);
 
 }
 
-class MyTabs extends StatefulWidget {
-
-  @override
-  MyTabState createState() => new MyTabState();
-}
-
-class MyTabState extends State<MyTabs> with SingleTickerProviderStateMixin {
+class HomePageState extends State<HomePage> with SingleTickerProviderStateMixin {
   TabController controller;
 
   @override
@@ -83,13 +53,16 @@ class MyTabState extends State<MyTabs> with SingleTickerProviderStateMixin {
     super.dispose();
   }
 
-
   @override
   Widget build(BuildContext context) {
-    return new Scaffold(
-      bottomNavigationBar: new Material(
+    return new HomePageProvider(
+      widget.userId,
+      widget.auth,
+      widget.logoutCallback,
+      Scaffold( bottomNavigationBar: new Material(
         color: Colors.blue,
-        child: new TabBar(
+        child: 
+          TabBar(
           controller: controller,
           tabs: <Tab>[
             new Tab(icon: new Icon(Icons.face)),
@@ -105,7 +78,15 @@ class MyTabState extends State<MyTabs> with SingleTickerProviderStateMixin {
           new matchp.MatchPage(),
           new messagep.MessagePage(),
         ]
-      )
+      ))
     );
+      /*
+      appBar: new AppBar(
+        actions: <Widget>[
+          _showForm(),
+      ],),
+      */
+      
+    
   }
 }

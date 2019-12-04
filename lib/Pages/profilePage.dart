@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:matchup/Pages/homepage.dart';
 import 'package:matchup/authentication.dart';
 
 class ProfilePage extends StatefulWidget {
@@ -15,7 +16,7 @@ class ProfilePageState extends State<ProfilePage> with SingleTickerProviderState
 
   var profStyle = TextStyle(fontSize: 25);
 
-  Widget showLogOutButton(){
+  Widget showLogOutButton(VoidCallback logoutCallback){
     return new Padding(
         padding: EdgeInsets.fromLTRB(20.0, 45.0, 20.0, 0.0),
         child: SizedBox(
@@ -27,17 +28,12 @@ class ProfilePageState extends State<ProfilePage> with SingleTickerProviderState
             color: Colors.deepOrange,
             child: new Text('Logout',
                 style: new TextStyle(fontSize: 20.0, color: Colors.white)),
-            onPressed: logout 
+            onPressed: logoutCallback 
           ),
         ));
   }
 
-  void logout(){
-    print("trying to logout");
-    widget.logoutCallback();
-  }
-
-  Widget _showForm() {
+  Widget _showForm(VoidCallback logoutCallback) {
     return new Container(
         padding: EdgeInsets.all(16.0),
         child: new Form(
@@ -45,7 +41,7 @@ class ProfilePageState extends State<ProfilePage> with SingleTickerProviderState
           child: new ListView(
             shrinkWrap: true,
             children: <Widget>[
-              showLogOutButton()
+              showLogOutButton(logoutCallback)
             ],
           ),
         ));
@@ -53,10 +49,11 @@ class ProfilePageState extends State<ProfilePage> with SingleTickerProviderState
 
   @override
   Widget build(BuildContext context) {
+    final VoidCallback logoutCallback = HomePageProvider.of(context).logoutCallback;
     return Scaffold(
           body: Stack(
           children: <Widget>[
-            _showForm()
+            _showForm(logoutCallback)
             /*
             Text(''),
             //Should get username from firebase

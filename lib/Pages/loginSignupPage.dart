@@ -182,6 +182,7 @@ class _LogInSignupPageState extends State<LogInSignupPage> {
         if (userId.length > 0 && userId != null && _isLoginForm) {
           widget.loginCallback();
         }
+        // successfully logged in and heading to user info entry page
         else if (_isLoginForm == false){
           // return new user info entry
           Navigator.push(context,

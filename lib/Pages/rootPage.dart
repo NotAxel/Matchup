@@ -16,6 +16,7 @@ class RootPage extends StatefulWidget{
   State<StatefulWidget> createState() {
     return _RootPageState();
   }
+
 }
 
 class _RootPageState extends State<RootPage>{
@@ -50,6 +51,7 @@ class _RootPageState extends State<RootPage>{
 
   void logoutCallback() {
     setState(() {
+      print("successfully logged out");
       authStatus = AuthStatus.NOT_LOGGED_IN;
       _userId = "";
     });
