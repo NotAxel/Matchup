@@ -7,8 +7,9 @@ import '../authentication.dart';
 class UserInfoEntryPage extends StatefulWidget {
   final String userId;
   final BaseAuth auth;
+  final VoidCallback logoutCallback;
 
-  UserInfoEntryPage({this.userId, this.auth});
+  UserInfoEntryPage({this.userId, this.auth, this.logoutCallback});
 
   @override
   _UserInfoEntryPage createState() => _UserInfoEntryPage();
@@ -207,7 +208,7 @@ class _UserInfoEntryPage extends State<UserInfoEntryPage> {
     );
   }
 
-  void validateAndSubmit() async {
+  validateAndSubmit() async {
     setState(() {
       _errorMessage = "";
       _isLoading = true;
@@ -225,6 +226,7 @@ class _UserInfoEntryPage extends State<UserInfoEntryPage> {
           'Username' : _userName, 
           'NintendoID' : _nintendoID, 
           'chattingWith' : null});
+          Navigator.of(context).pop();
       } 
       catch (e) {
         print('Error: $e');

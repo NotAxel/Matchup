@@ -3,15 +3,37 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:matchup/authentication.dart';
 import 'userInfoEntryPage.dart';
+import 'homepage.dart';
 
 class LogInSignupPage extends StatefulWidget {
+  final String userId;
   final BaseAuth auth;
   final VoidCallback loginCallback;
+  final VoidCallback logoutCallback;
 
-  LogInSignupPage({this.auth, this.loginCallback});
+  LogInSignupPage({this.userId, this.auth, this.loginCallback, this.logoutCallback});
   
   @override
   _LogInSignupPageState createState() => _LogInSignupPageState(auth: auth);
+}
+
+class LoginSignupProvider extends InheritedWidget{
+  final BaseAuth auth;
+  final VoidCallback loginCallback;
+  final VoidCallback logoutCallback;
+  final Widget child;
+
+  LoginSignupProvider(this.auth, this.loginCallback, this.logoutCallback, this.child);
+
+  @override
+  bool updateShouldNotify(InheritedWidget oldWidget) {
+    return true;
+  }
+  
+  // by using this function to add the call back to the context in the tabstate build,
+  // should be able to ref the call back in a tab class
+  static LoginSignupProvider of(BuildContext context) =>
+    context.inheritFromWidgetOfExactType(LoginSignupProvider);
 }
 
 class _LogInSignupPageState extends State<LogInSignupPage> {
@@ -186,7 +208,10 @@ class _LogInSignupPageState extends State<LogInSignupPage> {
         else if (_isLoginForm == false){
           // return new user info entry
           Navigator.push(context,
-          MaterialPageRoute(builder: (context) => UserInfoEntryPage(userId: userId, auth: auth))
+          MaterialPageRoute(builder: (context) => HomePage(userId: userId, auth: auth, logoutCallback: widget.logoutCallback))
+          );
+          Navigator.push(context,
+          MaterialPageRoute(builder: (context) => UserInfoEntryPage(userId: userId, auth: auth, logoutCallback: widget.logoutCallback))
           );
         }
       } catch (e) {
@@ -202,7 +227,13 @@ class _LogInSignupPageState extends State<LogInSignupPage> {
   }
 
   Widget _showLogInForm() {
-    return new Container(
+    return 
+    /*LoginSignupProvider(
+     widget.auth,
+     widget.loginCallback,
+     widget.logoutCallback,
+     */
+     new Container(
         padding: EdgeInsets.all(16.0),
         child: new Form(
           key: _formKey,
@@ -218,5 +249,6 @@ class _LogInSignupPageState extends State<LogInSignupPage> {
             ],
           ),
         ));
+   // );
   }
 }

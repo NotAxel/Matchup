@@ -50,6 +50,7 @@ class _RootPageState extends State<RootPage>{
   }
 
   void logoutCallback() {
+    Navigator.of(context).maybePop();
     setState(() {
       print("successfully logged out");
       authStatus = AuthStatus.NOT_LOGGED_IN;
@@ -68,6 +69,7 @@ class _RootPageState extends State<RootPage>{
 
   @override
   Widget build(BuildContext context) {
+    print("running root build");
     switch (authStatus) {
       case AuthStatus.NOT_DETERMINED:
         return buildWaitingScreen();
@@ -76,6 +78,7 @@ class _RootPageState extends State<RootPage>{
         return new LogInSignupPage(
           auth: widget.auth,
           loginCallback: loginCallback,
+          logoutCallback: logoutCallback,
         );
         break;
       case AuthStatus.LOGGED_IN:
