@@ -63,6 +63,8 @@ class _LogInSignupPageState extends State<LogInSignupPage> {
     _errorMessage = "";
     _email = null;
     _password = null;
+    emailController.clear();
+    passwordController.clear();
   }
 
   void toggleFormMode() {
@@ -90,6 +92,7 @@ class _LogInSignupPageState extends State<LogInSignupPage> {
           maxLines: 1,
           style: style,
           autofocus: false,
+          controller: emailController,
           keyboardType: TextInputType.emailAddress,
           decoration: InputDecoration(
               hintText: "Email",

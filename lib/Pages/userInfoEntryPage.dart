@@ -225,7 +225,8 @@ class _UserInfoEntryPage extends State<UserInfoEntryPage> {
           'Region' : _region, 
           'Username' : _userName, 
           'NintendoID' : _nintendoID, 
-          'chattingWith' : null});
+          'chattingWith' : null,
+          'message': null});
           Navigator.of(context).pop();
       } 
       catch (e) {

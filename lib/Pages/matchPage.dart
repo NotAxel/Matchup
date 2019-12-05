@@ -1,26 +1,55 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import './challengePage.dart' as cp;
+import 'homepage.dart';
 
-List<String> litems = ["1", "2", "3"];
-List<AccountListing> listings = [new AccountListing("John", "Marth"), johnny, jim, jim1, jim2, jim3, jim4, jim5, jim6, jim7, jim8, jim9, jim10];
-AccountListing johnny = new AccountListing("Johnny", "Ness");
-AccountListing jim = new AccountListing("Jim", "Lucas");
-AccountListing jim1= new AccountListing("Jeff", "Yoshi");
-AccountListing jim2= new AccountListing("Jeffrey", "Roy");
-AccountListing jim3= new AccountListing("Jeb", "Mario");
-AccountListing jim4= new AccountListing("Jimichangas", "Lucas");
-AccountListing jim5= new AccountListing("Jun", "Dr Mario");
-AccountListing jim6= new AccountListing("Jimmy", "Wolf");
-AccountListing jim7= new AccountListing("Josh", "Fox");
-AccountListing jim8= new AccountListing("Joshua", "Falco");
-AccountListing jim9= new AccountListing("Jarl", "Pikachu");
-AccountListing jim10= new AccountListing("Jacob", "Lucario");
 
-class MatchPage extends StatelessWidget {
+class MatchPage extends StatefulWidget {
+  @override
+  MatchPageState createState() => MatchPageState();
+}
+
+class MatchPageState extends State<MatchPage>{
 
   @override
   Widget build(BuildContext context) {
+    final String userId = HomePageProvider.of(context).userId;
+    print(userId);
+    return StreamBuilder<QuerySnapshot>(
+      stream: Firestore.instance.collection('Users').snapshots(),
+      builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+        if (snapshot.hasError)
+          return new Text('Error: ${snapshot.error}');
+        switch (snapshot.connectionState) {
+          case ConnectionState.waiting: return new Text('Loading...');
+          default:
+            return new ListView(
+              children: snapshot.data.documents.map((DocumentSnapshot document) {
+                return new ListTile(
+                  title: new Text(document['Username']),
+                  subtitle: new Text(document['Main']),
+                  onTap: (){
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => cp.ChallengePage(
+                        userId: userId, 
+                        name: document['Username'], 
+                        main: document['Main'], 
+                        peerId: document.documentID)));
+                  },
+                );
+              }).toList(),
+            );
+        }
+      },
+    );
+  }
+
+/*
+  @override
+  Widget build(BuildContext context) {
+    List<AccountListing> listings;
     return new Scaffold(
       appBar: new AppBar(
         title: new Center(child: Text("MatchMaking     ")),
@@ -35,11 +64,11 @@ class MatchPage extends StatelessWidget {
             child: InkWell(
               child: ListTile(
                 leading: Icon(Icons.pregnant_woman),
-                title: MatchListing(name:listings[index].name, main:listings[index].main),
+                title: MatchListing(name:listings[index].userName, main:listings[index].main),
                 onTap: () {
                   Navigator.push(
                     context, 
-                    MaterialPageRoute(builder: (context) => cp.ChallengePage(name:listings[index].name, main:listings[index].main)));
+                    MaterialPageRoute(builder: (context) => cp.ChallengePage(name:listings[index].userName, main:listings[index].main)));
                 }
               ),
             ),
@@ -53,16 +82,20 @@ class MatchPage extends StatelessWidget {
       )
     );
   }
+
 }
 
 class AccountListing {
-  String name;
-  String main;
+  String userName;
+  String nintendoID;
 
-  AccountListing(String name, String main) {
-    this.name = name;
-    this.main = main;
-  }
+  String main;
+  String secondary;
+
+  String region;
+  String chattingWith;
+
+  AccountListing({this.userName, this.nintendoID, this.main, this.secondary, this.region, this.chattingWith});
 }
 
 class MatchListing extends StatelessWidget {
@@ -81,6 +114,7 @@ class MatchListing extends StatelessWidget {
       
     );
   }
+  */
 }
 
 // class MatchmakingDisplay extends StatefulWidget {
