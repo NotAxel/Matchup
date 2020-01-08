@@ -143,7 +143,7 @@ DEPENDENCIES:
   - firebase_auth (from `.symlinks/plugins/firebase_auth/ios`)
   - firebase_core (from `.symlinks/plugins/firebase_core/ios`)
   - firebase_database (from `.symlinks/plugins/firebase_database/ios`)
-  - Flutter (from `.symlinks/flutter/ios`)
+  - Flutter (from `Flutter`)
 
 SPEC REPOS:
   trunk:
@@ -179,14 +179,14 @@ EXTERNAL SOURCES:
   firebase_database:
     :path: ".symlinks/plugins/firebase_database/ios"
   Flutter:
-    :path: ".symlinks/flutter/ios"
+    :path: Flutter
 
 SPEC CHECKSUMS:
   BoringSSL-GRPC: db8764df3204ccea016e1c8dd15d9a9ad63ff318
-  cloud_firestore: 187530401afa261d255791ea75580591e345fa7b
+  cloud_firestore: c6e28e89a1bf98faab7fc8fdec20dc6020799cd1
   Firebase: bc9cfc7a96c73268656d5aaab453ff1b4b530e0e
-  firebase_auth: 3735c80c0a290fd04a34e9bbbecbeec8f79a216a
-  firebase_core: ae55ea92448ec8675d325da4db22cf3b4d58a54d
+  firebase_auth: d99b993c1405096e66c58211b1cd956c23eed1c5
+  firebase_core: 15d27cd74b2e40f8c29540707c0486bb561a92e8
   firebase_database: 9fb71952703b719484bc1de5347522a11b6ccc38
   FirebaseAnalytics: 0e3ecff2c5d86070f7d4325e21f1edabfbd558dc
   FirebaseAuth: b401a012cc33b04df3b52bb308b04e8766f2693e
@@ -209,6 +209,6 @@ SPEC CHECKSUMS:
   nanopb: 18003b5e52dab79db540fe93fe9579f399bd1ccd
   Protobuf: a4dc852ad69c027ca2166ed287b856697814375b
 
-PODFILE CHECKSUM: b6a0a141693093b304368d08511b46cf3d1d0ac5
+PODFILE CHECKSUM: 1b66dae606f75376c5f2135a8290850eeb09ae83
 
 COCOAPODS: 1.8.4

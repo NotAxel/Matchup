@@ -30,14 +30,14 @@ class _ChatPageState extends State<ChatPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.userId.toString())
+        title: Text("Chatting")
       ),
       body: Center(
         child:  Scaffold(
           body: new Center (
             child: Column(
               children: <Widget>[
-                new Text(widget.peerId.toString()),
+                new Text("USER ID:" + widget.userId.toString() + "\n" + "PEER ID:" + widget.peerId.toString()),
               ],
             )
           ),
