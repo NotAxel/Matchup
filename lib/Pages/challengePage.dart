@@ -56,9 +56,24 @@ class ChallengePage extends StatelessWidget {
     );
   }
 
+  // returns a chatId using the userId and peerId
+  // the chatId is a combination of the two argument id
+  // based on their hash values
+  // the chatId is then stored in each users Chats and is used to create a chat between the two
+  String constructChatid(String userId, String peerId){
+    String chatId;
+    if (userId.hashCode <= peerId.hashCode) {
+      chatId = '$userId-$peerId';
+    } 
+    else {
+      chatId = '$peerId-$userId';
+    }
+    return chatId;
+  }
+
   // uses the userId and peerId to construct the chatId and any necessary firebase documents required for p2p messaging
   Future<String> initiateChatWithPeer(String userId, String peerId) async{
-    String chatId = userId + "_" + peerId;
+    String chatId = constructChatid(userId, peerId);
 
     // dont have to use await here since they are just references like memory addresses
     DocumentReference userReference = Firestore.instance.collection('Users').document(userId).collection('Chats').document(peerId);
