@@ -1,13 +1,15 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'homepage.dart';
 import '../authentication.dart';
 
 class UserInfoEntryPage extends StatefulWidget {
   final String userId;
   final BaseAuth auth;
+  final VoidCallback logoutCallback;
 
-  UserInfoEntryPage({this.userId, this.auth});
+  UserInfoEntryPage({this.userId, this.auth, this.logoutCallback});
 
   @override
   _UserInfoEntryPage createState() => _UserInfoEntryPage();
@@ -206,36 +208,45 @@ class _UserInfoEntryPage extends State<UserInfoEntryPage> {
     );
   }
 
-  void validateAndSubmit() async {
+  validateAndSubmit() async {
     setState(() {
       _errorMessage = "";
       _isLoading = true;
     });
-    if(validateAndSave()) {
-      print('worked');
-      String userID = '';
+    if (validateAndSave()){
       try {
         FirebaseUser currUser = await widget.auth.getCurrentUser();
-        userID = currUser.uid;
+        _userID = currUser.uid;
         _userEmail = currUser.email;
-        Firestore.instance.collection('Users').document(userID).setData({'Username' : _userName, 'Main' : _mainChar, 'Secondary' : _secondaryChar, 'Region' : _region, 'Username' : _userName, 'NintendoID' : _nintendoID});
-      } catch (e) {
+        Firestore.instance.collection('Users').document(_userID).setData({
+          'Username' : _userName, 
+          'Main' : _mainChar, 
+          'Secondary' : _secondaryChar, 
+          'Region' : _region, 
+          'Username' : _userName, 
+          'NintendoID' : _nintendoID, 
+          'chattingWith' : null,
+          'message': null});
+          Navigator.of(context).pop();
+      } 
+      catch (e) {
         print('Error: $e');
         setState(() {
           _isLoading = false;
           _errorMessage = e.message;
           _formKey.currentState.reset();
         });
-      }
+    }
     }
   }
 
+  // Check if form is valid before perform login or signup
   bool validateAndSave() {
     final form = _formKey.currentState;
-    if(form.validate()) {
+    if (form.validate()) {
       form.save();
       return true;
-    } 
+    }
     return false;
   }
 

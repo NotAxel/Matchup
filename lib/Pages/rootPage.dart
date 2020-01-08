@@ -16,6 +16,7 @@ class RootPage extends StatefulWidget{
   State<StatefulWidget> createState() {
     return _RootPageState();
   }
+
 }
 
 class _RootPageState extends State<RootPage>{
@@ -43,12 +44,15 @@ class _RootPageState extends State<RootPage>{
       });
     });
     setState(() {
+      print("successfully logged in");
       authStatus = AuthStatus.LOGGED_IN;
     });
   }
 
   void logoutCallback() {
+    Navigator.of(context).maybePop();
     setState(() {
+      print("successfully logged out");
       authStatus = AuthStatus.NOT_LOGGED_IN;
       _userId = "";
     });
@@ -65,6 +69,7 @@ class _RootPageState extends State<RootPage>{
 
   @override
   Widget build(BuildContext context) {
+    print("running root build");
     switch (authStatus) {
       case AuthStatus.NOT_DETERMINED:
         return buildWaitingScreen();
@@ -73,6 +78,7 @@ class _RootPageState extends State<RootPage>{
         return new LogInSignupPage(
           auth: widget.auth,
           loginCallback: loginCallback,
+          logoutCallback: logoutCallback,
         );
         break;
       case AuthStatus.LOGGED_IN:

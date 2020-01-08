@@ -1,36 +1,59 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
-class ChatPage extends StatelessWidget {
+import 'homepage.dart';
 
-  final profStyle = TextStyle(fontSize: 25);
-
+class ChatPage extends StatefulWidget {
+  final String userId;
   final String name;
   final String main;
+  final String peerId;
 
-  ChatPage({@required this.name, @required this.main});
+  const ChatPage({Key key, this.userId, this.name, this.main, this.peerId}) : super(key: key);
+
+  @override
+  _ChatPageState createState() => _ChatPageState();
+}
+
+class _ChatPageState extends State<ChatPage> {
+  final TextEditingController messageController = new TextEditingController();
+  final _formKey = new GlobalKey<FormState>();
+
+  @override
+  void initState() {
+    Firestore.instance.collection("Users").document(widget.userId).updateData({'chattingWith': widget.peerId});
+    super.initState();
+  }
+
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(this.name),
+        title: Text("Chatting")
       ),
       body: Center(
         child:  Scaffold(
           body: new Center (
             child: Column(
               children: <Widget>[
+                new Text("USER ID:" + widget.userId.toString() + "\n" + "PEER ID:" + widget.peerId.toString()),
               ],
             )
           ),
           bottomNavigationBar: TextField(
-              decoration: InputDecoration(
-                border: OutlineInputBorder(),
-                hintText: 'chat', 
-              ),
+            controller: messageController,
+            decoration: InputDecoration(
+              border: OutlineInputBorder(),
+              hintText: 'chat', 
             ),
-            )
+            onSubmitted: (value){
+              Firestore.instance.collection("Users").document(widget.peerId).updateData({'message': value});
+              messageController.clear();
+            },
+          ),
+        )
       ),
     );
   }
-} 
+}

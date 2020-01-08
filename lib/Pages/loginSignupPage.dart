@@ -3,15 +3,37 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:matchup/authentication.dart';
 import 'userInfoEntryPage.dart';
+import 'homepage.dart';
 
 class LogInSignupPage extends StatefulWidget {
+  final String userId;
   final BaseAuth auth;
   final VoidCallback loginCallback;
+  final VoidCallback logoutCallback;
 
-  LogInSignupPage({this.auth, this.loginCallback});
+  LogInSignupPage({this.userId, this.auth, this.loginCallback, this.logoutCallback});
   
   @override
   _LogInSignupPageState createState() => _LogInSignupPageState(auth: auth);
+}
+
+class LoginSignupProvider extends InheritedWidget{
+  final BaseAuth auth;
+  final VoidCallback loginCallback;
+  final VoidCallback logoutCallback;
+  final Widget child;
+
+  LoginSignupProvider(this.auth, this.loginCallback, this.logoutCallback, this.child);
+
+  @override
+  bool updateShouldNotify(InheritedWidget oldWidget) {
+    return true;
+  }
+  
+  // by using this function to add the call back to the context in the tabstate build,
+  // should be able to ref the call back in a tab class
+  static LoginSignupProvider of(BuildContext context) =>
+    context.inheritFromWidgetOfExactType(LoginSignupProvider);
 }
 
 class _LogInSignupPageState extends State<LogInSignupPage> {
@@ -41,6 +63,8 @@ class _LogInSignupPageState extends State<LogInSignupPage> {
     _errorMessage = "";
     _email = null;
     _password = null;
+    emailController.clear();
+    passwordController.clear();
   }
 
   void toggleFormMode() {
@@ -68,6 +92,7 @@ class _LogInSignupPageState extends State<LogInSignupPage> {
           maxLines: 1,
           style: style,
           autofocus: false,
+          controller: emailController,
           keyboardType: TextInputType.emailAddress,
           decoration: InputDecoration(
               hintText: "Email",
@@ -163,6 +188,7 @@ class _LogInSignupPageState extends State<LogInSignupPage> {
       _isLoading = true;
     });
     if (validateAndSave()) {
+      print("passed validate and save");
       String userId = "";
       try {
         if (_isLoginForm) {
@@ -181,13 +207,19 @@ class _LogInSignupPageState extends State<LogInSignupPage> {
         if (userId.length > 0 && userId != null && _isLoginForm) {
           widget.loginCallback();
         }
+        // successfully logged in and heading to user info entry page
         else if (_isLoginForm == false){
+          // return new user info entry
           Navigator.push(context,
-          MaterialPageRoute(builder: (context) => UserInfoEntryPage(userId: userId, auth: auth))
+          MaterialPageRoute(builder: (context) => HomePage(userId: userId, auth: auth, logoutCallback: widget.logoutCallback))
+          );
+          Navigator.push(context,
+          MaterialPageRoute(builder: (context) => UserInfoEntryPage(userId: userId, auth: auth, logoutCallback: widget.logoutCallback))
           );
         }
       } catch (e) {
         print('Error: $e');
+        print("IN ERROR HANDLER");
         setState(() {
           _isLoading = false;
           _errorMessage = e.message;
@@ -198,7 +230,13 @@ class _LogInSignupPageState extends State<LogInSignupPage> {
   }
 
   Widget _showLogInForm() {
-    return new Container(
+    return 
+    /*LoginSignupProvider(
+     widget.auth,
+     widget.loginCallback,
+     widget.logoutCallback,
+     */
+     new Container(
         padding: EdgeInsets.all(16.0),
         child: new Form(
           key: _formKey,
@@ -214,5 +252,6 @@ class _LogInSignupPageState extends State<LogInSignupPage> {
             ],
           ),
         ));
+   // );
   }
 }
