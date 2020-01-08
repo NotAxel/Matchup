@@ -8,8 +8,9 @@ class ChatPage extends StatefulWidget {
   final String name;
   final String main;
   final String peerId;
+  final String chatId;
 
-  const ChatPage({Key key, this.userId, this.name, this.main, this.peerId}) : super(key: key);
+  const ChatPage({Key key, this.userId, this.name, this.main, this.peerId, this.chatId}) : super(key: key);
 
   @override
   _ChatPageState createState() => _ChatPageState();
@@ -22,9 +23,10 @@ class _ChatPageState extends State<ChatPage> {
   @override
   void initState() {
     Firestore.instance.collection("Users").document(widget.userId).updateData({'chattingWith': widget.peerId});
+    Firestore.instance.collection("Chats").document(widget.chatId).
+      collection(widget.chatId).document(DateTime.now().millisecondsSinceEpoch.toString()).setData({'contents': "Hello"});
     super.initState();
   }
-
 
   @override
   Widget build(BuildContext context) {

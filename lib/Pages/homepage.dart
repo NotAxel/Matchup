@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import '../authentication.dart';
+import '../bizlogic/authentication.dart';
 import './friendPage.dart' as friendp;
 import './profilePage.dart' as profilep;
 import './messagePage.dart' as messagep;

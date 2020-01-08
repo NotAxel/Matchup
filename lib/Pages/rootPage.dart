@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../authentication.dart';
+import 'package:matchup/bizlogic/authentication.dart';
 import 'homepage.dart';
 import 'loginSignupPage.dart';
 

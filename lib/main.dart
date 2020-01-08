@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'Pages/rootPage.dart';
-import 'authentication.dart';
+import 'bizlogic/authentication.dart';
 
 
 // tutorial followed: https://medium.com/flutterpub/flutter-how-to-do-user-login-with-firebase-a6af760b14d5
