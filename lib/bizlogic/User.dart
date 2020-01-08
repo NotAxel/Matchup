@@ -10,7 +10,6 @@ int MAX_FRIENDS = 31;
 
 class User {
   String email;
-  String password;
   String userName; // Players username
   String main; // Players main character
   String secondary; // Players secondary
@@ -43,14 +42,7 @@ class User {
   /// Adding a friend to this users friends list
   void addFriend (User friend){
     if(friendCount < MAX_FRIENDS) {
-      friendsList[getFriendCount] = friend;
-      friendCount = friendCount + 1;
-    } else {
-    
+      friendsList.add(friend);
     }
   }
-
-
-
-
 }

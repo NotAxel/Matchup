@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:matchup/authentication.dart';
+import 'package:matchup/bizlogic/authentication.dart';
 import 'userInfoEntryPage.dart';
 import 'homepage.dart';
 

@@ -1,8 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'homepage.dart';
-import '../authentication.dart';
+import 'package:matchup/bizlogic/authentication.dart';
 
 class UserInfoEntryPage extends StatefulWidget {
   final String userId;
@@ -227,7 +226,7 @@ class _UserInfoEntryPage extends State<UserInfoEntryPage> {
           'NintendoID' : _nintendoID, 
           'chattingWith' : null,
           'message': null});
-          Navigator.of(context).pop();
+        Navigator.of(context).pop();
       } 
       catch (e) {
         print('Error: $e');

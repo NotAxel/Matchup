@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:matchup/Pages/homepage.dart';
-import 'package:matchup/authentication.dart';
+import 'package:matchup/bizlogic/authentication.dart';
 
 class ProfilePage extends StatefulWidget {
   final BaseAuth auth;
