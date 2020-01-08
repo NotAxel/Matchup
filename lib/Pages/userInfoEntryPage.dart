@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:matchup/bizlogic/User.dart';
 import 'package:matchup/bizlogic/authentication.dart';
 
 class UserInfoEntryPage extends StatefulWidget {
@@ -26,6 +27,9 @@ class _UserInfoEntryPage extends State<UserInfoEntryPage> {
   String _nintendoID;
   String _userID;
   String _userEmail = "waiting"; // used for testing
+
+  // creating single instance of user to be used throughout program duration
+  User user = User.instance;
 
   bool _isLoading;
   bool _isUserForm;
@@ -141,7 +145,7 @@ class _UserInfoEntryPage extends State<UserInfoEntryPage> {
                 _region = newValue;
               });
             },
-            items: <String>['','NAW', 'NAE', 'EU']
+            items: <String>['','North West', 'West Coast', 'Mountain', 'North', 'Central', 'South', 'Mid West', 'East Coast', 'South East']
               .map<DropdownMenuItem<String>>((String value){
                 return DropdownMenuItem<String>(
                   value: value,
@@ -239,7 +243,7 @@ class _UserInfoEntryPage extends State<UserInfoEntryPage> {
     }
   }
 
-  // Check if form is valid before perform login or signup
+  // Check if form is valid before saving user information
   bool validateAndSave() {
     final form = _formKey.currentState;
     if (form.validate()) {

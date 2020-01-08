@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
+import 'package:matchup/bizlogic/User.dart';
 import './challengePage.dart' as cp;
 import 'homepage.dart';
 
@@ -14,8 +14,8 @@ class MatchPageState extends State<MatchPage>{
 
   @override
   Widget build(BuildContext context) {
-    final String userId = HomePageProvider.of(context).userId;
-    print(userId);
+    final User _user = HomePageProvider.of(context).user;
+    print(_user.getUserId);
     return StreamBuilder<QuerySnapshot>(
       stream: Firestore.instance.collection('Users').snapshots(),
       builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
@@ -33,7 +33,7 @@ class MatchPageState extends State<MatchPage>{
                     Navigator.push(
                       context,
                       MaterialPageRoute(builder: (context) => cp.ChallengePage(
-                        userId: userId, 
+                        userId: _user.getUserId, 
                         name: document['Username'], 
                         main: document['Main'], 
                         peerId: document.documentID)));
