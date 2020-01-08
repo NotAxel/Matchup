@@ -227,7 +227,7 @@ class _UserInfoEntryPage extends State<UserInfoEntryPage> {
           'NintendoID' : _nintendoID, 
           'chattingWith' : null,
           'message': null});
-          Navigator.of(context).pop();
+        Navigator.of(context).pop();
       } 
       catch (e) {
         print('Error: $e');

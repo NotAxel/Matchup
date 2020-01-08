@@ -1,6 +1,6 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import './chatPage.dart' as chatp;
-import 'homepage.dart'; 
 
 
 class ChallengePage extends StatelessWidget {
@@ -38,6 +38,7 @@ class ChallengePage extends StatelessWidget {
                   child: Text('Smash', style: TextStyle(fontSize: 30, color: Colors.white)),
                   color: Colors.redAccent,
                   onPressed: () {
+                    InitiateChatWithPeer(userId, peerId);
                     Navigator.push(
                       context, 
                       MaterialPageRoute(builder: (context) => 
@@ -61,5 +62,12 @@ class ChallengePage extends StatelessWidget {
         )
       ),
     );
+  }
+
+  void InitiateChatWithPeer(String userId, String peerId){
+    String chatId = userId + "_" + peerId;
+    // if the chat does not already exist for one of the users, create it
+    Firestore.instance.collection('Users').document(userId).collection('Chats').document(peerId).setData({'chatId': chatId});
+    Firestore.instance.collection('Users').document(peerId).collection('Chats').document(userId).setData({'chatId': chatId});
   }
 } 
