@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-
-import 'homepage.dart';
+import 'package:matchup/bizlogic/message.dart';
 
 class ChatPage extends StatefulWidget {
   final String userId;
@@ -22,9 +21,15 @@ class _ChatPageState extends State<ChatPage> {
 
   @override
   void initState() {
-    Firestore.instance.collection("Users").document(widget.userId).updateData({'chattingWith': widget.peerId});
+    // simulates how the message class will be used to communicate and send data to the firebase
+    Message message = new Message("Hello", widget.peerId, widget.userId);
     Firestore.instance.collection("Chats").document(widget.chatId).
-      collection(widget.chatId).document(DateTime.now().millisecondsSinceEpoch.toString()).setData({'contents': "Hello"});
+      collection(widget.chatId).document(DateTime.now().millisecondsSinceEpoch.toString()).setData({
+        'contents': message.getContent,
+        'toId': message.getToId,
+        'fromId': message.getFromId,
+        'timeStamp': message.getTimeStamp
+      });
     super.initState();
   }
 
