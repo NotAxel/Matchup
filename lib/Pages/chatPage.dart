@@ -39,36 +39,37 @@ class _ChatPageState extends State<ChatPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Chatting")),
-      body: new GestureDetector( 
-        child: Center(
-          child: Scaffold(
-        body: new Center(
-            child: Column(
+      appBar: AppBar(
+        title: const Text("Chatting"),),
+      body: GestureDetector(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisSize: MainAxisSize.max,
+          mainAxisAlignment: MainAxisAlignment.end,
           children: <Widget>[
-            showIds(),
             buildMessageList(context),
-            Container(
-              child: Row(
-                children: <Widget>[
-                  buildMessageInput(context),
-                  buildSendButton(),
-                ],),
-              padding: EdgeInsets.fromLTRB(20, 10, 0, 10),
-              decoration: new BoxDecoration(
-                border: new Border(top: new BorderSide(color: Colors.grey[100], width: 0.5)),
-                color: Colors.grey[300]
-              ),
-            ),
+            buildMessageContainer(context)
           ],
-        )
         ),
+        onTap: (){
+          FocusScope.of(context).requestFocus(new FocusNode());
+        },
       )
+    );
+  }
+
+  Widget buildMessageContainer(BuildContext context){
+    return Container(
+      child: Row(
+        children: <Widget>[
+          buildMessageInput(context),
+          buildSendButton(),
+        ],),
+      padding: EdgeInsets.fromLTRB(20, 10, 0, 10),
+      decoration: new BoxDecoration(
+        border: new Border(top: new BorderSide(color: Colors.grey[100], width: 0.5)),
+        color: Colors.grey[300]
       ),
-      onTap: (){
-        FocusScope.of(context).requestFocus(new FocusNode());
-      },
-    ),
     );
   }
 
@@ -93,7 +94,6 @@ class _ChatPageState extends State<ChatPage> {
       ),
       focusNode: focusNode,
       onSubmitted: (messageContents) {
-        
       },
     ));
   }
@@ -128,6 +128,7 @@ class _ChatPageState extends State<ChatPage> {
           }
         },
       ),
+      flex: 2
     );
   }
 
