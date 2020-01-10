@@ -20,6 +20,7 @@ class ChatPage extends StatefulWidget {
 class _ChatPageState extends State<ChatPage> {
   final TextEditingController messageController = new TextEditingController();
   final ScrollController listScrollController = new ScrollController();
+  final FocusNode focusNode = new FocusNode();
 
   final _formKey = new GlobalKey<FormState>();
 
@@ -29,7 +30,7 @@ class _ChatPageState extends State<ChatPage> {
   @override
   void initState() {
     // simulates how the message class will be used to communicate and send data to the firebase
-    _message = new Message('', widget.peerId, widget.userId);
+    _message = new Message("", widget.peerId, widget.userId);
     super.initState();
   }
 
@@ -39,65 +40,111 @@ class _ChatPageState extends State<ChatPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text("Chatting")),
-      body: Center(
+      body: new GestureDetector( 
+        child: Center(
           child: Scaffold(
         body: new Center(
             child: Column(
           children: <Widget>[
-            new Text("USER ID:" +
-                widget.userId.toString() +
-                "\n" +
-                "PEER ID:" +
-                widget.peerId.toString()),
-            Flexible(
-              child: StreamBuilder(
-                stream: Firestore.instance
-                    .collection("Chats")
-                    .document(widget.chatId)
-                    .collection(widget.chatId)
-                    .orderBy("timeStamp", descending: true)
-                    .limit(20)
-                    .snapshots(),
-                builder: (context, snapshot) {
-                  if (!snapshot.hasData) {
-                    return Center(
-                        child: CircularProgressIndicator(
-                            valueColor: AlwaysStoppedAnimation<Color>(
-                                Colors.lightBlue)));
-                  } else {
-                    return ListView.builder(
-                      padding: EdgeInsets.all(10.0),
-                      itemBuilder: (context, index) =>
-                          buildMessageBoxes(index, snapshot.data.documents[index]),
-                      itemCount: snapshot.data.documents.length,
-                      reverse: true,
-                      controller: listScrollController,
-                      scrollDirection: Axis.vertical,
-                      shrinkWrap: true,
-                    );
-                  }
-                },
+            showIds(),
+            buildMessageList(context),
+            Container(
+              child: Row(
+                children: <Widget>[
+                  buildMessageInput(context),
+                  buildSendButton(),
+                ],),
+              padding: EdgeInsets.fromLTRB(20, 10, 0, 10),
+              decoration: new BoxDecoration(
+                border: new Border(top: new BorderSide(color: Colors.grey[100], width: 0.5)),
+                color: Colors.grey[300]
               ),
-            )
+            ),
           ],
-        )),
-        bottomNavigationBar: TextField(
-          controller: messageController,
-          minLines: 1,
-          maxLines: 5,
-          keyboardType: TextInputType.multiline,
-          textInputAction: TextInputAction.send,
-          decoration: InputDecoration(
-            border: OutlineInputBorder(),
-            hintText: 'chat',
-          ),
-          onSubmitted: (messageContents) {
-            _message.setContent = messageContents;
-            sendMessage();
-            messageController.clear();
-          },
+        )
         ),
-      )),
+      )
+      ),
+      onTap: (){
+        FocusScope.of(context).requestFocus(new FocusNode());
+      },
+    ),
+    );
+  }
+
+  Widget showIds(){
+    return Text("USER ID:" +
+        widget.userId.toString() +
+        "\n" +
+        "PEER ID:" +
+        widget.peerId.toString());
+  }
+
+  Widget buildMessageInput(BuildContext context){
+    return Flexible(
+      child: TextField(
+      controller: messageController,
+      minLines: 1,
+      maxLines: 5,
+      keyboardType: TextInputType.multiline,
+      //textInputAction: TextInputAction.done,
+      decoration: InputDecoration.collapsed(
+        hintText: 'Send a message...',
+      ),
+      focusNode: focusNode,
+      onSubmitted: (messageContents) {
+        
+      },
+    ));
+  }
+
+  Widget buildMessageList(BuildContext context){
+    return Flexible(
+      child: StreamBuilder(
+        stream: Firestore.instance
+            .collection("Chats")
+            .document(widget.chatId)
+            .collection(widget.chatId)
+            .orderBy("timeStamp", descending: true)
+            .limit(20)
+            .snapshots(),
+        builder: (context, snapshot) {
+          if (!snapshot.hasData) {
+            return Center(
+                child: CircularProgressIndicator(
+                    valueColor: AlwaysStoppedAnimation<Color>(
+                        Colors.lightBlue)));
+          } else {
+            return ListView.builder(
+              padding: EdgeInsets.all(10.0),
+              itemBuilder: (context, index) =>
+                  buildMessageBoxes(index, snapshot.data.documents[index]),
+              itemCount: snapshot.data.documents.length,
+              reverse: true,
+              controller: listScrollController,
+              scrollDirection: Axis.vertical,
+              shrinkWrap: true,
+            );
+          }
+        },
+      ),
+    );
+  }
+
+  Widget buildSendButton(){
+    return Material(
+      child: IconButton(
+        color: Colors.lightBlue,
+        onPressed: (){
+          _message.setContent = messageController.text;
+          sendMessage();
+          messageController.clear();
+        },
+        icon: Icon(
+          Icons.send
+        )
+      ),
+      color: Colors.grey[300],
     );
   }
 
