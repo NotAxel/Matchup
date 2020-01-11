@@ -22,7 +22,7 @@ class _ChatPageState extends State<ChatPage> {
 
   @override
   void initState() {
-    Firestore.instance.collection("Users").document(widget.userId).updateData({'chattingWith': widget.peerId});
+    //Firestore.instance.collection("Users").document(widget.userId).updateData({'chattingWith': widget.peerId});
     Firestore.instance.collection("Chats").document(widget.chatId).
       collection(widget.chatId).document(DateTime.now().millisecondsSinceEpoch.toString()).setData({'contents': "Hello"});
     super.initState();
