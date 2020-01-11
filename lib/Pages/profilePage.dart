@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:matchup/Pages/homepage.dart';
+import 'package:matchup/bizlogic/User.dart';
 import 'package:matchup/bizlogic/authentication.dart';
 
 class ProfilePage extends StatefulWidget {
@@ -18,14 +19,15 @@ class ProfilePageState extends State<ProfilePage> with SingleTickerProviderState
 
   Widget showLogOutButton(VoidCallback logoutCallback){
     return new Padding(
-        padding: EdgeInsets.fromLTRB(20.0, 45.0, 20.0, 0.0),
+        padding: EdgeInsets.fromLTRB(115.0, 10.0, 115.0, 0.0),
         child: SizedBox(
           height: 40.0,
+          width: 100,
           child: new RaisedButton(
             elevation: 5.0,
             shape: new RoundedRectangleBorder(
                 borderRadius: new BorderRadius.circular(30.0)),
-            color: Colors.deepOrange,
+            color: Colors.blueAccent,
             child: new Text('Logout',
                 style: new TextStyle(fontSize: 20.0, color: Colors.white)),
             onPressed: logoutCallback 
@@ -49,23 +51,23 @@ class ProfilePageState extends State<ProfilePage> with SingleTickerProviderState
 
   @override
   Widget build(BuildContext context) {
+    final User _user = HomePageProvider.of(context).user;
     final VoidCallback logoutCallback = HomePageProvider.of(context).logoutCallback;
-    return Scaffold(
-          body: Stack(
-          children: <Widget>[
-            _showForm(logoutCallback)
-            /*
+    return Column(
+          children: [
             Text(''),
+            Container(height: 50),
+            Text(_user.getUserName, style: profStyle),
             //Should get username from firebase
-            Text('Username', style: profStyle),
             Text(''),
             //Should get profile pic from firebase
-            Image.asset('assets/images/default_profile.jpg', height: 300),
-            Text(''),
+            Center(child: Image.asset('assets/images/default_profile.jpg', height: 300)),
+            Container(height: 50),
             //Should get mains from firebase
+//            Text(_user.getMain, style: profStyle),
             Text('Ness, King K', style: profStyle),
-            */
-          ],
-        ));
+            _showForm(logoutCallback),
+            ]
+        );
   }
 }
