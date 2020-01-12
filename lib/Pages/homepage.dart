@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:matchup/bizlogic/User.dart';
 import '../bizlogic/authentication.dart';
-import './friendPage.dart' as friendp;
 import './profilePage.dart' as profilep;
 import './messagePage.dart' as messagep;
 import './matchPage.dart' as matchp;
@@ -42,7 +41,7 @@ class HomePageProvider extends InheritedWidget{
 
 class HomePageState extends State<HomePage> with SingleTickerProviderStateMixin {
   TabController controller;
-  User _user = null;
+  User _user;
 
   @override
   void initState() {
