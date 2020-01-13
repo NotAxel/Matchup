@@ -1,6 +1,6 @@
+import 'package:test/test.dart';
 import 'package:matchup/bizlogic/emailValidator.dart';
 import 'package:matchup/bizlogic/passwordValidator.dart';
-import 'package:test/test.dart';
 import 'package:matchup/bizlogic/validator.dart';
 
 void main(){
@@ -25,7 +25,7 @@ void main(){
     expect(actual, expectedErrorMessage);
   });
 
-  test('empty email returns error message', (){
+  test('null email returns error message', (){
     Validator validator = EmailValidator();
     String expectedValidatorName = "EmailValidator";
     String expectedErrorMessage = "Email field cannot be empty";
@@ -34,6 +34,17 @@ void main(){
     
     String actual = validator.validate(null);
     expect(actual, expectedErrorMessage);
+  });
+
+  test('save properly trims email', (){
+    Validator validator = EmailValidator();
+    String expectedValidatorName = "EmailValidator";
+    String expectedEmail = "foo@gmail.com";
+
+    expect(validator.getValidatorName(), expectedValidatorName);
+
+    String actual = validator.save("   foo@gmail.com  ");
+    expect(actual, expectedEmail);
   });
 
   test('valid password returns null', (){
@@ -67,5 +78,4 @@ void main(){
     String actual = validator.validate(null);
     expect(actual, expectedErrorMessage);
   });
-
 }

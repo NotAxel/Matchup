@@ -12,4 +12,8 @@ class PasswordValidator implements Validator{
     }
     return data.isEmpty ? "Password field cannot be empty" : null;
   }
+
+  String save(String data){
+    return data.trim();
+  }
 }

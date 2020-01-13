@@ -211,7 +211,7 @@ class _ChatPageState extends State<ChatPage> {
             style: TextStyle(color: Colors.black),
           ),
           padding: EdgeInsets.fromLTRB(15.0, 10.0, 15.0, 10.0),
-          width: 200.0,
+          width: 175.0,
           decoration: BoxDecoration(
               color: Colors.grey[300],
               borderRadius: BorderRadius.circular(8.0)),

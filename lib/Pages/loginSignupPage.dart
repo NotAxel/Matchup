@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:matchup/bizlogic/authentication.dart';
+import 'package:matchup/bizlogic/emailValidator.dart';
+import 'package:matchup/bizlogic/passwordValidator.dart';
+import 'package:matchup/bizlogic/validator.dart';
 import 'userInfoEntryPage.dart';
 import 'homepage.dart';
 
@@ -83,6 +86,7 @@ class _LogInSignupPageState extends State<LogInSignupPage> {
   }
 
   Widget showEmailField(){
+    Validator emailValidator = EmailValidator();
     return Padding(
       padding: EdgeInsets.fromLTRB(0.0, 250.0, 10.0, 0.0),
       child: new TextFormField(
@@ -97,13 +101,14 @@ class _LogInSignupPageState extends State<LogInSignupPage> {
               icon: new Icon(Icons.mail, 
               color: Colors.blueGrey,
               )),
-          validator: (value) => value.isEmpty ? 'Email can\'t be empty' : null,
-          onSaved: (value) => _email = value.trim(),
+          validator: (value) => emailValidator.validate(value),
+          onSaved: (value) => _email = emailValidator.save(value),
       ),
     );
   } 
 
   Widget showPasswordField(){
+    Validator passwordValidator = PasswordValidator();
     return Padding(
       padding: EdgeInsets.fromLTRB(0.0, 15.0, 10.0, 0.0),
       child: new TextFormField(
@@ -118,8 +123,8 @@ class _LogInSignupPageState extends State<LogInSignupPage> {
               icon: new Icon(Icons.lock,
               color: Colors.blueGrey
               )),
-          validator: (value) => value.isEmpty ? 'Password can\'t be empty' : null,
-          onSaved: (value) => _password = value.trim(),
+          validator: (value) => passwordValidator.validate(value),
+          onSaved: (value) => _password = passwordValidator.save(value),
       ),
     );
   }

@@ -11,4 +11,8 @@ class EmailValidator implements Validator{
     }
     return data.isEmpty ? "Email field cannot be empty" : null;
   }
+
+  String save(String data){
+    return data.trim();
+  }
 }
