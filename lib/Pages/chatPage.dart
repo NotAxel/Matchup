@@ -192,7 +192,7 @@ class _ChatPageState extends State<ChatPage> {
             style: TextStyle(color: Colors.white),
           ),
           padding: EdgeInsets.fromLTRB(15.0, 10.0, 15.0, 10.0),
-          width: 200.0,
+          width: 175.0,
           decoration: BoxDecoration(
               color: Colors.blue[400],
               borderRadius: BorderRadius.circular(8.0)),
