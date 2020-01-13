@@ -47,6 +47,7 @@ class _ChatPageState extends State<ChatPage> {
           mainAxisSize: MainAxisSize.max,
           mainAxisAlignment: MainAxisAlignment.end,
           children: <Widget>[
+            showIds(),
             buildMessageList(context),
             buildMessageContainer(context)
           ],
@@ -83,23 +84,25 @@ class _ChatPageState extends State<ChatPage> {
 
   Widget buildMessageInput(BuildContext context){
     return Flexible(
-      child: TextField(
-      controller: messageController,
-      minLines: 1,
-      maxLines: 5,
-      keyboardType: TextInputType.multiline,
-      //textInputAction: TextInputAction.done,
-      decoration: InputDecoration.collapsed(
-        hintText: 'Send a message...',
+        child: TextField(
+        controller: messageController,
+        minLines: 1,
+        maxLines: 5,
+        keyboardType: TextInputType.multiline,
+        //textInputAction: TextInputAction.done,
+        decoration: InputDecoration.collapsed(
+          hintText: 'Send a message...',
+        ),
+        focusNode: focusNode,
+        onSubmitted: (messageContents) {
+        },
       ),
-      focusNode: focusNode,
-      onSubmitted: (messageContents) {
-      },
-    ));
+      flex: 1,
+    );
   }
 
   Widget buildMessageList(BuildContext context){
-    return Flexible(
+    return Expanded(
       child: StreamBuilder(
         stream: Firestore.instance
             .collection("Chats")
@@ -128,7 +131,7 @@ class _ChatPageState extends State<ChatPage> {
           }
         },
       ),
-      flex: 2
+      flex: 3
     );
   }
 
