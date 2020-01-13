@@ -5,8 +5,8 @@ class PasswordValidator implements Validator{
     return "PasswordValidator";
   }
 
+  // TODO: implement a stronger password requirement algorithm
   String validate(String data) {
-    // TODO: implement validate
-    return null;
+    return data.isEmpty ? "Password field cannot be empty" : null;
   }
 }

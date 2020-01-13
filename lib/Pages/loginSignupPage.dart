@@ -31,7 +31,7 @@ class LoginSignupProvider extends InheritedWidget{
   // by using this function to add the call back to the context in the tabstate build,
   // should be able to ref the call back in a tab class
   static LoginSignupProvider of(BuildContext context) =>
-    context.inheritFromWidgetOfExactType(LoginSignupProvider);
+  context.dependOnInheritedWidgetOfExactType<LoginSignupProvider>();
 }
 
 class _LogInSignupPageState extends State<LogInSignupPage> {

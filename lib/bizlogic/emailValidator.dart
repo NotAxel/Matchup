@@ -6,10 +6,6 @@ class EmailValidator implements Validator{
   }
 
   String validate(String data) {
-    if (data.isEmpty){
-      return "Email field cannot be empty";
-    }
-    return null;
-
+    return data.isEmpty ? "Email field cannot be empty" : null;
   }
 }

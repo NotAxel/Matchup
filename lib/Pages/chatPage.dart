@@ -22,7 +22,7 @@ class _ChatPageState extends State<ChatPage> {
   final ScrollController listScrollController = new ScrollController();
   final FocusNode focusNode = new FocusNode();
 
-  final _formKey = new GlobalKey<FormState>();
+  //final _formKey = new GlobalKey<FormState>();
 
   Message _message;
   var listMessage;

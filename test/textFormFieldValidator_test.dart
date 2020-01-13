@@ -5,7 +5,7 @@ import 'package:matchup/bizlogic/validatorFactory.dart';
 void main(){
   test('valid email returns null', (){
     ValidatorFactory validatorFactory = new ValidatorFactory();
-    Validator validator =  validatorFactory.CreateInstance("email");
+    Validator validator =  validatorFactory.createInstance("email");
     String expectedValidatorName = "EmailValidator";
 
     expect(validator.getValidatorName(), expectedValidatorName);
