@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:matchup/bizlogic/authProvider.dart';
 import 'package:matchup/bizlogic/authentication.dart';
 import 'homepage.dart';
 import 'loginSignupPage.dart';
@@ -10,23 +11,19 @@ LOGGED_IN,
 }
 
 class RootPage extends StatefulWidget{
-  RootPage({this.auth});
-  final BaseAuth auth;
   @override
-  State<StatefulWidget> createState() {
-    return _RootPageState();
-  }
-
+  State<StatefulWidget> createState() => _RootPageState();
 }
 
 class _RootPageState extends State<RootPage>{
-  AuthStatus authStatus = AuthStatus.NOT_LOGGED_IN;
+  AuthStatus authStatus = AuthStatus.NOT_DETERMINED;
   String _userId = "";
 
   @override
-  void initState() {
-    super.initState();
-    widget.auth.getCurrentUser().then((user) {
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final BaseAuth auth = AuthProvider.of(context).auth;
+    auth.getCurrentUser().then((user) {
       setState(() {
         if (user != null) {
           _userId = user?.uid;
@@ -38,7 +35,8 @@ class _RootPageState extends State<RootPage>{
   }
 
   void loginCallback() {
-    widget.auth.getCurrentUser().then((user) {
+    final BaseAuth auth = AuthProvider.of(context).auth;
+    auth.getCurrentUser().then((user) {
       setState(() {
         _userId = user.uid.toString();
       });
@@ -76,7 +74,8 @@ class _RootPageState extends State<RootPage>{
         break;
       case AuthStatus.NOT_LOGGED_IN:
         return new LogInSignupPage(
-          auth: widget.auth,
+          userId: _userId,
+          auth: AuthProvider.of(context).auth,
           loginCallback: loginCallback,
           logoutCallback: logoutCallback,
         );
@@ -85,7 +84,7 @@ class _RootPageState extends State<RootPage>{
         if (_userId.length > 0 && _userId != null) {
           return new HomePage(
             userId: _userId,
-            auth: widget.auth,
+            auth: AuthProvider.of(context).auth,
             logoutCallback: logoutCallback,
           );
         } else

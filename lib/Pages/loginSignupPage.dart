@@ -18,25 +18,6 @@ class LogInSignupPage extends StatefulWidget {
   _LogInSignupPageState createState() => _LogInSignupPageState(auth: auth);
 }
 
-class LoginSignupProvider extends InheritedWidget{
-  final BaseAuth auth;
-  final VoidCallback loginCallback;
-  final VoidCallback logoutCallback;
-  final Widget child;
-
-  LoginSignupProvider(this.auth, this.loginCallback, this.logoutCallback, this.child);
-
-  @override
-  bool updateShouldNotify(InheritedWidget oldWidget) {
-    return true;
-  }
-  
-  // by using this function to add the call back to the context in the tabstate build,
-  // should be able to ref the call back in a tab class
-  static LoginSignupProvider of(BuildContext context) =>
-  context.dependOnInheritedWidgetOfExactType<LoginSignupProvider>();
-}
-
 class _LogInSignupPageState extends State<LogInSignupPage> {
   final BaseAuth auth;
   _LogInSignupPageState({this.auth});
@@ -135,6 +116,7 @@ class _LogInSignupPageState extends State<LogInSignupPage> {
         child: SizedBox(
           height: 40.0,
           child: new RaisedButton(
+            key: Key('Login'),
             elevation: 5.0,
             shape: new RoundedRectangleBorder(
                 borderRadius: new BorderRadius.circular(30.0)),
@@ -212,10 +194,11 @@ class _LogInSignupPageState extends State<LogInSignupPage> {
         }
         // successfully logged in and heading to user info entry page
         else if (_isLoginForm == false){
-          // return new user info entry
+          // push a home page first 
           Navigator.push(context,
           MaterialPageRoute(builder: (context) => HomePage(userId: userId, auth: auth, logoutCallback: widget.logoutCallback))
           );
+          // push a info entry page second so that once the form is completed, info entry is popped to the homepage
           Navigator.push(context,
           MaterialPageRoute(builder: (context) => UserInfoEntryPage(userId: userId, auth: auth, logoutCallback: widget.logoutCallback))
           );
@@ -233,13 +216,7 @@ class _LogInSignupPageState extends State<LogInSignupPage> {
   }
 
   Widget _showLogInForm() {
-    return 
-    /*LoginSignupProvider(
-     widget.auth,
-     widget.loginCallback,
-     widget.logoutCallback,
-     */
-     new Container(
+     return Container(
         padding: EdgeInsets.all(16.0),
         child: new Form(
           key: _formKey,
@@ -255,6 +232,5 @@ class _LogInSignupPageState extends State<LogInSignupPage> {
             ],
           ),
         ));
-   // );
   }
 }

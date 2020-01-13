@@ -29,9 +29,9 @@ class _ChatPageState extends State<ChatPage> {
 
   @override
   void initState() {
-    // simulates how the message class will be used to communicate and send data to the firebase
-    _message = new Message("", widget.peerId, widget.userId);
     super.initState();
+    // messages are from to the peer from the user
+    _message = new Message("", widget.peerId, widget.userId);
   }
 
   // idea for messaging structure from flutter community guide
@@ -49,7 +49,7 @@ class _ChatPageState extends State<ChatPage> {
           children: <Widget>[
             showIds(),
             buildMessageList(context),
-            buildMessageContainer(context)
+            buildMessageInputContainer(context)
           ],
         ),
         onTap: (){
@@ -59,46 +59,12 @@ class _ChatPageState extends State<ChatPage> {
     );
   }
 
-  Widget buildMessageContainer(BuildContext context){
-    return Container(
-      child: Row(
-        children: <Widget>[
-          buildMessageInput(context),
-          buildSendButton(),
-        ],),
-      padding: EdgeInsets.fromLTRB(20, 10, 0, 10),
-      decoration: new BoxDecoration(
-        border: new Border(top: new BorderSide(color: Colors.grey[100], width: 0.5)),
-        color: Colors.grey[300]
-      ),
-    );
-  }
-
   Widget showIds(){
     return Text("USER ID:" +
         widget.userId.toString() +
         "\n" +
         "PEER ID:" +
         widget.peerId.toString());
-  }
-
-  Widget buildMessageInput(BuildContext context){
-    return Flexible(
-        child: TextField(
-        controller: messageController,
-        minLines: 1,
-        maxLines: 5,
-        keyboardType: TextInputType.multiline,
-        //textInputAction: TextInputAction.done,
-        decoration: InputDecoration.collapsed(
-          hintText: 'Send a message...',
-        ),
-        focusNode: focusNode,
-        onSubmitted: (messageContents) {
-        },
-      ),
-      flex: 1,
-    );
   }
 
   Widget buildMessageList(BuildContext context){
@@ -133,47 +99,6 @@ class _ChatPageState extends State<ChatPage> {
       ),
       flex: 3
     );
-  }
-
-  Widget buildSendButton(){
-    return Material(
-      child: IconButton(
-        color: Colors.lightBlue,
-        onPressed: (){
-          _message.setContent = messageController.text;
-          sendMessage();
-          messageController.clear();
-        },
-        icon: Icon(
-          Icons.send
-        )
-      ),
-      color: Colors.grey[300],
-    );
-  }
-
-  // receives a message with updated contents when the chat box is submitted
-  // creates a message document using a time stamp to ensure uniqueness in the given chatId
-  void sendMessage() {
-    if (_message.getContent != "") {
-      DocumentReference messageReference = Firestore.instance
-          .collection("Chats")
-          .document(widget.chatId)
-          .collection(widget.chatId)
-          .document(DateTime.now().millisecondsSinceEpoch.toString());
-
-      // this method allows for an asyncrhonous write to occur without the whole function being async
-      Firestore.instance.runTransaction((transaction) async {
-        await transaction.set(messageReference, {
-          'content': _message.getContent,
-          'toId': _message.getToId,
-          'fromId': _message.getFromId,
-          'timeStamp': _message.getTimeStamp
-        });
-      });
-      listScrollController.animateTo(0.0,
-          duration: Duration(milliseconds: 300), curve: Curves.easeOut);
-    }
   }
 
   // building messages
@@ -241,6 +166,83 @@ class _ChatPageState extends State<ChatPage> {
       return true;
     } else {
       return false;
+    }
+  }
+
+  // container that holds send message button and message input field 
+  Widget buildMessageInputContainer(BuildContext context){
+    return Container(
+      child: Row(
+        children: <Widget>[
+          buildMessageInput(context),
+          buildSendButton(),
+        ],),
+      padding: EdgeInsets.fromLTRB(20, 10, 0, 10),
+      decoration: new BoxDecoration(
+        border: new Border(top: new BorderSide(color: Colors.grey[100], width: 0.5)),
+        color: Colors.grey[300]
+      ),
+    );
+  }
+
+  Widget buildMessageInput(BuildContext context){
+    return Flexible(
+        child: TextField(
+        controller: messageController,
+        minLines: 1,
+        maxLines: 5,
+        keyboardType: TextInputType.multiline,
+        //textInputAction: TextInputAction.done,
+        decoration: InputDecoration.collapsed(
+          hintText: 'Send a message...',
+        ),
+        focusNode: focusNode,
+        onSubmitted: (messageContents) {
+        },
+      ),
+      flex: 1,
+    );
+  }
+
+
+  Widget buildSendButton(){
+    return Material(
+      child: IconButton(
+        color: Colors.lightBlue,
+        onPressed: (){
+          _message.setContent = messageController.text;
+          sendMessage();
+          messageController.clear();
+        },
+        icon: Icon(
+          Icons.send
+        )
+      ),
+      color: Colors.grey[300],
+    );
+  }
+
+  // receives a message with updated contents when the chat box is submitted
+  // creates a message document using a time stamp to ensure uniqueness in the given chatId
+  void sendMessage() {
+    if (_message.getContent != "") {
+      DocumentReference messageReference = Firestore.instance
+          .collection("Chats")
+          .document(widget.chatId)
+          .collection(widget.chatId)
+          .document(DateTime.now().millisecondsSinceEpoch.toString());
+
+      // this method allows for an asyncrhonous write to occur without the whole function being async
+      Firestore.instance.runTransaction((transaction) async {
+        await transaction.set(messageReference, {
+          'content': _message.getContent,
+          'toId': _message.getToId,
+          'fromId': _message.getFromId,
+          'timeStamp': _message.getTimeStamp
+        });
+      });
+      listScrollController.animateTo(0.0,
+          duration: Duration(milliseconds: 300), curve: Curves.easeOut);
     }
   }
 }
