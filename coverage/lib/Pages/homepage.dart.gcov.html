@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2020-01-11 22:15:03</td>
+            <td class="headerValue">2020-01-13 00:12:56</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">0</td>
@@ -97,66 +97,66 @@
 <a name="35"><span class="lineNum">      35 </span>            :   // by using this function to add the call back to the context in the tabstate build,</a>
 <a name="36"><span class="lineNum">      36 </span>            :   // should be able to ref the call back in a tab class</a>
 <a name="37"><span class="lineNum">      37 </span><span class="lineNoCov">          0 :   static HomePageProvider of(BuildContext context) =&gt;</span></a>
-<a name="38"><span class="lineNum">      38 </span><span class="lineNoCov">          0 :     context.inheritFromWidgetOfExactType(HomePageProvider);</span></a>
-<a name="39"><span class="lineNum">      39 </span>            : </a>
-<a name="40"><span class="lineNum">      40 </span>            : }</a>
-<a name="41"><span class="lineNum">      41 </span>            : </a>
-<a name="42"><span class="lineNum">      42 </span>            : class HomePageState extends State&lt;HomePage&gt; with SingleTickerProviderStateMixin {</a>
-<a name="43"><span class="lineNum">      43 </span>            :   TabController controller;</a>
-<a name="44"><span class="lineNum">      44 </span>            :   User _user;</a>
-<a name="45"><span class="lineNum">      45 </span>            : </a>
-<a name="46"><span class="lineNum">      46 </span><span class="lineNoCov">          0 :   @override</span></a>
-<a name="47"><span class="lineNum">      47 </span>            :   void initState() {</a>
-<a name="48"><span class="lineNum">      48 </span><span class="lineNoCov">          0 :     _user = User.instance;</span></a>
-<a name="49"><span class="lineNum">      49 </span><span class="lineNoCov">          0 :     _user.setUserId = widget.userId;</span></a>
-<a name="50"><span class="lineNum">      50 </span><span class="lineNoCov">          0 :     initializeUserInformation(_user);</span></a>
-<a name="51"><span class="lineNum">      51 </span><span class="lineNoCov">          0 :         super.initState();</span></a>
-<a name="52"><span class="lineNum">      52 </span><span class="lineNoCov">          0 :         controller = new TabController(vsync: this, length: 3);</span></a>
-<a name="53"><span class="lineNum">      53 </span>            :       }</a>
-<a name="54"><span class="lineNum">      54 </span>            :     </a>
-<a name="55"><span class="lineNum">      55 </span><span class="lineNoCov">          0 :       @override </span></a>
-<a name="56"><span class="lineNum">      56 </span>            :       void dispose() {</a>
-<a name="57"><span class="lineNum">      57 </span><span class="lineNoCov">          0 :         controller.dispose();</span></a>
-<a name="58"><span class="lineNum">      58 </span><span class="lineNoCov">          0 :         super.dispose();</span></a>
-<a name="59"><span class="lineNum">      59 </span>            :       }</a>
-<a name="60"><span class="lineNum">      60 </span>            :     </a>
-<a name="61"><span class="lineNum">      61 </span><span class="lineNoCov">          0 :       @override</span></a>
-<a name="62"><span class="lineNum">      62 </span>            :       Widget build(BuildContext context) {</a>
-<a name="63"><span class="lineNum">      63 </span><span class="lineNoCov">          0 :         return new HomePageProvider(</span></a>
-<a name="64"><span class="lineNum">      64 </span><span class="lineNoCov">          0 :           _user,</span></a>
-<a name="65"><span class="lineNum">      65 </span><span class="lineNoCov">          0 :           widget.auth,</span></a>
-<a name="66"><span class="lineNum">      66 </span><span class="lineNoCov">          0 :           widget.logoutCallback,</span></a>
-<a name="67"><span class="lineNum">      67 </span><span class="lineNoCov">          0 :           Scaffold( bottomNavigationBar: new Material(</span></a>
-<a name="68"><span class="lineNum">      68 </span>            :             color: Colors.blue,</a>
-<a name="69"><span class="lineNum">      69 </span>            :             child: </a>
-<a name="70"><span class="lineNum">      70 </span><span class="lineNoCov">          0 :               TabBar(</span></a>
-<a name="71"><span class="lineNum">      71 </span><span class="lineNoCov">          0 :               controller: controller,</span></a>
-<a name="72"><span class="lineNum">      72 </span><span class="lineNoCov">          0 :               tabs: &lt;Tab&gt;[</span></a>
-<a name="73"><span class="lineNum">      73 </span><span class="lineNoCov">          0 :                 new Tab(icon: new Icon(Icons.face)),</span></a>
-<a name="74"><span class="lineNum">      74 </span><span class="lineNoCov">          0 :                 new Tab(icon: new Icon(Icons.pie_chart)),</span></a>
-<a name="75"><span class="lineNum">      75 </span><span class="lineNoCov">          0 :                 new Tab(icon: new Icon(Icons.chat)),</span></a>
-<a name="76"><span class="lineNum">      76 </span>            :               ]</a>
-<a name="77"><span class="lineNum">      77 </span>            :             ),</a>
-<a name="78"><span class="lineNum">      78 </span>            :           ),</a>
-<a name="79"><span class="lineNum">      79 </span><span class="lineNoCov">          0 :           body: new TabBarView(</span></a>
-<a name="80"><span class="lineNum">      80 </span><span class="lineNoCov">          0 :             controller: controller,</span></a>
-<a name="81"><span class="lineNum">      81 </span><span class="lineNoCov">          0 :             children: &lt;Widget&gt;[</span></a>
-<a name="82"><span class="lineNum">      82 </span><span class="lineNoCov">          0 :               new profilep.ProfilePage(),</span></a>
-<a name="83"><span class="lineNum">      83 </span><span class="lineNoCov">          0 :               new matchp.MatchPage(),</span></a>
-<a name="84"><span class="lineNum">      84 </span><span class="lineNoCov">          0 :               new messagep.MessagePage(),</span></a>
-<a name="85"><span class="lineNum">      85 </span>            :             ]</a>
-<a name="86"><span class="lineNum">      86 </span>            :           ))</a>
-<a name="87"><span class="lineNum">      87 </span>            :         );</a>
-<a name="88"><span class="lineNum">      88 </span>            :           /*</a>
-<a name="89"><span class="lineNum">      89 </span>            :           appBar: new AppBar(</a>
-<a name="90"><span class="lineNum">      90 </span>            :             actions: &lt;Widget&gt;[</a>
-<a name="91"><span class="lineNum">      91 </span>            :               _showForm(),</a>
-<a name="92"><span class="lineNum">      92 </span>            :           ],),</a>
-<a name="93"><span class="lineNum">      93 </span>            :           */</a>
-<a name="94"><span class="lineNum">      94 </span>            :           </a>
-<a name="95"><span class="lineNum">      95 </span>            :         </a>
-<a name="96"><span class="lineNum">      96 </span>            :       }</a>
-<a name="97"><span class="lineNum">      97 </span>            :     </a>
+<a name="38"><span class="lineNum">      38 </span><span class="lineNoCov">          0 :     context.dependOnInheritedWidgetOfExactType&lt;HomePageProvider&gt;();</span></a>
+<a name="39"><span class="lineNum">      39 </span>            :   }</a>
+<a name="40"><span class="lineNum">      40 </span>            : </a>
+<a name="41"><span class="lineNum">      41 </span>            : class HomePageState extends State&lt;HomePage&gt; with SingleTickerProviderStateMixin {</a>
+<a name="42"><span class="lineNum">      42 </span>            :   TabController controller;</a>
+<a name="43"><span class="lineNum">      43 </span>            :   User _user;</a>
+<a name="44"><span class="lineNum">      44 </span>            : </a>
+<a name="45"><span class="lineNum">      45 </span><span class="lineNoCov">          0 :   @override</span></a>
+<a name="46"><span class="lineNum">      46 </span>            :   void initState() {</a>
+<a name="47"><span class="lineNum">      47 </span><span class="lineNoCov">          0 :     _user = User.instance;</span></a>
+<a name="48"><span class="lineNum">      48 </span><span class="lineNoCov">          0 :     _user.setUserId = widget.userId;</span></a>
+<a name="49"><span class="lineNum">      49 </span><span class="lineNoCov">          0 :     initializeUserInformation(_user);</span></a>
+<a name="50"><span class="lineNum">      50 </span><span class="lineNoCov">          0 :         super.initState();</span></a>
+<a name="51"><span class="lineNum">      51 </span><span class="lineNoCov">          0 :         controller = new TabController(vsync: this, length: 3);</span></a>
+<a name="52"><span class="lineNum">      52 </span>            :       }</a>
+<a name="53"><span class="lineNum">      53 </span>            :     </a>
+<a name="54"><span class="lineNum">      54 </span><span class="lineNoCov">          0 :       @override </span></a>
+<a name="55"><span class="lineNum">      55 </span>            :       void dispose() {</a>
+<a name="56"><span class="lineNum">      56 </span><span class="lineNoCov">          0 :         controller.dispose();</span></a>
+<a name="57"><span class="lineNum">      57 </span><span class="lineNoCov">          0 :         super.dispose();</span></a>
+<a name="58"><span class="lineNum">      58 </span>            :       }</a>
+<a name="59"><span class="lineNum">      59 </span>            :     </a>
+<a name="60"><span class="lineNum">      60 </span><span class="lineNoCov">          0 :       @override</span></a>
+<a name="61"><span class="lineNum">      61 </span>            :       Widget build(BuildContext context) {</a>
+<a name="62"><span class="lineNum">      62 </span><span class="lineNoCov">          0 :         return new HomePageProvider(</span></a>
+<a name="63"><span class="lineNum">      63 </span><span class="lineNoCov">          0 :           _user,</span></a>
+<a name="64"><span class="lineNum">      64 </span><span class="lineNoCov">          0 :           widget.auth,</span></a>
+<a name="65"><span class="lineNum">      65 </span><span class="lineNoCov">          0 :           widget.logoutCallback,</span></a>
+<a name="66"><span class="lineNum">      66 </span><span class="lineNoCov">          0 :           Scaffold( bottomNavigationBar: new Material(</span></a>
+<a name="67"><span class="lineNum">      67 </span>            :             color: Colors.blue,</a>
+<a name="68"><span class="lineNum">      68 </span>            :             child: </a>
+<a name="69"><span class="lineNum">      69 </span><span class="lineNoCov">          0 :               TabBar(</span></a>
+<a name="70"><span class="lineNum">      70 </span><span class="lineNoCov">          0 :               controller: controller,</span></a>
+<a name="71"><span class="lineNum">      71 </span><span class="lineNoCov">          0 :               tabs: &lt;Tab&gt;[</span></a>
+<a name="72"><span class="lineNum">      72 </span><span class="lineNoCov">          0 :                 new Tab(icon: new Icon(Icons.face)),</span></a>
+<a name="73"><span class="lineNum">      73 </span><span class="lineNoCov">          0 :                 new Tab(icon: new Icon(Icons.pie_chart)),</span></a>
+<a name="74"><span class="lineNum">      74 </span><span class="lineNoCov">          0 :                 new Tab(icon: new Icon(Icons.chat)),</span></a>
+<a name="75"><span class="lineNum">      75 </span>            :               ]</a>
+<a name="76"><span class="lineNum">      76 </span>            :             ),</a>
+<a name="77"><span class="lineNum">      77 </span>            :           ),</a>
+<a name="78"><span class="lineNum">      78 </span><span class="lineNoCov">          0 :           body: new TabBarView(</span></a>
+<a name="79"><span class="lineNum">      79 </span><span class="lineNoCov">          0 :             controller: controller,</span></a>
+<a name="80"><span class="lineNum">      80 </span><span class="lineNoCov">          0 :             children: &lt;Widget&gt;[</span></a>
+<a name="81"><span class="lineNum">      81 </span><span class="lineNoCov">          0 :               new profilep.ProfilePage(),</span></a>
+<a name="82"><span class="lineNum">      82 </span><span class="lineNoCov">          0 :               new matchp.MatchPage(),</span></a>
+<a name="83"><span class="lineNum">      83 </span><span class="lineNoCov">          0 :               new messagep.MessagePage(),</span></a>
+<a name="84"><span class="lineNum">      84 </span>            :             ]</a>
+<a name="85"><span class="lineNum">      85 </span>            :           ))</a>
+<a name="86"><span class="lineNum">      86 </span>            :         );</a>
+<a name="87"><span class="lineNum">      87 </span>            :           /*</a>
+<a name="88"><span class="lineNum">      88 </span>            :           appBar: new AppBar(</a>
+<a name="89"><span class="lineNum">      89 </span>            :             actions: &lt;Widget&gt;[</a>
+<a name="90"><span class="lineNum">      90 </span>            :               _showForm(),</a>
+<a name="91"><span class="lineNum">      91 </span>            :           ],),</a>
+<a name="92"><span class="lineNum">      92 </span>            :           */</a>
+<a name="93"><span class="lineNum">      93 </span>            :           </a>
+<a name="94"><span class="lineNum">      94 </span>            :         </a>
+<a name="95"><span class="lineNum">      95 </span>            :       }</a>
+<a name="96"><span class="lineNum">      96 </span>            :     </a>
+<a name="97"><span class="lineNum">      97 </span>            :       // TODO: @Brendan</a>
 <a name="98"><span class="lineNum">      98 </span><span class="lineNoCov">          0 :       void initializeUserInformation(User user) async{</span></a>
 <a name="99"><span class="lineNum">      99 </span><span class="lineNoCov">          0 :         DocumentReference userReference = Firestore.instance.collection('Users').document(user.getUserId);</span></a>
 <a name="100"><span class="lineNum">     100 </span><span class="lineNoCov">          0 :         DocumentSnapshot userData = await userReference.get();</span></a>
