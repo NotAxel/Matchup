@@ -7,6 +7,7 @@ import './friendPage.dart' as friendp;
 import './profilePage.dart' as profilep;
 import './messagePage.dart' as messagep;
 import './matchPage.dart' as matchp;
+import './friendsListPage.dart' as freindsLp;
 
 class HomePage extends StatefulWidget{
   final String userId;
@@ -50,7 +51,7 @@ class HomePageState extends State<HomePage> with SingleTickerProviderStateMixin 
     _user.setUserId = widget.userId;
     initializeUserInformation(_user);
         super.initState();
-        controller = new TabController(vsync: this, length: 3);
+        controller = new TabController(vsync: this, length: 4);
       }
     
       @override 
@@ -74,6 +75,7 @@ class HomePageState extends State<HomePage> with SingleTickerProviderStateMixin 
                 new Tab(icon: new Icon(Icons.face)),
                 new Tab(icon: new Icon(Icons.pie_chart)),
                 new Tab(icon: new Icon(Icons.chat)),
+                new Tab(icon: new Icon(Icons.contacts)),
               ]
             ),
           ),
@@ -83,6 +85,7 @@ class HomePageState extends State<HomePage> with SingleTickerProviderStateMixin 
               new profilep.ProfilePage(),
               new matchp.MatchPage(),
               new messagep.MessagePage(),
+              new freindsLp.FreindsListPage(),
             ]
           ))
         );
