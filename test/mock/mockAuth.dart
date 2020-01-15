@@ -25,8 +25,11 @@ class MockAuth implements BaseAuth{
   }
 
   @override
-  Future<String> signIn(String email, String password) {
+  Future<String> signIn(String email, String password) async{
     _didAttemptSignIn = true;
+    if (email == "foo@gmail.com" && password == "123456"){
+      return '123456789';
+    }
     return null;
   }
 

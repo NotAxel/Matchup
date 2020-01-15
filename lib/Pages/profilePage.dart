@@ -22,6 +22,7 @@ class ProfilePageState extends State<ProfilePage> with SingleTickerProviderState
         child: SizedBox(
           height: 40.0,
           child: new RaisedButton(
+            key: Key('logout'),
             elevation: 5.0,
             shape: new RoundedRectangleBorder(
                 borderRadius: new BorderRadius.circular(30.0)),

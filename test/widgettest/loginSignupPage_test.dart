@@ -6,50 +6,99 @@
 // tree, read text, and verify that the values of widget properties are correct.
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:matchup/Pages/loginSignupPage.dart';
 import 'package:matchup/bizlogic/authProvider.dart';
 import 'package:matchup/bizlogic/authentication.dart';
-import 'package:matchup/bizlogic/emailValidator.dart';
-import 'package:matchup/bizlogic/passwordValidator.dart';
-import 'package:matchup/bizlogic/validator.dart';
 import '../mock/mockAuth.dart';
+import './assetBundle.dart';
+
+// pages that use scaffolds must be a descendant of some type of material app
+Future<Widget> makeTestableWidget(WidgetTester tester, Widget child, BaseAuth auth) async{
+  final AssetBundle assetBundle = TestAssetBundle(<String, List<String>>{
+    'assets/images/logo.png': <String>['assets/images/logo.png'],
+  });
+
+  return DefaultAssetBundle(
+    bundle: assetBundle,
+    child: AuthProvider(
+        auth: auth,
+        child: MaterialApp(
+          home: child,
+        ),
+      )
+  ,);
+}
 
 void main() {
-  // pages that use scaffolds must be a descendant of some type of material app
-  Widget makeTestableWidget(Widget child, BaseAuth auth){
-    return AuthProvider(
-      auth: auth,
-      child: MaterialApp(
-        home: child,
-      ),
-      );
-  }
+
+  // huge flutter widget testing flaw - race condition occurs when loading large assets
+  // this includes images, large json files, and text packages
+  // https://github.com/flutter/flutter/issues/22193
+  testWidgets('TEST_1', (WidgetTester tester) async {
+    // check if login call back is used
+    MockAuth mockAuth = new MockAuth();
+
+    bool didSignIn = false;
+    LogInSignupPage page = LogInSignupPage(loginCallback: () => didSignIn = true,);
+
+    String expectedEmail = 'foo@gmail.com';
+    String expectedPassword = '123456';
+
+    Key email = Key('email');
+    Key password = Key('password');
+    
+    // pump the login page
+    await tester.pumpWidget(await makeTestableWidget(tester, page, mockAuth));
+
+    // find the email field and type a valid email
+    Finder emailField = find.byKey(email);
+    await tester.enterText(emailField, expectedEmail);
+
+    // find the password field and type a valid password
+    Finder passwordField = find.byKey(password);
+    await tester.enterText(passwordField, expectedPassword);
+
+    // find the login button by its key and press it
+    await tester.tap(find.byKey(Key('login')));
+
+    // expect user to attempt to sign in
+    expect(mockAuth.getDidAttemptSignIn, true);
+
+    // the login call back was called during validate and submit in login page
+    // this means the login was successful
+    expect(didSignIn, true);
+  });
 
   // credit: https://www.youtube.com/watch?v=75i5VmTI6A0&t=16s
-  testWidgets('email or password is empty does not sign in', (WidgetTester tester) async {
+  testWidgets('TEST_2', (WidgetTester tester) async {
+    MockAuth mockAuth = new MockAuth();
+
     // check if login call back is used
     bool didSignIn = false;
     LogInSignupPage page = LogInSignupPage(loginCallback: () => didSignIn = true,);
-    MockAuth mockAuth = new MockAuth();
 
-    String email = "";
-    String password = "";
-
-    Validator emailValidator = EmailValidator();
-    Validator passwordValidator = PasswordValidator();
-    
     // pump the login page
-    await tester.pumpWidget(makeTestableWidget(page, mockAuth));
+    await tester.pumpWidget(await makeTestableWidget(tester, page, mockAuth));
+
+    Key logo = Key('logo');
+    Key password = Key('password');
+    Key email = Key('email');
+
+    Finder logoField = find.byKey(logo);
+    expect(logoField, findsOneWidget);
+
+    Finder emailField = find.byKey(email);
+    expect(emailField, findsOneWidget);
+
+    Finder passwordField = find.byKey(password);
+    expect(passwordField, findsOneWidget);
 
     // find the login button by its key and press it
-    await tester.tap(find.byKey(Key('Login')));
+    await tester.tap(find.byKey(Key('login')));
 
-    // validate, save, and sign in
-    if (emailValidator.validate(email) == null && passwordValidator.validate(password) == null){
-      mockAuth.signIn(email, password);
-    }
-
+    // email and password fields have not been filled in
     // expect user to attempt to sign in but sign in was unsuccessful
     expect(mockAuth.getDidAttemptSignIn, false);
     expect(didSignIn, false);

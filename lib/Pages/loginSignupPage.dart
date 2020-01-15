@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:matchup/bizlogic/authProvider.dart';
 import 'package:matchup/bizlogic/authentication.dart';
 import 'package:matchup/bizlogic/emailValidator.dart';
 import 'package:matchup/bizlogic/passwordValidator.dart';
@@ -8,19 +9,17 @@ import 'homepage.dart';
 
 class LogInSignupPage extends StatefulWidget {
   final String userId;
-  final BaseAuth auth;
   final VoidCallback loginCallback;
   final VoidCallback logoutCallback;
 
-  LogInSignupPage({this.userId, this.auth, this.loginCallback, this.logoutCallback});
+  LogInSignupPage({this.userId, this.loginCallback, this.logoutCallback});
   
   @override
-  _LogInSignupPageState createState() => _LogInSignupPageState(auth: auth);
+  _LogInSignupPageState createState() => _LogInSignupPageState();
 }
 
 class _LogInSignupPageState extends State<LogInSignupPage> {
-  final BaseAuth auth;
-  _LogInSignupPageState({this.auth});
+  _LogInSignupPageState();
   TextStyle style = TextStyle(fontFamily: 'Montserrat', fontSize: 20.0);
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
@@ -69,8 +68,9 @@ class _LogInSignupPageState extends State<LogInSignupPage> {
   Widget showEmailField(){
     Validator emailValidator = EmailValidator();
     return Padding(
-      padding: EdgeInsets.fromLTRB(0.0, 250.0, 10.0, 0.0),
+      padding: EdgeInsets.fromLTRB(0.0, 150.0, 10.0, 0.0),
       child: new TextFormField(
+          key: Key('email'),
           obscureText: false,
           maxLines: 1,
           style: style,
@@ -93,6 +93,7 @@ class _LogInSignupPageState extends State<LogInSignupPage> {
     return Padding(
       padding: EdgeInsets.fromLTRB(0.0, 15.0, 10.0, 0.0),
       child: new TextFormField(
+          key: Key('password'),
           maxLines: 1,
           obscureText: true,
           autofocus: false,
@@ -116,7 +117,7 @@ class _LogInSignupPageState extends State<LogInSignupPage> {
         child: SizedBox(
           height: 40.0,
           child: new RaisedButton(
-            key: Key('Login'),
+            key: Key('login'),
             elevation: 5.0,
             shape: new RoundedRectangleBorder(
                 borderRadius: new BorderRadius.circular(30.0)),
@@ -130,13 +131,21 @@ class _LogInSignupPageState extends State<LogInSignupPage> {
   
   Widget showSwitchButton(){
         return new FlatButton(
+          key: Key('switch'),
         child: new Text(
             _isLoginForm ? 'Create an account' : 'Have an account? Sign in',
             style: new TextStyle(fontSize: 18.0, fontWeight: FontWeight.w300)),
         onPressed: toggleFormMode);
   }
   Widget showLogo(){
-    return Image.asset('assets/images/logo.png');
+    return SizedBox(
+      child: Image(
+        key: Key('logo'),
+        image: AssetImage('assets/images/logo.png'),
+      ),
+      height: 200,
+      width: 400,
+    );
   }
 
   Widget showErrorMessage() {
@@ -168,6 +177,7 @@ class _LogInSignupPageState extends State<LogInSignupPage> {
 
   // Perform login or signup
   void validateAndSubmit() async {
+    final BaseAuth auth = AuthProvider.of(context).auth;
     setState(() {
       _errorMessage = "";
       _isLoading = true;
@@ -177,10 +187,11 @@ class _LogInSignupPageState extends State<LogInSignupPage> {
       String userId = "";
       try {
         if (_isLoginForm) {
-          userId = await widget.auth.signIn(_email, _password);
+          print("calling sign in function");
+          userId = await auth.signIn(_email, _password);
           print('Signed in: $userId');
         } else {
-          userId = await widget.auth.signUp(_email, _password);
+          userId = await auth.signUp(_email, _password);
           //widget.auth.sendEmailVerification();
           //_showVerifyEmailSentDialog();
           print('Signed up user: $userId');
@@ -189,7 +200,7 @@ class _LogInSignupPageState extends State<LogInSignupPage> {
           _isLoading = false;
         });
 
-        if (userId.length > 0 && userId != null && _isLoginForm) {
+        if (userId != null && userId.length > 0 && _isLoginForm) {
           widget.loginCallback();
         }
         // successfully logged in and heading to user info entry page

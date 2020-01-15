@@ -75,7 +75,6 @@ class _RootPageState extends State<RootPage>{
       case AuthStatus.NOT_LOGGED_IN:
         return new LogInSignupPage(
           userId: _userId,
-          auth: AuthProvider.of(context).auth,
           loginCallback: loginCallback,
           logoutCallback: logoutCallback,
         );
