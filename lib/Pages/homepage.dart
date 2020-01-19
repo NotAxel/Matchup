@@ -46,58 +46,64 @@ class HomePageState extends State<HomePage> with SingleTickerProviderStateMixin 
   void initState() {
     _user = User.instance;
     _user.setUserId = widget.userId;
-    initializeUserInformation(_user);
-        super.initState();
-        controller = new TabController(vsync: this, length: 3);
-      }
+    super.initState();
+    controller = new TabController(vsync: this, length: 3);
+  }
     
-      @override 
-      void dispose() {
-        controller.dispose();
-        super.dispose();
-      }
-    
-      @override
-      Widget build(BuildContext context) {
-        return new HomePageProvider(
-          _user,
-          widget.auth,
-          widget.logoutCallback,
-          Scaffold( bottomNavigationBar: new Material(
-            color: Colors.blue,
-            child: 
-              TabBar(
-              controller: controller,
-              tabs: <Tab>[
-                new Tab(icon: new Icon(Icons.face)),
-                new Tab(icon: new Icon(Icons.pie_chart)),
-                new Tab(icon: new Icon(Icons.chat)),
-              ]
+  @override 
+  void dispose() {
+    controller.dispose();
+    super.dispose();
+  }
+
+  Widget loadingCircle(){
+    return Center(
+        child: CircularProgressIndicator(
+            valueColor: AlwaysStoppedAnimation<Color>(
+                Colors.lightBlue)));
+  }
+  
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder(
+      future: Firestore.instance.collection('Users').document(_user.getUserId).get(),
+      builder: (context, snapshot){
+        if (snapshot.connectionState == ConnectionState.done){
+          initUserData(snapshot);
+          return HomePageProvider(
+            _user,
+            widget.auth,
+            widget.logoutCallback,
+            Scaffold( bottomNavigationBar: new Material(
+              color: Colors.blue,
+              child: 
+                TabBar(
+                controller: controller,
+                tabs: <Tab>[
+                  new Tab(icon: new Icon(Icons.face)),
+                  new Tab(icon: new Icon(Icons.pie_chart)),
+                  new Tab(icon: new Icon(Icons.chat)),
+                ]
+              ),
             ),
-          ),
-          body: new TabBarView(
-            controller: controller,
-            children: <Widget>[
-              new profilep.ProfilePage(),
-              new matchp.MatchPage(),
-              new messagep.MessagePage(),
-            ]
-          ))
-        );
-          /*
-          appBar: new AppBar(
-            actions: <Widget>[
-              _showForm(),
-          ],),
-          */
-          
-        
+            body: new TabBarView(
+              controller: controller,
+              children: <Widget>[
+                new profilep.ProfilePage(),
+                new matchp.MatchPage(),
+                new messagep.MessagePage(),
+              ]
+            ))
+          );
+        }
+        else{
+          return loadingCircle();
+        }
       }
-    
-      // TODO: @Brendan
-      void initializeUserInformation(User user) async{
-        DocumentReference userReference = Firestore.instance.collection('Users').document(user.getUserId);
-        DocumentSnapshot userData = await userReference.get();
-        user.setUserName = "a";
-      }
+    );
+  }
+
+  void initUserData(AsyncSnapshot snapshot){
+    _user.setUserName = snapshot.data['Username'];
+  }
 }

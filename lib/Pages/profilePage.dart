@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:matchup/Pages/homepage.dart';
 import 'package:matchup/bizlogic/User.dart';
-import 'package:matchup/bizlogic/authentication.dart';
 
 class ProfilePage extends StatefulWidget {
-  final BaseAuth auth;
   final VoidCallback logoutCallback;
+  final User user;
 
-  ProfilePage({this.auth, this.logoutCallback});
+  ProfilePage({this.user, this.logoutCallback});
 
   @override
   ProfilePageState createState() => ProfilePageState();
