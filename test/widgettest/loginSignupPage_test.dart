@@ -36,7 +36,7 @@ void main() {
   // huge flutter widget testing flaw - race condition occurs when loading large assets
   // this includes images, large json files, and text packages
   // https://github.com/flutter/flutter/issues/22193
-  testWidgets('TEST_1', (WidgetTester tester) async {
+  testWidgets('User logs in with valid email and password', (WidgetTester tester) async {
     // check if login call back is used
     MockAuth mockAuth = new MockAuth();
 
@@ -46,11 +46,15 @@ void main() {
     String expectedEmail = 'foo@gmail.com';
     String expectedPassword = '123456';
 
+    Key logo = Key('logo');
     Key email = Key('email');
     Key password = Key('password');
     
     // pump the login page
     await tester.pumpWidget(await makeTestableWidget(tester, page, mockAuth));
+
+    Finder logoField = find.byKey(logo);
+    expect(logoField, findsOneWidget);
 
     // find the email field and type a valid email
     Finder emailField = find.byKey(email);
@@ -72,7 +76,7 @@ void main() {
   });
 
   // credit: https://www.youtube.com/watch?v=75i5VmTI6A0&t=16s
-  testWidgets('TEST_2', (WidgetTester tester) async {
+  testWidgets('User presses login without filling in email and password', (WidgetTester tester) async {
     MockAuth mockAuth = new MockAuth();
 
     // check if login call back is used
@@ -97,6 +101,15 @@ void main() {
 
     // find the login button by its key and press it
     await tester.tap(find.byKey(Key('login')));
+
+    // email and password fields should show error messages since they are empty
+    // these messages are animated
+    await tester.pumpAndSettle();
+    Finder emailErrorMessage = find.text("Email field cannot be empty");
+    Finder passwordErrorMessage = find.text("Password field cannot be empty");
+    expect(emailErrorMessage, findsOneWidget);
+    expect(passwordErrorMessage, findsOneWidget);
+
 
     // email and password fields have not been filled in
     // expect user to attempt to sign in but sign in was unsuccessful
