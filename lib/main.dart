@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:matchup/bizlogic/authProvider.dart';
 import 'Pages/rootPage.dart';
 import 'bizlogic/authentication.dart';
 
@@ -8,15 +9,27 @@ import 'bizlogic/authentication.dart';
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+<<<<<<< HEAD
     return MaterialApp(
       title: 'Matchup',
       theme: new ThemeData(
         primarySwatch: Colors.blue,
       ),
       home: new RootPage(auth: new Auth()));
+=======
+    return AuthProvider(
+      auth: Auth(),
+      child: MaterialApp(
+        title: 'Matchup',
+        theme: new ThemeData(
+          primarySwatch: Colors.blue,
+        ),
+        home: new RootPage(),
+      )
+    );
+>>>>>>> master
   }
 }
 

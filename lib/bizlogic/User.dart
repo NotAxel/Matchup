@@ -14,9 +14,11 @@ class User {
   String _secondary; // Players secondary
   String _region; // Players region they are located in
 
+  /*
   static int _maxFriends = 31;
   List<User> _friendsList = new List<User>(_maxFriends); // Players will have a max friend count
   int _friendCount = 0; // Players friend count
+  */
 
   // Getters and Setters
   // userId
@@ -37,12 +39,13 @@ class User {
 
   // secondary
   String get getSecondary => _secondary;
-  set setSecondary(String secondary) { _secondary= secondary; }
+  set setSecondary(String secondary) { _secondary = secondary; }
 
   // region
   String get region => _region;
   set setRegion(String region) { _region = region; }
 
+  /*
   // friendsList
   List<User> get getFriendsList => _friendsList;
   set setFriendsList(List<User> friendsList) { _friendsList = friendsList; }
@@ -58,4 +61,5 @@ class User {
       _friendCount++;
     }
   }
+  */
 }

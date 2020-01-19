@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:matchup/bizlogic/User.dart';
 import '../bizlogic/authentication.dart';
-import './friendPage.dart' as friendp;
 import './profilePage.dart' as profilep;
 import './messagePage.dart' as messagep;
 import './matchPage.dart' as matchp;
@@ -36,13 +35,12 @@ class HomePageProvider extends InheritedWidget{
   // by using this function to add the call back to the context in the tabstate build,
   // should be able to ref the call back in a tab class
   static HomePageProvider of(BuildContext context) =>
-    context.inheritFromWidgetOfExactType(HomePageProvider);
-
-}
+    context.dependOnInheritedWidgetOfExactType<HomePageProvider>();
+  }
 
 class HomePageState extends State<HomePage> with SingleTickerProviderStateMixin {
   TabController controller;
-  User _user = null;
+  User _user;
 
   @override
   void initState() {
@@ -96,6 +94,7 @@ class HomePageState extends State<HomePage> with SingleTickerProviderStateMixin 
         
       }
     
+      // TODO: @Brendan
       void initializeUserInformation(User user) async{
         DocumentReference userReference = Firestore.instance.collection('Users').document(user.getUserId);
         DocumentSnapshot userData = await userReference.get();
