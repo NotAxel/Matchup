@@ -67,11 +67,11 @@ class _ChatPageState extends State<ChatPage> {
         widget.peerId.toString());
   }
 
-  Widget snapshotError(){
+  Widget snapshotError(AsyncSnapshot snapshot){
     return Center(
       child: Container(
         child: Text(
-          "uh oh, an error occurred retrieving the Firebase snapshot",
+          "uh oh, an error occurred retrieving the Firebase snapshot:\n ${snapshot.error}",
           style: TextStyle(color: Colors.red),
         ),
       )
@@ -97,7 +97,7 @@ class _ChatPageState extends State<ChatPage> {
             .snapshots(),
         builder: (context, snapshot) {
           if (snapshot.hasError){
-            return snapshotError();
+            return snapshotError(snapshot);
           }
           else if (!snapshot.hasData) {
             return loadingCircle();
