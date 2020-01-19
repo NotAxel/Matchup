@@ -11,14 +11,6 @@ void main() => runApp(MyApp());
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-<<<<<<< HEAD
-    return MaterialApp(
-      title: 'Matchup',
-      theme: new ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: new RootPage(auth: new Auth()));
-=======
     return AuthProvider(
       auth: Auth(),
       child: MaterialApp(
@@ -29,7 +21,6 @@ class MyApp extends StatelessWidget {
         home: new RootPage(),
       )
     );
->>>>>>> master
   }
 }
 
