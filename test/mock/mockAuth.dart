@@ -2,9 +2,13 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:matchup/bizlogic/authentication.dart';
 
 class MockAuth implements BaseAuth{
+  bool _didAttemptSignUp = false;
+
   bool _didAttemptSignIn = false;
 
   bool get getDidAttemptSignIn => _didAttemptSignIn;
+
+  bool get getDidAttemptSignUp => _didAttemptSignIn;
 
   @override
   Future<FirebaseUser> getCurrentUser() {
@@ -41,7 +45,7 @@ class MockAuth implements BaseAuth{
 
   @override
   Future<String> signUp(String email, String password) {
-    // TODO: implement signUp
+    _didAttemptSignUp = true;
     return null;
   }
 
