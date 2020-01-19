@@ -67,6 +67,24 @@ class _ChatPageState extends State<ChatPage> {
         widget.peerId.toString());
   }
 
+  Widget snapshotError(){
+    return Center(
+      child: Container(
+        child: Text(
+          "uh oh, an error occurred retrieving the Firebase snapshot",
+          style: TextStyle(color: Colors.red),
+        ),
+      )
+    );
+  }
+
+  Widget loadingCircle(){
+    return Center(
+        child: CircularProgressIndicator(
+            valueColor: AlwaysStoppedAnimation<Color>(
+                Colors.lightBlue)));
+  }
+
   Widget buildMessageList(BuildContext context){
     return Expanded(
       child: StreamBuilder(
@@ -78,12 +96,13 @@ class _ChatPageState extends State<ChatPage> {
             .limit(20)
             .snapshots(),
         builder: (context, snapshot) {
-          if (!snapshot.hasData) {
-            return Center(
-                child: CircularProgressIndicator(
-                    valueColor: AlwaysStoppedAnimation<Color>(
-                        Colors.lightBlue)));
-          } else {
+          if (snapshot.hasError){
+            return snapshotError();
+          }
+          else if (!snapshot.hasData) {
+            return loadingCircle();
+          } 
+          else {
             return ListView.builder(
               padding: EdgeInsets.all(10.0),
               itemBuilder: (context, index) =>
