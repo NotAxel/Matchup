@@ -201,17 +201,19 @@ class _LogInSignupPageState extends State<LogInSignupPage> {
         });
 
         if (userId != null && userId.length > 0 && _isLoginForm) {
+          // found user, collect their data information from the data base and initialize the users info
+          // this can be done in the login call back
           widget.loginCallback();
         }
         // successfully logged in and heading to user info entry page
         else if (_isLoginForm == false){
           // push a home page first 
           Navigator.push(context,
-          MaterialPageRoute(builder: (context) => HomePage(userId: userId, auth: auth, logoutCallback: widget.logoutCallback))
+          MaterialPageRoute(builder: (context) => HomePage(logoutCallback: widget.logoutCallback))
           );
           // push a info entry page second so that once the form is completed, info entry is popped to the homepage
           Navigator.push(context,
-          MaterialPageRoute(builder: (context) => UserInfoEntryPage(userId: userId, auth: auth, logoutCallback: widget.logoutCallback))
+          MaterialPageRoute(builder: (context) => UserInfoEntryPage(logoutCallback: widget.logoutCallback))
           );
         }
       } catch (e) {
