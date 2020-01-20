@@ -18,6 +18,7 @@ import './assetBundle.dart';
 Future<Widget> makeTestableWidget(WidgetTester tester, Widget child, BaseAuth auth) async{
   final AssetBundle assetBundle = TestAssetBundle(<String, List<String>>{
     'assets/images/logo.png': <String>['assets/images/logo.png'],
+    'assets/images/default_profile.jpg': <String>['assets/images/default_profile.jpg'],
   });
 
   return DefaultAssetBundle(
@@ -37,6 +38,7 @@ void main() {
   // this includes images, large json files, and text packages
   // https://github.com/flutter/flutter/issues/22193
   testWidgets('Sign in successfully with valid email and password', (WidgetTester tester) async {
+    // ARRANGE
     // check if login call back is used
     MockAuth mockAuth = new MockAuth();
 
@@ -46,11 +48,17 @@ void main() {
     String expectedEmail = 'foo@gmail.com';
     String expectedPassword = '123456';
 
+    Key logo = Key('logo');
     Key email = Key('email');
     Key password = Key('password');
-    
+    Key login = Key('login');
+
+    // ACT 
     // pump the login page
     await tester.pumpWidget(await makeTestableWidget(tester, page, mockAuth));
+
+    // find the logo and verify that it exists
+    Finder logoField = find.byKey(logo);
 
     // find the email field and type a valid email
     Finder emailField = find.byKey(email);
@@ -61,42 +69,72 @@ void main() {
     await tester.enterText(passwordField, expectedPassword);
 
     // find the login button by its key and press it
-    await tester.tap(find.byKey(Key('login')));
+    Finder loginButton = find.byKey(login);
+    await tester.tap(loginButton); 
+
+    // ASSERT 
+    // expect logo to exist
+    expect(logoField, findsOneWidget);
 
     // expect user to attempt to sign in
     expect(mockAuth.getDidAttemptSignIn, true);
 
     // the login call back was called during validate and submit in login page
-    // this means the login was successful
     expect(didSignIn, true);
   });
 
   // credit: https://www.youtube.com/watch?v=75i5VmTI6A0&t=16s
   testWidgets('Attempt to sign in with empty email and password field', (WidgetTester tester) async {
+    // ARRANGE 
     MockAuth mockAuth = new MockAuth();
 
     // check if login call back is used
     bool didSignIn = false;
     LogInSignupPage page = LogInSignupPage(loginCallback: () => didSignIn = true,);
 
-    // pump the login page
-    await tester.pumpWidget(await makeTestableWidget(tester, page, mockAuth));
+    String expectedEmail = '';
+    String expectedPassword = '';
+
+    String emailErrorMessage = 'Email field cannot be empty';
+    String passwordErrorMessage = 'Password field cannot be empty';
 
     Key logo = Key('logo');
     Key password = Key('password');
     Key email = Key('email');
+    Key login = Key('login');
 
+    // ACT
+
+    // pump the login page
+    await tester.pumpWidget(await makeTestableWidget(tester, page, mockAuth));
+
+    // find the logo and verify that it exists
     Finder logoField = find.byKey(logo);
-    expect(logoField, findsOneWidget);
 
+    // find the email field and type a valid email
     Finder emailField = find.byKey(email);
-    expect(emailField, findsOneWidget);
+    await tester.enterText(emailField, expectedEmail);
 
+    // find the password field and type a valid password
     Finder passwordField = find.byKey(password);
-    expect(passwordField, findsOneWidget);
+    await tester.enterText(passwordField, expectedPassword);
 
     // find the login button by its key and press it
-    await tester.tap(find.byKey(Key('login')));
+    Finder loginButton = find.byKey(login);
+    await tester.tap(loginButton); 
+
+    // find the error messages for the email and password fields
+    await tester.pumpAndSettle();
+    Finder emailError = find.text(emailErrorMessage);
+    Finder passwordError = find.text(passwordErrorMessage);
+
+    // ASSERT 
+    // expect logo to exist
+    expect(logoField, findsOneWidget);
+
+    // expect email and password error text to display after login attempt 
+    expect(emailError, findsOneWidget);
+    expect(passwordError, findsOneWidget);
 
     // email and password fields have not been filled in
     // expect user to attempt to sign in but sign in was unsuccessful
@@ -104,41 +142,41 @@ void main() {
     expect(didSignIn, false);
   });
 
-  testWidgets('Attempt to sign up with valid email and password', (WidgetTester tester) async {
-    // check if login call back is used
-    MockAuth mockAuth = new MockAuth();
+  //testWidgets('Attempt to sign up with valid email and password', (WidgetTester tester) async {
+  //  // check if login call back is used
+  //  MockAuth mockAuth = new MockAuth();
 
-    bool didSignUp = false;
-    LogInSignupPage page = LogInSignupPage(loginCallback: () => didSignUp = true,);
+  //  bool didSignUp = false;
+  //  LogInSignupPage page = LogInSignupPage(loginCallback: () => didSignUp = true,);
 
-    String expectedEmail = 'foo@gmail.com';
-    String expectedPassword = '123456';
+  //  String expectedEmail = 'foo@gmail.com';
+  //  String expectedPassword = '123456';
 
-    Key email = Key('email');
-    Key password = Key('password');
-    
-    // pump the login page
-    await tester.pumpWidget(await makeTestableWidget(tester, page, mockAuth));
+  //  Key email = Key('email');
+  //  Key password = Key('password');
+  //  
+  //  // pump the login page
+  //  await tester.pumpWidget(await makeTestableWidget(tester, page, mockAuth));
 
-    // find the email field and type a valid email
-    Finder emailField = find.byKey(email);
-    await tester.enterText(emailField, expectedEmail);
+  //  // find the email field and type a valid email
+  //  Finder emailField = find.byKey(email);
+  //  await tester.enterText(emailField, expectedEmail);
 
-    // find the password field and type a valid password
-    Finder passwordField = find.byKey(password);
-    await tester.enterText(passwordField, expectedPassword);
+  //  // find the password field and type a valid password
+  //  Finder passwordField = find.byKey(password);
+  //  await tester.enterText(passwordField, expectedPassword);
 
-    // find the create account button and press it
-    await tester.tap(find.byKey(Key('switch between login/signup')));
+  //  // find the create account button and press it
+  //  await tester.tap(find.byKey(Key('switch between login/signup')));
 
-    // find the login button by its key and press it
-    await tester.tap(find.byKey(Key('login')));
+  //  // find the login button by its key and press it
+  //  await tester.tap(find.byKey(Key('login')));
 
-    // expect user to attempt to sign in
-    expect(mockAuth.getDidAttemptSignUp, true);
+  //  // expect user to attempt to sign in
+  //  expect(mockAuth.getDidAttemptSignUp, true);
 
-    // the login call back was called during validate and submit in login page
-    // this means the login was successful
-    expect(didSignUp, true);
-  });
+  //  // the login call back was called during validate and submit in login page
+  //  // this means the login was successful
+  //  expect(didSignUp, true);
+  //});
 }
