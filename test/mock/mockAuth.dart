@@ -8,23 +8,20 @@ class MockAuth implements BaseAuth{
 
   bool get getDidAttemptSignIn => _didAttemptSignIn;
 
-  bool get getDidAttemptSignUp => _didAttemptSignIn;
+  bool get getDidAttemptSignUp => _didAttemptSignUp;
 
   @override
   Future<FirebaseUser> getCurrentUser() {
-    // TODO: implement getCurrentUser
     return null;
   }
 
   @override
   Future<bool> isEmailVerified() {
-    // TODO: implement isEmailVerified
     return null;
   }
 
   @override
   Future<void> sendEmailVerification() {
-    // TODO: implement sendEmailVerification
     return null;
   }
 
@@ -39,14 +36,19 @@ class MockAuth implements BaseAuth{
 
   @override
   Future<void> signOut() {
-    // TODO: implement signOut
     return null;
   }
 
   @override
-  Future<String> signUp(String email, String password) {
+  Future<String> signUp(String email, String password) async {
     _didAttemptSignUp = true;
-    return null;
+    return '123456789';
+  }
+
+  @override
+  Future<List<String>> fetchSignInMethodsForEmail() async{
+    List<String> signInMethods = ['email and password'];
+    return signInMethods;
   }
 
 }

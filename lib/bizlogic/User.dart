@@ -58,9 +58,11 @@ class User {
   Future<void> initializeData(FirebaseUser firebaseUser) async{
     _userId = firebaseUser.uid;
     DocumentSnapshot userInformation = await Firestore.instance.collection('Users').document(_userId).get();
-    _userName = userInformation['Username'];
-    _main = userInformation['Main'];
-    _secondary = userInformation['Secondary'];
+    if (userInformation.exists){
+      _userName = userInformation['Username'];
+      _main = userInformation['Main'];
+      _secondary = userInformation['Secondary'];
+    }
   }
 
 

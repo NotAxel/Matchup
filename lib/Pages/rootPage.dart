@@ -22,24 +22,43 @@ class _RootPageState extends State<RootPage>{
   User _user;
 
   // first get the current user
+  // then check if the user has a valid sign in method
+  // this will serve as a check if the user actually still exists in the Firebase
   // then initialize the users data
-  // 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     final BaseAuth auth = AuthProvider.of(context).auth;
     auth.getCurrentUser().then((user) {
+      // user is signed in
       if (user != null) {
         // first and only instantiation of user singleton
+        print("CREATING THE USER NOW");
         _user = User();
-      }
-      _user.initializeData(user).then((value){
-        setState(() {
-          print("checking login status");
-          authStatus =
-              user?.uid == null ? AuthStatus.NOT_LOGGED_IN : AuthStatus.LOGGED_IN;
+
+        auth.fetchSignInMethodsForEmail().then((signInMethods){
+          if (signInMethods.length > 0){
+            _user.initializeData(user).then((value){
+              setState(() {
+                authStatus = AuthStatus.LOGGED_IN;
+              });
+            });
+          }
+          else{
+            setState(() {
+              print("setting status to NOT_LOGGED_IN");
+              authStatus = AuthStatus.NOT_LOGGED_IN;
+            });
+          }
         });
-      });
+      }
+      // no user is signed in
+      else{
+        setState(() {
+          print("setting status to NOT_LOGGED_IN");
+          authStatus = AuthStatus.NOT_LOGGED_IN;
+        });
+      }
     });
   }
 
@@ -47,6 +66,8 @@ class _RootPageState extends State<RootPage>{
   // then initialize the users data once the user has been retrieved
   // then set the state to logged in
   void loginCallback() {
+    print("CREATING THE USER NOW");
+    _user = User();
     final BaseAuth auth = AuthProvider.of(context).auth;
     auth.getCurrentUser().then((user){
       _user.initializeData(user).then((value){

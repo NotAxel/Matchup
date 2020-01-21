@@ -247,6 +247,7 @@ class _UserInfoEntryPage extends State<UserInfoEntryPage> {
       form.save();
       return true;
     }
+    _isLoading = false;
     return false;
   }
 
