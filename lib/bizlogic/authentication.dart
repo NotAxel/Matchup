@@ -13,6 +13,8 @@ abstract class BaseAuth {
   Future<void> signOut();
 
   Future<bool> isEmailVerified();
+
+  Future<List<String>> fetchSignInMethodsForEmail();
 }
 
 class Auth implements BaseAuth {
@@ -49,5 +51,10 @@ class Auth implements BaseAuth {
   Future<bool> isEmailVerified() async {
     FirebaseUser user = await _firebaseAuth.currentUser();
     return user.isEmailVerified;
+  }
+
+  Future<List<String>> fetchSignInMethodsForEmail() async{
+    FirebaseUser user = await _firebaseAuth.currentUser();
+    return _firebaseAuth.fetchSignInMethodsForEmail(email: user.email.toString());
   }
 }

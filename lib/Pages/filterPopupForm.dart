@@ -10,7 +10,6 @@ class _FilterPopupForm extends State<FilterPopupForm> {
   static const double ButtonWidth = 130.0;
   static const double ButtonHeight = 40.0;
 
-
   Container _underLine = Container(height: 2, color: Colors.deepPurple);
   
   String _mainFilter;

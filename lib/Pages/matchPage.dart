@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:matchup/Pages/filterPopupPage.dart';
 import 'package:matchup/Pages/filterPopupContent.dart';
 import 'package:matchup/bizlogic/User.dart';
+import 'package:matchup/bizlogic/userProvider.dart';
 import './challengePage.dart' as cp;
 import 'homepage.dart';
 import 'package:matchup/bizlogic/mainToImageLinker.dart' as il;
@@ -16,16 +17,44 @@ class MatchPage extends StatefulWidget {
 
 class MatchPageState extends State<MatchPage>{
 
-  String _mainFilter = "Main";
-  String _regionFilter = "";
-
-  bool filterCheck(String main, String region) {
-    
-  }
+/*
+  @override
+  Widget build(BuildContext context) {
+    final User _user = UserProvider.of(context).user;
+    print(_user.getUserId);
+    return StreamBuilder<QuerySnapshot>(
+      stream: Firestore.instance.collection('Users').snapshots(),
+      builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+        if (snapshot.hasError)
+          return new Text('Error: ${snapshot.error}');
+        switch (snapshot.connectionState) {
+          case ConnectionState.waiting: return new Text('Loading...');
+          default:
+            return new ListView(
+              children: snapshot.data.documents.map((DocumentSnapshot document) {
+                return new ListTile(
+                  title: new Text(document['Username']),
+                  subtitle: new Text(document['Main']),
+                  onTap: (){
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => cp.ChallengePage(
+                        userId: _user.getUserId, 
+                        name: document['Username'], 
+                        main: document['Main'], 
+                        peerId: document.documentID)));
+                  },
+                );
+              }).toList(),
+            );
+        }
+      },
+    );
+  } */
 
   @override
   Widget build (BuildContext context) {
-    final User _user = HomePageProvider.of(context).user;
+    final User _user = UserProvider.of(context).user;
     return new Scaffold(
       appBar: new AppBar(
         centerTitle: true,

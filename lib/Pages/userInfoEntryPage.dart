@@ -2,14 +2,13 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:matchup/bizlogic/User.dart';
+import 'package:matchup/bizlogic/authProvider.dart';
 import 'package:matchup/bizlogic/authentication.dart';
 
 class UserInfoEntryPage extends StatefulWidget {
-  final String userId;
-  final BaseAuth auth;
   final VoidCallback logoutCallback;
 
-  UserInfoEntryPage({this.userId, this.auth, this.logoutCallback});
+  UserInfoEntryPage({this.logoutCallback});
 
   @override
   _UserInfoEntryPage createState() => _UserInfoEntryPage();
@@ -29,7 +28,6 @@ class _UserInfoEntryPage extends State<UserInfoEntryPage> {
   String _userEmail = "waiting"; // used for testing
 
   // creating single instance of user to be used throughout program duration
-  User user = User.instance;
 
   bool _isLoading;
   bool _isUserForm;
@@ -218,7 +216,8 @@ class _UserInfoEntryPage extends State<UserInfoEntryPage> {
     });
     if (validateAndSave()){
       try {
-        FirebaseUser currUser = await widget.auth.getCurrentUser();
+        final BaseAuth auth = AuthProvider.of(context).auth;
+        FirebaseUser currUser = await auth.getCurrentUser();
         _userID = currUser.uid;
         _userEmail = currUser.email;
         Firestore.instance.collection('Users').document(_userID).setData({
@@ -227,9 +226,7 @@ class _UserInfoEntryPage extends State<UserInfoEntryPage> {
           'Secondary' : _secondaryChar, 
           'Region' : _region, 
           'Username' : _userName, 
-          'NintendoID' : _nintendoID, 
-          'chattingWith' : null,
-          'message': null});
+          'NintendoID' : _nintendoID});
         Navigator.of(context).pop();
       } 
       catch (e) {
@@ -250,6 +247,7 @@ class _UserInfoEntryPage extends State<UserInfoEntryPage> {
       form.save();
       return true;
     }
+    _isLoading = false;
     return false;
   }
 
