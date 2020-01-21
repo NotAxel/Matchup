@@ -124,12 +124,12 @@ class _LogInSignupPageState extends State<LogInSignupPage> {
   }
   
   Widget showSwitchButton(){
-        return new FlatButton(
-          key: Key('switch between login/signup'),
-        child: new Text(
-            _isLoginForm ? 'Create an account' : 'Have an account? Sign in',
-            style: new TextStyle(fontSize: 18.0, fontWeight: FontWeight.w300)),
-        onPressed: toggleFormMode);
+    return new FlatButton(
+      key: Key('switch between login/signup'),
+      child: new Text(
+        _isLoginForm ? 'Create an account' : 'Have an account? Sign in',
+        style: new TextStyle(fontSize: 18.0, fontWeight: FontWeight.w300)),
+      onPressed: toggleFormMode);
   }
   Widget showLogo(){
     return SizedBox(
