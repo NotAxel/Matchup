@@ -4,8 +4,9 @@ import 'package:matchup/Pages/homepage.dart';
 import 'package:matchup/bizlogic/authentication.dart';
 import 'homepage.dart';
 import 'package:matchup/bizlogic/User.dart';
+import 'package:matchup/bizlogic/userProvider.dart';
+
 import 'challengePage.dart' as cp;
-import './chatPage.dart' as chatp;
 
 class FreindsListPage extends StatefulWidget{
   final BaseAuth auth;
@@ -25,8 +26,7 @@ class FreindsListPageState extends State<FreindsListPage>{
     // TODO: implement build
     
 
-    final title = 'FriendsListPage';
-    final User _user  = HomePageProvider.of(context).user;
+    final User _user  = UserProvider.of(context).user;
     return StreamBuilder<QuerySnapshot>(
       stream: Firestore.instance.collection('Users').snapshots(),
       builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {

@@ -1,47 +1,26 @@
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/material.dart';
+import 'package:matchup/bizlogic/authProvider.dart';
 import 'package:matchup/bizlogic/authentication.dart';
+import 'package:matchup/bizlogic/emailValidator.dart';
+import 'package:matchup/bizlogic/passwordValidator.dart';
+import 'package:matchup/bizlogic/validator.dart';
 import 'userInfoEntryPage.dart';
 import 'homepage.dart';
 
 class LogInSignupPage extends StatefulWidget {
   final String userId;
-  final BaseAuth auth;
   final VoidCallback loginCallback;
   final VoidCallback logoutCallback;
 
-  LogInSignupPage({this.userId, this.auth, this.loginCallback, this.logoutCallback});
+  LogInSignupPage({this.userId, this.loginCallback, this.logoutCallback});
   
   @override
-  _LogInSignupPageState createState() => _LogInSignupPageState(auth: auth);
-}
-
-class LoginSignupProvider extends InheritedWidget{
-  final BaseAuth auth;
-  final VoidCallback loginCallback;
-  final VoidCallback logoutCallback;
-  final Widget child;
-
-  LoginSignupProvider(this.auth, this.loginCallback, this.logoutCallback, this.child);
-
-  @override
-  bool updateShouldNotify(InheritedWidget oldWidget) {
-    return true;
-  }
-  
-  // by using this function to add the call back to the context in the tabstate build,
-  // should be able to ref the call back in a tab class
-  static LoginSignupProvider of(BuildContext context) =>
-    context.inheritFromWidgetOfExactType(LoginSignupProvider);
+  _LogInSignupPageState createState() => _LogInSignupPageState();
 }
 
 class _LogInSignupPageState extends State<LogInSignupPage> {
-  final BaseAuth auth;
-  _LogInSignupPageState({this.auth});
+  _LogInSignupPageState();
   TextStyle style = TextStyle(fontFamily: 'Montserrat', fontSize: 20.0);
-  final emailController = TextEditingController();
-  final passwordController = TextEditingController();
   String _email;
   String _password;
   String _errorMessage;
@@ -63,8 +42,6 @@ class _LogInSignupPageState extends State<LogInSignupPage> {
     _errorMessage = "";
     _email = null;
     _password = null;
-    emailController.clear();
-    passwordController.clear();
   }
 
   void toggleFormMode() {
@@ -85,43 +62,45 @@ class _LogInSignupPageState extends State<LogInSignupPage> {
   }
 
   Widget showEmailField(){
+    Validator emailValidator = EmailValidator();
     return Padding(
-      padding: EdgeInsets.fromLTRB(0.0, 250.0, 10.0, 0.0),
+      padding: EdgeInsets.fromLTRB(0.0, 150.0, 10.0, 0.0),
       child: new TextFormField(
+          key: Key('email'),
           obscureText: false,
           maxLines: 1,
           style: style,
           autofocus: false,
-          controller: emailController,
           keyboardType: TextInputType.emailAddress,
           decoration: InputDecoration(
               hintText: "Email",
               icon: new Icon(Icons.mail, 
               color: Colors.blueGrey,
               )),
-          validator: (value) => value.isEmpty ? 'Email can\'t be empty' : null,
-          onSaved: (value) => _email = value.trim(),
+          validator: (value) => emailValidator.validate(value),
+          onSaved: (value) => _email = emailValidator.save(value),
       ),
     );
   } 
 
   Widget showPasswordField(){
+    Validator passwordValidator = PasswordValidator();
     return Padding(
       padding: EdgeInsets.fromLTRB(0.0, 15.0, 10.0, 0.0),
       child: new TextFormField(
+          key: Key('password'),
           maxLines: 1,
           obscureText: true,
           autofocus: false,
           style: style,
-          controller: passwordController,
           decoration: InputDecoration(
               //contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
               hintText: "Password",
               icon: new Icon(Icons.lock,
               color: Colors.blueGrey
               )),
-          validator: (value) => value.isEmpty ? 'Password can\'t be empty' : null,
-          onSaved: (value) => _password = value.trim(),
+          validator: (value) => passwordValidator.validate(value),
+          onSaved: (value) => _password = passwordValidator.save(value),
       ),
     );
   }
@@ -132,6 +111,7 @@ class _LogInSignupPageState extends State<LogInSignupPage> {
         child: SizedBox(
           height: 40.0,
           child: new RaisedButton(
+            key: Key('login'),
             elevation: 5.0,
             shape: new RoundedRectangleBorder(
                 borderRadius: new BorderRadius.circular(30.0)),
@@ -144,14 +124,22 @@ class _LogInSignupPageState extends State<LogInSignupPage> {
   }
   
   Widget showSwitchButton(){
-        return new FlatButton(
-        child: new Text(
-            _isLoginForm ? 'Create an account' : 'Have an account? Sign in',
-            style: new TextStyle(fontSize: 18.0, fontWeight: FontWeight.w300)),
-        onPressed: toggleFormMode);
+    return new FlatButton(
+      key: Key('switch between login/signup'),
+      child: new Text(
+        _isLoginForm ? 'Create an account' : 'Have an account? Sign in',
+        style: new TextStyle(fontSize: 18.0, fontWeight: FontWeight.w300)),
+      onPressed: toggleFormMode);
   }
   Widget showLogo(){
-    return Image.asset('assets/images/logo.png');
+    return SizedBox(
+      child: Image(
+        key: Key('logo'),
+        image: AssetImage('assets/images/logo.png'),
+      ),
+      height: 200,
+      width: 400,
+    );
   }
 
   Widget showErrorMessage() {
@@ -178,11 +166,15 @@ class _LogInSignupPageState extends State<LogInSignupPage> {
       form.save();
       return true;
     }
+    setState(() {
+      _isLoading = false;
+    });
     return false;
   }
 
   // Perform login or signup
   void validateAndSubmit() async {
+    final BaseAuth auth = AuthProvider.of(context).auth;
     setState(() {
       _errorMessage = "";
       _isLoading = true;
@@ -192,10 +184,13 @@ class _LogInSignupPageState extends State<LogInSignupPage> {
       String userId = "";
       try {
         if (_isLoginForm) {
-          userId = await widget.auth.signIn(_email, _password);
+          // use this future to test the loading icon
+          // await Future.delayed(Duration(seconds: 2));
+          print("calling sign in function");
+          userId = await auth.signIn(_email, _password);
           print('Signed in: $userId');
         } else {
-          userId = await widget.auth.signUp(_email, _password);
+          userId = await auth.signUp(_email, _password);
           //widget.auth.sendEmailVerification();
           //_showVerifyEmailSentDialog();
           print('Signed up user: $userId');
@@ -204,17 +199,16 @@ class _LogInSignupPageState extends State<LogInSignupPage> {
           _isLoading = false;
         });
 
-        if (userId.length > 0 && userId != null && _isLoginForm) {
+        if (userId != null && userId.length > 0 && _isLoginForm) {
+          // found user, collect their data information from the data base and initialize the users info
+          // this can be done in the login call back
           widget.loginCallback();
         }
         // successfully logged in and heading to user info entry page
         else if (_isLoginForm == false){
-          // return new user info entry
+          // push a info entry page second so that once the form is completed, info entry is popped to the homepage
           Navigator.push(context,
-          MaterialPageRoute(builder: (context) => HomePage(userId: userId, auth: auth, logoutCallback: widget.logoutCallback))
-          );
-          Navigator.push(context,
-          MaterialPageRoute(builder: (context) => UserInfoEntryPage(userId: userId, auth: auth, logoutCallback: widget.logoutCallback))
+          MaterialPageRoute(builder: (context) => UserInfoEntryPage(logoutCallback: widget.logoutCallback))
           );
         }
       } catch (e) {
@@ -223,20 +217,26 @@ class _LogInSignupPageState extends State<LogInSignupPage> {
         setState(() {
           _isLoading = false;
           _errorMessage = e.message;
-          _formKey.currentState.reset();
         });
       }
     }
   }
 
+  Widget buildWaitingScreen() {
+    return Scaffold(
+      body: Container(
+        alignment: Alignment.center,
+        child: CircularProgressIndicator(),
+      ),
+    );
+  }
+
   Widget _showLogInForm() {
-    return 
-    /*LoginSignupProvider(
-     widget.auth,
-     widget.loginCallback,
-     widget.logoutCallback,
-     */
-     new Container(
+    if (_isLoading){
+      return buildWaitingScreen();
+    }
+    else{
+     return Container(
         padding: EdgeInsets.all(16.0),
         child: new Form(
           key: _formKey,
@@ -251,7 +251,8 @@ class _LogInSignupPageState extends State<LogInSignupPage> {
               showErrorMessage(),
             ],
           ),
-        ));
-   // );
+        )
+      );
+    }
   }
 }

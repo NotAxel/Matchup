@@ -9,6 +9,9 @@
 .history
 .svn/
 
+# dont want to store code coverage data on github
+coverage/
+
 #vscode
 .vscode
 .flutter-plugins-dependencies
