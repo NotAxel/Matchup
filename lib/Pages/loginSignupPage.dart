@@ -124,12 +124,12 @@ class _LogInSignupPageState extends State<LogInSignupPage> {
   }
   
   Widget showSwitchButton(){
-        return new FlatButton(
-          key: Key('switch between login/signup'),
-        child: new Text(
-            _isLoginForm ? 'Create an account' : 'Have an account? Sign in',
-            style: new TextStyle(fontSize: 18.0, fontWeight: FontWeight.w300)),
-        onPressed: toggleFormMode);
+    return new FlatButton(
+      key: Key('switch between login/signup'),
+      child: new Text(
+        _isLoginForm ? 'Create an account' : 'Have an account? Sign in',
+        style: new TextStyle(fontSize: 18.0, fontWeight: FontWeight.w300)),
+      onPressed: toggleFormMode);
   }
   Widget showLogo(){
     return SizedBox(
@@ -206,10 +206,6 @@ class _LogInSignupPageState extends State<LogInSignupPage> {
         }
         // successfully logged in and heading to user info entry page
         else if (_isLoginForm == false){
-          // push a home page first 
-          Navigator.push(context,
-          MaterialPageRoute(builder: (context) => HomePage(logoutCallback: widget.logoutCallback))
-          );
           // push a info entry page second so that once the form is completed, info entry is popped to the homepage
           Navigator.push(context,
           MaterialPageRoute(builder: (context) => UserInfoEntryPage(logoutCallback: widget.logoutCallback))
