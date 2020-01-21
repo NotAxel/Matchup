@@ -21,8 +21,6 @@ class LogInSignupPage extends StatefulWidget {
 class _LogInSignupPageState extends State<LogInSignupPage> {
   _LogInSignupPageState();
   TextStyle style = TextStyle(fontFamily: 'Montserrat', fontSize: 20.0);
-  final emailController = TextEditingController();
-  final passwordController = TextEditingController();
   String _email;
   String _password;
   String _errorMessage;
@@ -44,8 +42,6 @@ class _LogInSignupPageState extends State<LogInSignupPage> {
     _errorMessage = "";
     _email = null;
     _password = null;
-    emailController.clear();
-    passwordController.clear();
   }
 
   void toggleFormMode() {
@@ -75,7 +71,6 @@ class _LogInSignupPageState extends State<LogInSignupPage> {
           maxLines: 1,
           style: style,
           autofocus: false,
-          controller: emailController,
           keyboardType: TextInputType.emailAddress,
           decoration: InputDecoration(
               hintText: "Email",
@@ -98,7 +93,6 @@ class _LogInSignupPageState extends State<LogInSignupPage> {
           obscureText: true,
           autofocus: false,
           style: style,
-          controller: passwordController,
           decoration: InputDecoration(
               //contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
               hintText: "Password",
@@ -130,12 +124,12 @@ class _LogInSignupPageState extends State<LogInSignupPage> {
   }
   
   Widget showSwitchButton(){
-        return new FlatButton(
-          key: Key('switch between login/singup'),
-        child: new Text(
-            _isLoginForm ? 'Create an account' : 'Have an account? Sign in',
-            style: new TextStyle(fontSize: 18.0, fontWeight: FontWeight.w300)),
-        onPressed: toggleFormMode);
+    return new FlatButton(
+      key: Key('switch between login/signup'),
+      child: new Text(
+        _isLoginForm ? 'Create an account' : 'Have an account? Sign in',
+        style: new TextStyle(fontSize: 18.0, fontWeight: FontWeight.w300)),
+      onPressed: toggleFormMode);
   }
   Widget showLogo(){
     return SizedBox(
@@ -172,6 +166,9 @@ class _LogInSignupPageState extends State<LogInSignupPage> {
       form.save();
       return true;
     }
+    setState(() {
+      _isLoading = false;
+    });
     return false;
   }
 
@@ -187,6 +184,8 @@ class _LogInSignupPageState extends State<LogInSignupPage> {
       String userId = "";
       try {
         if (_isLoginForm) {
+          // use this future to test the loading icon
+          // await Future.delayed(Duration(seconds: 2));
           print("calling sign in function");
           userId = await auth.signIn(_email, _password);
           print('Signed in: $userId');
@@ -201,17 +200,15 @@ class _LogInSignupPageState extends State<LogInSignupPage> {
         });
 
         if (userId != null && userId.length > 0 && _isLoginForm) {
+          // found user, collect their data information from the data base and initialize the users info
+          // this can be done in the login call back
           widget.loginCallback();
         }
         // successfully logged in and heading to user info entry page
         else if (_isLoginForm == false){
-          // push a home page first 
-          Navigator.push(context,
-          MaterialPageRoute(builder: (context) => HomePage(userId: userId, auth: auth, logoutCallback: widget.logoutCallback))
-          );
           // push a info entry page second so that once the form is completed, info entry is popped to the homepage
           Navigator.push(context,
-          MaterialPageRoute(builder: (context) => UserInfoEntryPage(userId: userId, auth: auth, logoutCallback: widget.logoutCallback))
+          MaterialPageRoute(builder: (context) => UserInfoEntryPage(logoutCallback: widget.logoutCallback))
           );
         }
       } catch (e) {
@@ -220,13 +217,25 @@ class _LogInSignupPageState extends State<LogInSignupPage> {
         setState(() {
           _isLoading = false;
           _errorMessage = e.message;
-          _formKey.currentState.reset();
         });
       }
     }
   }
 
+  Widget buildWaitingScreen() {
+    return Scaffold(
+      body: Container(
+        alignment: Alignment.center,
+        child: CircularProgressIndicator(),
+      ),
+    );
+  }
+
   Widget _showLogInForm() {
+    if (_isLoading){
+      return buildWaitingScreen();
+    }
+    else{
      return Container(
         padding: EdgeInsets.all(16.0),
         child: new Form(
@@ -242,6 +251,8 @@ class _LogInSignupPageState extends State<LogInSignupPage> {
               showErrorMessage(),
             ],
           ),
-        ));
+        )
+      );
+    }
   }
 }

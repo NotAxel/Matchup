@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:matchup/bizlogic/User.dart';
+import 'package:matchup/bizlogic/userProvider.dart';
 import './challengePage.dart' as cp;
 import 'homepage.dart';
 
@@ -14,7 +15,7 @@ class MatchPageState extends State<MatchPage>{
 
   @override
   Widget build(BuildContext context) {
-    final User _user = HomePageProvider.of(context).user;
+    final User _user = UserProvider.of(context).user;
     print(_user.getUserId);
     return StreamBuilder<QuerySnapshot>(
       stream: Firestore.instance.collection('Users').snapshots(),

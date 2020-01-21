@@ -1,11 +1,18 @@
 // there will only ever be one user per running instance of the app,
 // so the user should be a singleton
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+
 class User {
 
   // implementing singleton pattern
-  User._privateConstructor();
-  static final User _instance = User._privateConstructor();
-  static User get instance { return _instance; }
+  static final User _instance = User._internal();
+
+  factory User() {
+    return _instance;
+  }
+
+  User._internal();
 
   String _userId;
   String _email;
@@ -44,6 +51,20 @@ class User {
   // region
   String get region => _region;
   set setRegion(String region) { _region = region; }
+
+  // takes a user id as a string
+  // sets the users userId and populates the users remaining fields
+  // by collecting data from the firebase
+  Future<void> initializeData(FirebaseUser firebaseUser) async{
+    _userId = firebaseUser.uid;
+    DocumentSnapshot userInformation = await Firestore.instance.collection('Users').document(_userId).get();
+    if (userInformation.exists){
+      _userName = userInformation['Username'];
+      _main = userInformation['Main'];
+      _secondary = userInformation['Secondary'];
+    }
+  }
+
 
   /*
   // friendsList

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:matchup/Pages/homepage.dart';
 import 'package:matchup/bizlogic/User.dart';
+import 'package:matchup/bizlogic/userProvider.dart';
 
 class ProfilePage extends StatefulWidget {
   final VoidCallback logoutCallback;
@@ -51,7 +52,7 @@ class ProfilePageState extends State<ProfilePage> with SingleTickerProviderState
 
   @override
   Widget build(BuildContext context) {
-    final User _user = HomePageProvider.of(context).user;
+    final User _user = UserProvider.of(context).user;
     final VoidCallback logoutCallback = HomePageProvider.of(context).logoutCallback;
     return Column(
           children: [
@@ -65,7 +66,7 @@ class ProfilePageState extends State<ProfilePage> with SingleTickerProviderState
             Container(height: 50),
             //Should get mains from firebase
 //            Text(_user.getMain, style: profStyle),
-            Text('Ness, King K', style: profStyle),
+            Text("Main: " + _user.getMain + "\nSecondary: " + _user.getSecondary, style: profStyle),
             _showForm(logoutCallback),
             ]
         );
