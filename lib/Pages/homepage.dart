@@ -4,6 +4,7 @@ import 'package:flutter/rendering.dart';
 import './profilePage.dart' as profilep;
 import './messagePage.dart' as messagep;
 import './matchPage.dart' as matchp;
+import './friendsListPage.dart' as freindsLp;
 
 class HomePage extends StatefulWidget{
   final VoidCallback logoutCallback;
@@ -67,6 +68,7 @@ class HomePageState extends State<HomePage> with SingleTickerProviderStateMixin 
             new Tab(icon: new Icon(Icons.face)),
             new Tab(icon: new Icon(Icons.pie_chart)),
             new Tab(icon: new Icon(Icons.chat)),
+            new Tab(icon: new Icon(Icons.contacts)),
           ]
         ),
       ),
@@ -76,6 +78,7 @@ class HomePageState extends State<HomePage> with SingleTickerProviderStateMixin 
           new profilep.ProfilePage(),
           new matchp.MatchPage(),
           new messagep.MessagePage(),
+          new freindsLp.FreindsListPage(),
         ]
       ))
     );
