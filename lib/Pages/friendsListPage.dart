@@ -4,10 +4,13 @@ import 'package:matchup/Pages/homepage.dart';
 import 'package:matchup/bizlogic/authentication.dart';
 import 'homepage.dart';
 import 'package:matchup/bizlogic/User.dart';
+import 'challengePage.dart' as cp;
+import './chatPage.dart' as chatp;
 
 class FreindsListPage extends StatefulWidget{
   final BaseAuth auth;
   final VoidCallback logoutCallback;
+
   FreindsListPage({this.auth, this.logoutCallback});
   
   @override
@@ -20,6 +23,8 @@ class FreindsListPageState extends State<FreindsListPage>{
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
+    
+
     final title = 'FriendsListPage';
     final User _user  = HomePageProvider.of(context).user;
     return StreamBuilder<QuerySnapshot>(
@@ -35,6 +40,19 @@ class FreindsListPageState extends State<FreindsListPage>{
                 return new ListTile(
                   title: new Text(document['Username']),
                   subtitle: new Text(document['Main']),
+                  trailing: new RaisedButton(
+                    child: Text('smash'),
+                    onPressed: (){
+                      Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => cp.ChallengePage(
+                        userId: _user.getUserId, 
+                        name: document['Username'], 
+                        main: document['Main'], 
+                        peerId: document.documentID)));
+
+                    },
+                  ),
                 
                 );
               }).toList(),
@@ -43,4 +61,7 @@ class FreindsListPageState extends State<FreindsListPage>{
       },
     );
   }
+
+
+
 }
