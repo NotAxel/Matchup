@@ -99,11 +99,13 @@ class _RootPageState extends State<RootPage>{
   @override
   Widget build(BuildContext context) {
     print("running root build");
+    print(authStatus.toString());
     switch (authStatus) {
       case AuthStatus.NOT_DETERMINED:
         return buildWaitingScreen();
         break;
       case AuthStatus.NOT_LOGGED_IN:
+        print("building loginSingupPage");
         return new UserProvider(
           user: _user,
           child: LogInSignupPage(
@@ -113,6 +115,7 @@ class _RootPageState extends State<RootPage>{
         break;
       case AuthStatus.LOGGED_IN:
         if (_user.getUserId.length > 0 && _user.getUserId != null) {
+          print("building homepage");
           return new UserProvider(
             user: _user,
             child: new HomePage(

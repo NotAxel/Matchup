@@ -199,4 +199,82 @@ void main() {
 
     expect(didSignIn, false);
   });
+
+  testWidgets('Attempt to sign up with an email or password that already exists', (WidgetTester tester) async {
+    // ARRANGE
+    Key logo = Key('logo');
+    Key email = Key('email');
+    Key password = Key('password');
+    Key switchButtonKey = Key('switch between login/signup');
+    Key loginButton = Key('login');
+
+    String expectedEmail = 'foo@gmail.com';
+    String expectedPassword = '123456';
+
+    MockAuth mockAuth = new MockAuth();
+    when(mockAuth.signUp(expectedEmail, expectedPassword)).thenAnswer((value){return Future.value("test id");});
+  });
+
+  testWidgets('test if circular progress indicator appears when waiting for a firebase call', (WidgetTester tester) async {
+    // ARRANGE
+    Key logo = Key('logo');
+    Key email = Key('email');
+    Key password = Key('password');
+    Key switchButtonKey = Key('switch between login/signup');
+    Key loginButton = Key('login');
+
+    String expectedEmail = 'foo@gmail.com';
+    String expectedPassword = '123456';
+
+    MockAuth mockAuth = new MockAuth();
+    when(mockAuth.signUp(expectedEmail, expectedPassword)).thenAnswer((value){
+      Future.delayed(Duration(seconds: 3));
+      return Future.value("test id");
+    });
+
+    bool didSignIn = false;
+    LogInSignupPage page = LogInSignupPage(loginCallback: () => didSignIn = true,);
+
+    // ACT
+
+    // pump the login page
+    await tester.pumpWidget(await makeTestableWidget(tester, page, mockAuth));
+
+    // find the logo and verify that it exists
+    Finder logoField = find.byKey(logo);
+    // expect logo to exist
+    expect(logoField, findsOneWidget);
+
+    // find the create account button and press it
+    // workaround for when on tap doesn't work:
+    // https://github.com/flutter/flutter/issues/31066 
+    Finder switchButtonFinder = find.byKey(switchButtonKey);
+    FlatButton switchButton = switchButtonFinder.evaluate().first.widget;
+    switchButton.onPressed();
+
+    await tester.pump();
+
+    // find the email field and type a valid email
+    Finder emailField = find.byKey(email);
+    await tester.enterText(emailField, expectedEmail);
+
+    // find the password field and type a valid password
+    Finder passwordField = find.byKey(password);
+    await tester.enterText(passwordField, expectedPassword);
+
+    // find the login button by its key and press it
+    Finder loginButtonFinder = find.byKey(loginButton);
+    await tester.tap(loginButtonFinder);
+
+    // ASSERT
+
+    // expect to be waiting on circular progress indicator
+    //expect(find.byType(CircularProgressIndicator),findsOneWidget);
+    await tester.pumpAndSettle();
+
+    // expect user to attempt to sign up, login call back not called
+    verify(mockAuth.signUp(expectedEmail, expectedPassword)).called(1);
+    expect(didSignIn, false);
+
+  });
 }
