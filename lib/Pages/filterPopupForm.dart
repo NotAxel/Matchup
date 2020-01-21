@@ -7,8 +7,12 @@ class FilterPopupForm extends StatefulWidget{
 }
 
 class _FilterPopupForm extends State<FilterPopupForm> {
-  Container _underLine = Container(height: 2, color: Colors.deepPurple);
+  static const double ButtonWidth = 130.0;
+  static const double ButtonHeight = 40.0;
 
+
+  Container _underLine = Container(height: 2, color: Colors.deepPurple);
+  
   String _mainFilter;
   String _regionFilter;
 
@@ -108,7 +112,8 @@ class _FilterPopupForm extends State<FilterPopupForm> {
     return new Padding(
       padding: EdgeInsets.fromLTRB(5.0, 15, 5, 0),
       child: SizedBox(
-        height: 30.0,
+        height: ButtonHeight,
+        width: ButtonWidth,
         child: new RaisedButton(
           elevation: 10.0,
           color: Colors.lightGreen,
@@ -126,7 +131,8 @@ class _FilterPopupForm extends State<FilterPopupForm> {
     return new Padding(
       padding: EdgeInsets.fromLTRB(5.0, 15, 5, 0),
       child: SizedBox(
-        height: 30.0,
+        height: ButtonHeight,
+        width: ButtonWidth,
         child: new RaisedButton(
           elevation: 10.0,
           color: Colors.deepOrange,
@@ -145,10 +151,11 @@ class _FilterPopupForm extends State<FilterPopupForm> {
     return new Container(
       child: new Row(
         children: <Widget>[
-          const SizedBox(width: 60),
-          showSaveButton(),
-          const SizedBox(width: 15),
+          const SizedBox(width: 23),
           showResetButton(),
+          const SizedBox(width: 15),
+          showSaveButton(),
+          const SizedBox(width: 24),
         ],)
     );
   }
