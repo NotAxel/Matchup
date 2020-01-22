@@ -61,96 +61,118 @@ class _LogInSignupPageState extends State<LogInSignupPage> {
         ));
   }
 
+  // https://stackoverflow.com/questions/52645944/flutter-expanded-vs-flexible
   Widget showEmailField(){
     Validator emailValidator = EmailValidator();
-    return Padding(
-      padding: EdgeInsets.fromLTRB(0.0, 150.0, 10.0, 0.0),
-      child: new TextFormField(
-          key: Key('email'),
-          obscureText: false,
-          maxLines: 1,
-          style: style,
-          autofocus: false,
-          keyboardType: TextInputType.emailAddress,
-          decoration: InputDecoration(
-              hintText: "Email",
-              icon: new Icon(Icons.mail, 
-              color: Colors.blueGrey,
-              )),
-          validator: (value) => emailValidator.validate(value),
-          onSaved: (value) => _email = emailValidator.save(value),
+    return Flexible(
+      child:Padding(
+        padding: EdgeInsets.fromLTRB(0.0, 10, 0.0, 0.0),
+        child: new TextFormField(
+            key: Key('email'),
+            obscureText: false,
+            maxLines: 1,
+            style: style,
+            autofocus: false,
+            keyboardType: TextInputType.emailAddress,
+            decoration: InputDecoration(
+                hintText: "Email",
+                icon: new Icon(Icons.mail, 
+                color: Colors.blueGrey,
+                )),
+            validator: (value) => emailValidator.validate(value),
+            onSaved: (value) => _email = emailValidator.save(value),
+        ),
       ),
+      fit: FlexFit.loose,
+      flex: 1,
     );
   } 
 
   Widget showPasswordField(){
     Validator passwordValidator = PasswordValidator();
-    return Padding(
-      padding: EdgeInsets.fromLTRB(0.0, 15.0, 10.0, 0.0),
-      child: new TextFormField(
-          key: Key('password'),
-          maxLines: 1,
-          obscureText: true,
-          autofocus: false,
-          style: style,
-          decoration: InputDecoration(
-              //contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-              hintText: "Password",
-              icon: new Icon(Icons.lock,
-              color: Colors.blueGrey
-              )),
-          validator: (value) => passwordValidator.validate(value),
-          onSaved: (value) => _password = passwordValidator.save(value),
+    return Flexible(
+      child: Padding(
+        padding: EdgeInsets.fromLTRB(0.0, 20, 0, 50.0),
+        child: new TextFormField(
+            key: Key('password'),
+            maxLines: 1,
+            obscureText: true,
+            autofocus: false,
+            style: style,
+            decoration: InputDecoration(
+                //contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
+                hintText: "Password",
+                icon: new Icon(Icons.lock,
+                color: Colors.blueGrey
+                )),
+            validator: (value) => passwordValidator.validate(value),
+            onSaved: (value) => _password = passwordValidator.save(value),
+        ),
       ),
+      fit: FlexFit.loose,
+      flex: 1
     );
   }
 
+  // https://stackoverflow.com/questions/50293503/how-to-set-the-width-of-a-raisedbutton-in-flutter
   Widget showLogInButton(){
-    return new Padding(
-        padding: EdgeInsets.fromLTRB(20.0, 45.0, 20.0, 0.0),
-        child: SizedBox(
-          height: 40.0,
-          child: new RaisedButton(
-            key: Key('login'),
-            elevation: 5.0,
-            shape: new RoundedRectangleBorder(
-                borderRadius: new BorderRadius.circular(30.0)),
-            color: Colors.deepOrange,
-            child: new Text(_isLoginForm ? 'Login' : 'Create account',
-                style: new TextStyle(fontSize: 20.0, color: Colors.white)),
-            onPressed: validateAndSubmit,
-          ),
-        ));
+    return Flexible(
+      child: ButtonTheme(
+        minWidth: 300,
+        height: 50,
+        child: new RaisedButton(
+          key: Key('login'),
+          elevation: 5.0,
+          shape: new RoundedRectangleBorder(
+              borderRadius: new BorderRadius.circular(30.0)),
+          color: Colors.deepOrange,
+          child: new Text(_isLoginForm ? 'Login' : 'Create account',
+              style: new TextStyle(fontSize: 20.0, color: Colors.white)),
+          onPressed: validateAndSubmit,
+        ),
+      ),
+      fit: FlexFit.loose,
+      flex: 1
+    );
   }
   
   Widget showSwitchButton(){
-    return new FlatButton(
+    return Flexible(
+      child: new FlatButton(
       key: Key('switch between login/signup'),
       child: new Text(
         _isLoginForm ? 'Create an account' : 'Have an account? Sign in',
         style: new TextStyle(fontSize: 18.0, fontWeight: FontWeight.w300)),
-      onPressed: toggleFormMode);
+      onPressed: toggleFormMode),
+      fit: FlexFit.loose,
+      flex: 1
+    );
   }
   Widget showLogo(){
-    return SizedBox(
+    return Expanded(
       child: Image(
         key: Key('logo'),
         image: AssetImage('assets/images/logo.png'),
       ),
-      height: 200,
-      width: 400,
+      flex: 2
     );
   }
 
   Widget showErrorMessage() {
     if (_errorMessage.length > 0 && _errorMessage != null) {
-      return new Text(
+      print('bulding error message');
+      return Flexible(
+        child: new Text(
         _errorMessage,
+        key: Key('error message'),
         style: TextStyle(
-            fontSize: 13.0,
+            fontSize: 15.0,
             color: Colors.red,
             height: 1.0,
             fontWeight: FontWeight.w300),
+        ),
+        fit: FlexFit.loose,
+        flex: 1
       );
     } else {
       return new Container(
@@ -185,11 +207,11 @@ class _LogInSignupPageState extends State<LogInSignupPage> {
       try {
         if (_isLoginForm) {
           // use this future to test the loading icon
-          // await Future.delayed(Duration(seconds: 2));
           print("calling sign in function");
           userId = await auth.signIn(_email, _password);
           print('Signed in: $userId');
         } else {
+          print("calling sign up function");
           userId = await auth.signUp(_email, _password);
           //widget.auth.sendEmailVerification();
           //_showVerifyEmailSentDialog();
@@ -212,8 +234,8 @@ class _LogInSignupPageState extends State<LogInSignupPage> {
           );
         }
       } catch (e) {
-        print('Error: $e');
         print("IN ERROR HANDLER");
+        print('Error $e');
         setState(() {
           _isLoading = false;
           _errorMessage = e.message;
@@ -223,6 +245,7 @@ class _LogInSignupPageState extends State<LogInSignupPage> {
   }
 
   Widget buildWaitingScreen() {
+    print("building wait screen");
     return Scaffold(
       body: Container(
         alignment: Alignment.center,
@@ -240,8 +263,7 @@ class _LogInSignupPageState extends State<LogInSignupPage> {
         padding: EdgeInsets.all(16.0),
         child: new Form(
           key: _formKey,
-          child: new ListView(
-            shrinkWrap: true,
+          child: new Column(
             children: <Widget>[
               showLogo(),
               showEmailField(),
