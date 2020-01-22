@@ -1,1 +1,3 @@
 language: dart
+script:
+  - flutter pub get
