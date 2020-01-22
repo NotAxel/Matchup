@@ -1,10 +1,4 @@
 language: dart
 
-install:
-  - flutter pub get
-
-before_script:
-  - flutter pub get
-
-script:
-  - flutter pub get
+dart:
+  - dev
