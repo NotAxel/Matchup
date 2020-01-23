@@ -92,10 +92,9 @@ class _ChatPageState extends State<ChatPage> {
             .collection("Chats")
             .document(widget.chatId)
             .collection(widget.chatId)
-            .orderBy("timeStamp", descending: true)
-            .limit(20)
+            .orderBy('createdAt', descending: true)
             .snapshots(),
-        builder: (context, snapshot) {
+        builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
           if (snapshot.hasError){
             return snapshotError(snapshot);
           }
@@ -108,9 +107,9 @@ class _ChatPageState extends State<ChatPage> {
               itemBuilder: (context, index) =>
                   buildMessageBoxes(index, snapshot.data.documents[index]),
               itemCount: snapshot.data.documents.length,
-              reverse: true,
               controller: listScrollController,
               scrollDirection: Axis.vertical,
+              reverse: true,
               shrinkWrap: true,
             );
           }
@@ -126,6 +125,7 @@ class _ChatPageState extends State<ChatPage> {
   // if the fromId of the message is the current users, the message displays on right
   // otherwise, the fromId is from the peerId and appears on left
   Widget buildMessageBoxes(int index, DocumentSnapshot document) {
+    print(document['content']);
     if (document['fromId'] == widget.userId) {
       // Right (my message)
       return Row(children: <Widget>[
@@ -245,11 +245,12 @@ class _ChatPageState extends State<ChatPage> {
   // creates a message document using a time stamp to ensure uniqueness in the given chatId
   void sendMessage() {
     if (_message.getContent != "") {
+      String createdAt = DateTime.now().millisecondsSinceEpoch.toString();
       DocumentReference messageReference = Firestore.instance
           .collection("Chats")
           .document(widget.chatId)
           .collection(widget.chatId)
-          .document(DateTime.now().millisecondsSinceEpoch.toString());
+          .document(createdAt);
 
       // this method allows for an asyncrhonous write to occur without the whole function being async
       Firestore.instance.runTransaction((transaction) async {
@@ -257,7 +258,8 @@ class _ChatPageState extends State<ChatPage> {
           'content': _message.getContent,
           'toId': _message.getToId,
           'fromId': _message.getFromId,
-          'timeStamp': _message.getTimeStamp
+          'timeStamp': _message.getTimeStamp,
+          'createdAt': createdAt
         });
       });
       listScrollController.animateTo(0.0,

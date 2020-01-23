@@ -5,7 +5,6 @@ import 'package:matchup/Pages/filterPopupContent.dart';
 import 'package:matchup/bizlogic/User.dart';
 import 'package:matchup/bizlogic/userProvider.dart';
 import './challengePage.dart' as cp;
-import 'homepage.dart';
 import 'package:matchup/bizlogic/mainToImageLinker.dart' as il;
 import 'package:matchup/Pages/filterPopupForm.dart' as fpf;
 
@@ -117,9 +116,10 @@ class MatchPageState extends State<MatchPage>{
                       );
                     },
                   );
-                } else { // used to skip the user so that they dont see themselves in matchlist
-                  return Container();
                 }
+                else{
+                  return Container();
+                } 
               },
               separatorBuilder: (BuildContext context, int index) =>  Divider(
                 color: Colors.blueGrey,
