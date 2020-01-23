@@ -1,4 +1,7 @@
 language: dart
 
+before_install:
+  - flutter pub get
+
 dart:
   - dev
