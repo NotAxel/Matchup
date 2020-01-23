@@ -117,8 +117,6 @@ class MatchPageState extends State<MatchPage>{
                       );
                     },
                   );
-                } else { // used to skip the user so that they dont see themselves in matchlist
-                  return Container();
                 }
               },
               separatorBuilder: (BuildContext context, int index) =>  Divider(
