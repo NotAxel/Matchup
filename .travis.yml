@@ -10,4 +10,4 @@ install:
 jobs:
   include:
     - stage: test 1
-      script: flutter test test/
+      script: flutter test ./test
