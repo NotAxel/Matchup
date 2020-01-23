@@ -7,3 +7,7 @@ addons:
 install:
 - git clone https://github.com/flutter/flutter.git -b beta
 - ./flutter/bin/flutter doctor
+jobs:
+  include:
+    - stage: test 1
+      script: flutter test test/
