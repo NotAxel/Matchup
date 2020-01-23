@@ -47,7 +47,6 @@ void main() {
 
       // wait after entering text so that it can be seen or recorded
       // await Future<void>.delayed(Duration(milliseconds: 750));
-
       // find the email field and type a valid email
       SerializableFinder emailField = find.byValueKey(Keys.email);
       await driver.tap(emailField);  // acquire focus
