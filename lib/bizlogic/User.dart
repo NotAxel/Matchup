@@ -78,11 +78,8 @@ class User {
   }
 
 
-  /*
-  // friendsList
-  List<User> get getFriendsList => _friendsList;
-  set setFriendsList(List<User> friendsList) { _friendsList = friendsList; }
 
+  /*
   // friendCount
   int get getfriendCount => _friendCount;
   set setFriendCount(int friendCount) { _friendCount = friendCount; }

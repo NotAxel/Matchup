@@ -23,11 +23,7 @@ class FreindsListPageState extends State<FreindsListPage>{
 
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
-    
-
     final User _user  = UserProvider.of(context).user;
-    //List friends = new List<String>();
     return new StreamBuilder(
       stream: Firestore.instance.collection('Users').document(_user.getUserId).snapshots(),
       builder: (context, snapshot){
@@ -38,7 +34,22 @@ class FreindsListPageState extends State<FreindsListPage>{
           return ListTile(
             title: new Text(
               userData["Friends List"][index]
-            )
+            ),
+            subtitle: new Text(
+              userData["Friends List"][index]
+            ),
+            trailing: new RaisedButton(
+              child: Text('smash'),
+              onPressed: (){
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => cp.ChallengePage(
+                    userId: _user.getUserId, 
+                    name: _user.getUserName, 
+                    main: _user.getMain, 
+                    peerId: ["Friends List"][index])));
+              },
+            ),
           );
         },
         separatorBuilder: (BuildContext context, int index) =>  Divider(
