@@ -3,7 +3,7 @@ import '../bizlogic/userProvider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:matchup/bizlogic/User.dart';
 import 'package:matchup/bizlogic/userProvider.dart';
-import 'package:matchup/bizlogic/mainToImageLinker.dart' as il;
+import 'package:matchup/bizlogic/constants.dart' as con;
 import './chatPage.dart' as chatp;
 
 class MessagePage extends StatefulWidget {
@@ -75,7 +75,7 @@ class MessagePageState extends State<MessagePage>{
               )
               ),
               leading: new Image(
-                image: il.ImageLinker.linkImage(snapshot.data['Main']),
+                image: AssetImage(con.Constants.minSpritesMap[snapshot.data['Main']]),
                 height: 25.0,
                 width: 25.0,
               ),

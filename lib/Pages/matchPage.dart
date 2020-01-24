@@ -5,7 +5,6 @@ import 'package:matchup/Pages/filterPopupContent.dart';
 import 'package:matchup/bizlogic/User.dart';
 import 'package:matchup/bizlogic/userProvider.dart';
 import './challengePage.dart' as cp;
-import 'package:matchup/bizlogic/mainToImageLinker.dart' as il;
 import 'package:matchup/Pages/filterPopupForm.dart' as fpf;
 import 'package:matchup/bizlogic/constants.dart' as con;
 

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:matchup/Pages/homepage.dart';
 import 'package:matchup/bizlogic/User.dart';
+import 'package:matchup/bizlogic/constants.dart';
 import 'package:matchup/bizlogic/userProvider.dart';
 
 class ProfilePage extends StatefulWidget {
@@ -62,7 +63,7 @@ class ProfilePageState extends State<ProfilePage> with SingleTickerProviderState
             //Should get username from firebase
             Text(''),
             //Should get profile pic from firebase
-            Center(child: Image.asset('assets/images/default_profile.jpg', height: 300)), 
+            Center(child: Image.asset(nameMap[_user.getMain], height: 300)), 
             //Center(child: Image.asset(nameMap[_user.getMain], height: 300)),
             Container(height: 50),
             //Should get mains from firebase
