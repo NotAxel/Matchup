@@ -11,6 +11,7 @@ class _FilterPopupForm extends State<FilterPopupForm> {
   static const double ButtonHeight = 40.0;
 
   Container _underLine = Container(height: 2, color: Colors.deepPurple);
+  final SnackBar snackBar = SnackBar(content: Text("Filters saved and applyed"), duration: Duration(seconds: 3),);
   
   String _mainFilter;
   String _regionFilter;
@@ -120,7 +121,9 @@ class _FilterPopupForm extends State<FilterPopupForm> {
             borderRadius: new BorderRadius.circular(30.0)
           ),
           child: new Text('Save'),
-          onPressed: () {},
+          onPressed: () {
+            Scaffold.of(context).showSnackBar(snackBar);
+          },
         ),
       ),
     );
