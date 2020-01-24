@@ -17,6 +17,8 @@ class MatchPage extends StatefulWidget {
 
 class MatchPageState extends State<MatchPage>{
 
+  String _mainFilter;
+
   @override
   Widget build (BuildContext context) {
     final User _user = UserProvider.of(context).user;
