@@ -2,6 +2,10 @@ import 'package:flutter/material.dart';
 
 class ImageLinker {
 
+  Map<String, String> minSpritesMap = {
+    
+  };
+
   static AssetImage linkImage(String main) {
     switch(main) {
       case "Fox" : return AssetImage('assets/images/fox_sprite.png');

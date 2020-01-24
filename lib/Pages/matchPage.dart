@@ -7,6 +7,7 @@ import 'package:matchup/bizlogic/userProvider.dart';
 import './challengePage.dart' as cp;
 import 'package:matchup/bizlogic/mainToImageLinker.dart' as il;
 import 'package:matchup/Pages/filterPopupForm.dart' as fpf;
+import 'package:matchup/bizlogic/constants.dart' as con;
 
 
 class MatchPage extends StatefulWidget {
@@ -16,40 +17,7 @@ class MatchPage extends StatefulWidget {
 
 class MatchPageState extends State<MatchPage>{
 
-/*
-  @override
-  Widget build(BuildContext context) {
-    final User _user = UserProvider.of(context).user;
-    print(_user.getUserId);
-    return StreamBuilder<QuerySnapshot>(
-      stream: Firestore.instance.collection('Users').snapshots(),
-      builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-        if (snapshot.hasError)
-          return new Text('Error: ${snapshot.error}');
-        switch (snapshot.connectionState) {
-          case ConnectionState.waiting: return new Text('Loading...');
-          default:
-            return new ListView(
-              children: snapshot.data.documents.map((DocumentSnapshot document) {
-                return new ListTile(
-                  title: new Text(document['Username']),
-                  subtitle: new Text(document['Main']),
-                  onTap: (){
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => cp.ChallengePage(
-                        userId: _user.getUserId, 
-                        name: document['Username'], 
-                        main: document['Main'], 
-                        peerId: document.documentID)));
-                  },
-                );
-              }).toList(),
-            );
-        }
-      },
-    );
-  } */
+  String _mainFilter;
 
   @override
   Widget build (BuildContext context) {
@@ -81,28 +49,39 @@ class MatchPageState extends State<MatchPage>{
           switch (snapshot.connectionState) {
             case ConnectionState.waiting: return new Text('Loading...');
           default:
+          snapshot.data.documents.removeWhere((item) => item.documentID == _user.getUserId);
             return new ListView.separated(
               itemCount: snapshot.data.documents.length,
               itemBuilder: (BuildContext context, int index) {
-                if(snapshot.data.documents.elementAt(index).documentID != _user.getUserId) {
-                  return ListTile(
-                    title: new Text(
-                      snapshot.data.documents.elementAt(index)['Username'],
-                      style: TextStyle(
-                        fontSize: 20.0,
-                        fontWeight: FontWeight.bold),
-                      ),
-                    subtitle: new Image(
-                      image: il.ImageLinker.linkImage(snapshot.data.documents.elementAt(index)['Main']),
-                      height: 25.0,
-                      width: 25.0,
-                      alignment: Alignment.centerLeft,
+                return ListTile(
+                  title: new Text(
+                    snapshot.data.documents.elementAt(index)['Username'],
+                    style: TextStyle(
+                      fontSize: 20.0,
+                      fontWeight: FontWeight.bold),
                     ),
-                    trailing: new Text(
-                      snapshot.data.documents.elementAt(index)['Region'],
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
+                  subtitle: new Image(
+                    image: AssetImage(con.Constants.minSpritesMap[snapshot.data.documents.elementAt(index)['Main']]),
+                    height: 25.0,
+                    width: 25.0,
+                    alignment: Alignment.centerLeft,
+                  ),
+                  trailing: new Text(
+                    snapshot.data.documents.elementAt(index)['Region'],
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                    )
+                  ),
+                  onTap: (){
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => cp.ChallengePage(
+                        userId: _user.getUserId, 
+                        name: snapshot.data.documents.elementAt(index)['Username'], 
+                        main: snapshot.data.documents.elementAt(index)['Main'], 
+                        peerId: snapshot.data.documents.elementAt(index).documentID)
                       )
+<<<<<<< HEAD
                     ),
                     onTap: (){
                       Navigator.push(
@@ -119,9 +98,16 @@ class MatchPageState extends State<MatchPage>{
                 else{
                   return Container();
                 } 
+=======
+                    );
+                  },
+                );   
+>>>>>>> master
               },
               separatorBuilder: (BuildContext context, int index) =>  Divider(
                 color: Colors.blueGrey,
+                indent: 15,
+                endIndent: 15,
                 thickness: 1.5,
               ),
           );
