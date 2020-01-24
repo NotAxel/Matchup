@@ -1,10 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-<<<<<<< HEAD
 import 'package:matchup/bizlogic/constants.dart';
-=======
 import 'package:matchup/bizlogic/User.dart';
->>>>>>> conversationList
 import './chatPage.dart' as chatp;
 
 
@@ -33,7 +30,7 @@ class ChallengePage extends StatelessWidget {
                 Text(this.peer.data["Username"] + "\nUser Id\n" + this.user.getUserId +  "\nPeer Id\n" + this.peer.documentID, style: profStyle),
                 Text(''),
                 //Should get profile pic from firebase
-                Image.asset(nameMap[this.main], height: 300),
+                Image.asset(nameMap[this.user.getMain], height: 300),
                 Text(''),
                 //Should get mains from firebase
                 Text(this.peer.data["Main"], style: profStyle),
