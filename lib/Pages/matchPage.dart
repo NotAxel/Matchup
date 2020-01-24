@@ -108,10 +108,9 @@ class MatchPageState extends State<MatchPage>{
                       Navigator.push(
                         context,
                         MaterialPageRoute(builder: (context) => cp.ChallengePage(
-                          userId: _user.getUserId, 
-                          name: snapshot.data.documents.elementAt(index)['Username'], 
-                          main: snapshot.data.documents.elementAt(index)['Main'], 
-                          peerId: snapshot.data.documents.elementAt(index).documentID)
+                          user: _user, 
+                          peer: snapshot.data.documents.elementAt(index),
+                        )
                         )
                       );
                     },

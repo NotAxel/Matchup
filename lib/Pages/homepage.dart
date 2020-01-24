@@ -1,6 +1,7 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:matchup/bizlogic/User.dart';
+import 'package:matchup/bizlogic/userProvider.dart';
 import './profilePage.dart' as profilep;
 import './messagePage.dart' as messagep;
 import './matchPage.dart' as matchp;

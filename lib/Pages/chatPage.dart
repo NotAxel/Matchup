@@ -1,16 +1,15 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:matchup/bizlogic/User.dart';
 import 'package:matchup/bizlogic/message.dart';
 
 class ChatPage extends StatefulWidget {
-  final String userId;
-  final String name;
-  final String main;
+  final User user;
   final String peerId;
   final String chatId;
 
   const ChatPage(
-      {Key key, this.userId, this.name, this.main, this.peerId, this.chatId})
+      {Key key, this.user, this.peerId, this.chatId})
       : super(key: key);
 
   @override
@@ -31,7 +30,7 @@ class _ChatPageState extends State<ChatPage> {
   void initState() {
     super.initState();
     // messages are from to the peer from the user
-    _message = new Message("", widget.peerId, widget.userId);
+    _message = new Message("", widget.peerId, widget.user.getUserId);
   }
 
   // idea for messaging structure from flutter community guide
@@ -61,10 +60,10 @@ class _ChatPageState extends State<ChatPage> {
 
   Widget showIds(){
     return Text("USER ID:" +
-        widget.userId.toString() +
+        widget.user.getUserId +
         "\n" +
         "PEER ID:" +
-        widget.peerId.toString());
+        widget.peerId);
   }
 
   Widget snapshotError(AsyncSnapshot snapshot){
@@ -125,8 +124,7 @@ class _ChatPageState extends State<ChatPage> {
   // if the fromId of the message is the current users, the message displays on right
   // otherwise, the fromId is from the peerId and appears on left
   Widget buildMessageBoxes(int index, DocumentSnapshot document) {
-    print(document['content']);
-    if (document['fromId'] == widget.userId) {
+    if (document['fromId'] == widget.user.getUserId) {
       // Right (my message)
       return Row(children: <Widget>[
         // Text
@@ -169,7 +167,7 @@ class _ChatPageState extends State<ChatPage> {
   bool isLastMessageLeft(int index) {
     if ((index > 0 &&
             listMessage != null &&
-            listMessage[index - 1]['idFrom'] == widget.userId) ||
+            listMessage[index - 1]['idFrom'] == widget.user.getUserId) ||
         index == 0) {
       return true;
     } else {
@@ -180,7 +178,7 @@ class _ChatPageState extends State<ChatPage> {
   bool isLastMessageRight(int index) {
     if ((index > 0 &&
             listMessage != null &&
-            listMessage[index - 1]['idFrom'] != widget.userId) ||
+            listMessage[index - 1]['idFrom'] != widget.user.getUserId) ||
         index == 0) {
       return true;
     } else {
@@ -193,14 +191,34 @@ class _ChatPageState extends State<ChatPage> {
     return Container(
       child: Row(
         children: <Widget>[
+          buildSendFriendCodeButton(context),
           buildMessageInput(context),
           buildSendButton(),
         ],),
-      padding: EdgeInsets.fromLTRB(20, 10, 0, 10),
+      padding: EdgeInsets.fromLTRB(10, 10, 0, 10),
       decoration: new BoxDecoration(
         border: new Border(top: new BorderSide(color: Colors.grey[100], width: 0.5)),
         color: Colors.grey[300]
       ),
+    );
+  }
+
+  Widget buildSendFriendCodeButton(BuildContext context){
+    return Flexible(
+      child: Material(
+        child: IconButton(
+          color: Colors.lightBlue,
+          onPressed: (){
+            _message.setContent = widget.user.getFriendCode;
+            sendMessage();
+          },
+          icon: Icon(
+            Icons.videogame_asset
+          )
+        ),
+        color: Colors.grey[300],
+      ),
+      flex: 1,
     );
   }
 
@@ -219,25 +237,28 @@ class _ChatPageState extends State<ChatPage> {
         onSubmitted: (messageContents) {
         },
       ),
-      flex: 1,
+      flex: 6,
     );
   }
 
 
   Widget buildSendButton(){
-    return Material(
-      child: IconButton(
-        color: Colors.lightBlue,
-        onPressed: (){
-          _message.setContent = messageController.text;
-          sendMessage();
-          messageController.clear();
-        },
-        icon: Icon(
-          Icons.send
-        )
+    return Flexible(
+      child: Material(
+        child: IconButton(
+          color: Colors.lightBlue,
+          onPressed: (){
+            _message.setContent = messageController.text;
+            sendMessage();
+            messageController.clear();
+          },
+          icon: Icon(
+            Icons.send
+          )
+        ),
+        color: Colors.grey[300],
       ),
-      color: Colors.grey[300],
+      flex: 1,
     );
   }
 
