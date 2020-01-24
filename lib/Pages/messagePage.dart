@@ -83,11 +83,9 @@ class MessagePageState extends State<MessagePage>{
               onTap: (){
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) =>
+                  MaterialPageRoute(builder: (BuildContext context) =>
                   chatp.ChatPage(
-                  userId: _user.getUserId,
-                  name: _user.getUserName,
-                  main: _user.getMain,
+                  user: UserProvider.of(context).user,
                   peerId: conversation.documentID,
                   chatId: conversation.data["chatId"])
                   )

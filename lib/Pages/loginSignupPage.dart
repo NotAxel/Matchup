@@ -5,14 +5,12 @@ import 'package:matchup/bizlogic/emailValidator.dart';
 import 'package:matchup/bizlogic/passwordValidator.dart';
 import 'package:matchup/bizlogic/validator.dart';
 import 'userInfoEntryPage.dart';
-import 'homepage.dart';
 
 class LogInSignupPage extends StatefulWidget {
-  final String userId;
   final VoidCallback loginCallback;
   final VoidCallback logoutCallback;
 
-  LogInSignupPage({this.userId, this.loginCallback, this.logoutCallback});
+  LogInSignupPage({this.loginCallback, this.logoutCallback});
   
   @override
   _LogInSignupPageState createState() => _LogInSignupPageState();
