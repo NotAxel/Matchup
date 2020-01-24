@@ -2,14 +2,16 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:matchup/bizlogic/User.dart';
 import 'package:matchup/bizlogic/message.dart';
+import 'package:matchup/bizlogic/constants.dart';
+import 'package:intl/intl.dart';
 
 class ChatPage extends StatefulWidget {
   final User user;
-  final String peerId;
+  final DocumentSnapshot peer;
   final String chatId;
 
   const ChatPage(
-      {Key key, this.user, this.peerId, this.chatId})
+      {Key key, this.user, this.peer, this.chatId})
       : super(key: key);
 
   @override
@@ -21,8 +23,6 @@ class _ChatPageState extends State<ChatPage> {
   final ScrollController listScrollController = new ScrollController();
   final FocusNode focusNode = new FocusNode();
 
-  //final _formKey = new GlobalKey<FormState>();
-
   Message _message;
   var listMessage;
 
@@ -30,7 +30,7 @@ class _ChatPageState extends State<ChatPage> {
   void initState() {
     super.initState();
     // messages are from to the peer from the user
-    _message = new Message("", widget.peerId, widget.user.getUserId);
+    _message = new Message("", widget.peer.documentID, widget.user.getUserId);
   }
 
   // idea for messaging structure from flutter community guide
@@ -39,14 +39,14 @@ class _ChatPageState extends State<ChatPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Chatting"),),
+        title: buildPeerInfo(),
+      ),
       body: GestureDetector(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisSize: MainAxisSize.max,
           mainAxisAlignment: MainAxisAlignment.end,
           children: <Widget>[
-            showIds(),
             buildMessageList(context),
             buildMessageInputContainer(context)
           ],
@@ -58,12 +58,28 @@ class _ChatPageState extends State<ChatPage> {
     );
   }
 
-  Widget showIds(){
-    return Text("USER ID:" +
-        widget.user.getUserId +
-        "\n" +
-        "PEER ID:" +
-        widget.peerId);
+  Widget buildPeerInfo(){
+    return Row(children: <Widget>[
+      // puts the image of the users main left of their name
+      Container(
+        child: Image.asset(nameMap[widget.peer["Main"]], cacheWidth: 30, cacheHeight: 30,),
+        padding: EdgeInsets.only(right: 10),
+      ),
+      // places text for the Username in between main and secondary
+      Expanded(
+        child: Center(
+          child: Text(widget.peer["Username"]), 
+        )
+      ),
+      // puts the image of the users secondary right of their name
+      Container(
+        child: Image.asset(nameMap[widget.peer["Secondary"]], cacheWidth: 30, cacheHeight: 30,),
+        padding: EdgeInsets.only(
+          left: 10,
+          right: 50),
+      ),
+      ],
+    );
   }
 
   Widget snapshotError(AsyncSnapshot snapshot){
@@ -91,7 +107,7 @@ class _ChatPageState extends State<ChatPage> {
             .collection("Chats")
             .document(widget.chatId)
             .collection(widget.chatId)
-            .orderBy('createdAt', descending: true)
+            .orderBy('timeStamp', descending: true)
             .snapshots(),
         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
           if (snapshot.hasError){
@@ -101,10 +117,11 @@ class _ChatPageState extends State<ChatPage> {
             return loadingCircle();
           } 
           else {
+            listMessage = snapshot.data.documents;
             return ListView.builder(
               padding: EdgeInsets.all(10.0),
               itemBuilder: (context, index) =>
-                  buildMessageBoxes(index, snapshot.data.documents[index]),
+                buildMessageBoxes(index, snapshot.data.documents[index]),
               itemCount: snapshot.data.documents.length,
               controller: listScrollController,
               scrollDirection: Axis.vertical,
@@ -126,7 +143,9 @@ class _ChatPageState extends State<ChatPage> {
   Widget buildMessageBoxes(int index, DocumentSnapshot document) {
     if (document['fromId'] == widget.user.getUserId) {
       // Right (my message)
-      return Row(children: <Widget>[
+      return Row(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: <Widget>[
         // Text
         Container(
           child: Text(
@@ -139,29 +158,59 @@ class _ChatPageState extends State<ChatPage> {
               color: Colors.blue[400],
               borderRadius: BorderRadius.circular(8.0)),
           margin: EdgeInsets.only(
-              left: 180,
               bottom: isLastMessageRight(index) ? 20.0 : 10.0,
-              right: 10.0),
-        )
-      ]);
-    } else {
-      return Row(children: <Widget>[
-        // Text
-        Container(
-          child: Text(
-            document['content'],
-            style: TextStyle(color: Colors.black),
           ),
-          padding: EdgeInsets.fromLTRB(15.0, 10.0, 15.0, 10.0),
-          width: 175.0,
-          decoration: BoxDecoration(
-              color: Colors.grey[300],
-              borderRadius: BorderRadius.circular(8.0)),
-          margin: EdgeInsets.only(
-              bottom: isLastMessageRight(index) ? 20.0 : 10.0, right: 10.0),
         )
       ]);
+    } 
+    else {
+      String timeStamp = document['timeStamp'];
+      // row for left side messages - from peer
+      return Row(
+        children: <Widget>[
+          Container(
+            // column containing message box and timestamp
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                // message box
+                Container(
+                  child: Text(
+                    document['content'],
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 14),
+                  ),
+                  padding: EdgeInsets.fromLTRB(15.0, 10.0, 15.0, 10.0),
+                  width: 175.0,
+                  decoration: BoxDecoration(
+                      color: Colors.grey[300],
+                      borderRadius: BorderRadius.circular(8.0)),
+                ),
+                buildMessageTimeStamp(timeStamp),
+              ]
+            ),
+            margin: EdgeInsets.only(
+                bottom: isLastMessageRight(index) ? 20.0 : 10.0),
+          )
+        ]
+      );
     }
+  }
+
+  Widget buildMessageTimeStamp(String timeStamp){
+    // time stamp
+    return Container(
+      child: Text(
+          DateFormat('dd MMM').add_jm()
+          .format(DateTime.fromMillisecondsSinceEpoch(int.parse(timeStamp))),
+          style: TextStyle(
+            color: Colors.blueGrey,
+            fontSize: 12.0,
+          )
+        ),
+      padding: EdgeInsets.only(left: 10),
+    );
   }
 
   bool isLastMessageLeft(int index) {
@@ -266,12 +315,11 @@ class _ChatPageState extends State<ChatPage> {
   // creates a message document using a time stamp to ensure uniqueness in the given chatId
   void sendMessage() {
     if (_message.getContent != "") {
-      String createdAt = DateTime.now().millisecondsSinceEpoch.toString();
       DocumentReference messageReference = Firestore.instance
           .collection("Chats")
           .document(widget.chatId)
           .collection(widget.chatId)
-          .document(createdAt);
+          .document(_message.getTimeStamp);
 
       // this method allows for an asyncrhonous write to occur without the whole function being async
       Firestore.instance.runTransaction((transaction) async {
@@ -280,7 +328,6 @@ class _ChatPageState extends State<ChatPage> {
           'toId': _message.getToId,
           'fromId': _message.getFromId,
           'timeStamp': _message.getTimeStamp,
-          'createdAt': createdAt
         });
       });
       listScrollController.animateTo(0.0,

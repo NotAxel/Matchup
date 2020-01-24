@@ -72,17 +72,6 @@ class MatchPageState extends State<MatchPage>{
                       fontWeight: FontWeight.bold,
                     )
                   ),
-                  onTap: (){
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => cp.ChallengePage(
-                        userId: _user.getUserId, 
-                        name: snapshot.data.documents.elementAt(index)['Username'], 
-                        main: snapshot.data.documents.elementAt(index)['Main'], 
-                        peerId: snapshot.data.documents.elementAt(index).documentID)
-                      )
-<<<<<<< HEAD
-                    ),
                     onTap: (){
                       Navigator.push(
                         context,
@@ -94,16 +83,7 @@ class MatchPageState extends State<MatchPage>{
                       );
                     },
                   );
-                }
-                else{
-                  return Container();
-                } 
-=======
-                    );
-                  },
-                );   
->>>>>>> master
-              },
+                },
               separatorBuilder: (BuildContext context, int index) =>  Divider(
                 color: Colors.blueGrey,
                 indent: 15,

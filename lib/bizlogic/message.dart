@@ -3,13 +3,13 @@ class Message{
   String _content;
   String _toId;
   String _fromId;
-  DateTime _timeStamp;
+  String _timeStamp;
   
   Message(String content, String toId, String fromId){
     _content = content;
     _toId = toId;
     _fromId = fromId;
-    _timeStamp = DateTime.now();
+    _timeStamp = DateTime.now().millisecondsSinceEpoch.toString();
   }
 
   // content
