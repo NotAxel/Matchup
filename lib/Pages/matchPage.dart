@@ -81,9 +81,28 @@ class MatchPageState extends State<MatchPage>{
                         main: snapshot.data.documents.elementAt(index)['Main'], 
                         peerId: snapshot.data.documents.elementAt(index).documentID)
                       )
+<<<<<<< HEAD
+                    ),
+                    onTap: (){
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => cp.ChallengePage(
+                          user: _user, 
+                          peer: snapshot.data.documents.elementAt(index),
+                        )
+                        )
+                      );
+                    },
+                  );
+                }
+                else{
+                  return Container();
+                } 
+=======
                     );
                   },
                 );   
+>>>>>>> master
               },
               separatorBuilder: (BuildContext context, int index) =>  Divider(
                 color: Colors.blueGrey,

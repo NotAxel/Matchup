@@ -20,6 +20,7 @@ class User {
   String _main; // Players main character
   String _secondary; // Players secondary
   String _region; // Players region they are located in
+  String _friendCode; // players nintendo switch friend code
 
   /*
   static int _maxFriends = 31;
@@ -49,19 +50,25 @@ class User {
   set setSecondary(String secondary) { _secondary = secondary; }
 
   // region
-  String get region => _region;
+  String get getRegion => _region;
   set setRegion(String region) { _region = region; }
+
+  String get getFriendCode => _friendCode;
+  set setFriendCode(String friendCode) { _friendCode= friendCode; }
 
   // takes a user id as a string
   // sets the users userId and populates the users remaining fields
   // by collecting data from the firebase
   Future<void> initializeData(FirebaseUser firebaseUser) async{
     _userId = firebaseUser.uid;
+    _email = firebaseUser.email;
     DocumentSnapshot userInformation = await Firestore.instance.collection('Users').document(_userId).get();
     if (userInformation.exists){
       _userName = userInformation['Username'];
       _main = userInformation['Main'];
       _secondary = userInformation['Secondary'];
+      _friendCode = userInformation['NintendoID'];
+      _region = userInformation['Region'];
     }
   }
 
