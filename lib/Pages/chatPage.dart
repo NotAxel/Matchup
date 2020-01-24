@@ -6,10 +6,13 @@ import 'package:matchup/bizlogic/message.dart';
 class ChatPage extends StatefulWidget {
   final User user;
   final String peerId;
+  final DocumentSnapshot peer;
+  // get rid of and just pass peer
+  final Map<String, dynamic> peerData;
   final String chatId;
 
   const ChatPage(
-      {Key key, this.user, this.peerId, this.chatId})
+      {Key key, this.user, this.peer, this.peerId, this.peerData, this.chatId})
       : super(key: key);
 
   @override
@@ -39,7 +42,8 @@ class _ChatPageState extends State<ChatPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Chatting"),),
+        title: new Text(widget.peer["Username"]),
+      ),
       body: GestureDetector(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,

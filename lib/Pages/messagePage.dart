@@ -61,8 +61,9 @@ class MessagePageState extends State<MessagePage>{
     );
   }
 
+  //TODO fix nav from message to chat
   Widget buildConversation(BuildContext context, DocumentSnapshot conversation){
-    final User _user = UserProvider.of(context).user;
+    final User user = UserProvider.of(context).user;
     return Container(
       child: FutureBuilder(
         future: Firestore.instance.collection("Users").document(conversation.documentID).get(),
@@ -85,8 +86,9 @@ class MessagePageState extends State<MessagePage>{
                   context,
                   MaterialPageRoute(builder: (BuildContext context) =>
                   chatp.ChatPage(
-                  user: UserProvider.of(context).user,
+                  user: user,
                   peerId: conversation.documentID,
+                  peer: snapshot.data,
                   chatId: conversation.data["chatId"])
                   )
                 );
