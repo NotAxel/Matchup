@@ -114,4 +114,8 @@ Map<String, String> nameMap = {
   "Wolf" : 'assets/images/characterPortraits/Daisy.png',
   "Zelda" : 'assets/images/characterPortraits/Daisy.png',
   "Zero Suit Samus" : 'assets/images/characterPortraits/Daisy.png',
+  "Joker" : 'assets/images/characterPortraits/Daisy.png',
+  "Hero" : 'assets/images/characterPortraits/Daisy.png',
+  "Banjo and Kazooie" : 'assets/images/characterPortraits/Daisy.png',
+  "Terry" : 'assets/images/characterPortraits/Daisy.png',
 };
