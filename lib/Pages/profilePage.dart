@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'dart:collection';
 import 'package:matchup/bizlogic/constants.dart';
 import 'package:matchup/Pages/homepage.dart';
 import 'package:matchup/bizlogic/User.dart';

@@ -107,8 +107,7 @@ class ChallengePage extends StatelessWidget {
       MaterialPageRoute(builder: (context) => 
         chatp.ChatPage(
           user: this.user,
-          peerId: peerId,
-          peerData: this.peer.data,
+          peer: this.peer,
           chatId: chatId)));
   }
 } 

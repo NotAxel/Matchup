@@ -61,7 +61,6 @@ class MessagePageState extends State<MessagePage>{
     );
   }
 
-  //TODO fix nav from message to chat
   Widget buildConversation(BuildContext context, DocumentSnapshot conversation){
     final User user = UserProvider.of(context).user;
     return Container(
@@ -87,7 +86,6 @@ class MessagePageState extends State<MessagePage>{
                   MaterialPageRoute(builder: (BuildContext context) =>
                   chatp.ChatPage(
                   user: user,
-                  peerId: conversation.documentID,
                   peer: snapshot.data,
                   chatId: conversation.data["chatId"])
                   )
