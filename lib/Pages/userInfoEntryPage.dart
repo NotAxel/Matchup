@@ -26,7 +26,7 @@ class _UserInfoEntryPage extends State<UserInfoEntryPage> {
   String _nintendoID;
   String _userID;
   String _userEmail = "waiting"; // used for testing
-
+  var _friendsList = new List<String>();
   // creating single instance of user to be used throughout program duration
 
   bool _isLoading;
@@ -41,6 +41,7 @@ class _UserInfoEntryPage extends State<UserInfoEntryPage> {
     _region = null;
     _nintendoID = null;
     _isUserForm = true;
+    _friendsList = [];
     super.initState();
   }
 
@@ -50,6 +51,7 @@ class _UserInfoEntryPage extends State<UserInfoEntryPage> {
     _mainChar = null;
     _region = null;
     _nintendoID = null;
+    _friendsList = [];
   }
 
   void toggleFormMode() {
@@ -225,8 +227,8 @@ class _UserInfoEntryPage extends State<UserInfoEntryPage> {
           'Main' : _mainChar, 
           'Secondary' : _secondaryChar, 
           'Region' : _region, 
-          'Username' : _userName, 
-          'NintendoID' : _nintendoID});
+          'NintendoID' : _nintendoID,
+          'Friends List' : _friendsList});
         Navigator.of(context).pop();
       } 
       catch (e) {

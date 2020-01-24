@@ -27,17 +27,42 @@ class FreindsListPageState extends State<FreindsListPage>{
     
 
     final User _user  = UserProvider.of(context).user;
-    return StreamBuilder<QuerySnapshot>(
-      stream: Firestore.instance.collection('Users').snapshots(),
-      builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+    //List friends = new List<String>();
+    return new StreamBuilder(
+      stream: Firestore.instance.collection('Users').document(_user.getUserId).snapshots(),
+      builder: (context, snapshot){
+      var userData = snapshot.data;
+      return new ListView.separated(
+        itemCount: userData["Friends List"].length,
+        itemBuilder: (BuildContext context, int index){
+          return ListTile(
+            title: new Text(
+              userData["Friends List"][index]
+            )
+          );
+        },
+        separatorBuilder: (BuildContext context, int index) =>  Divider(
+          color: Colors.blueGrey,
+          thickness: 1.5,
+        ),
+      );
+
+      }
+    );
+    /*
+    return StreamBuilder<QuerySnapshot>( // used to be <QuerySnapshot>
+      stream: Firestore.instance.collection('Users').snapshots(), // .document(_user.getUserId) was added i think
+      builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) { // used to be <QuerySnapshot>
         if (snapshot.hasError)
           return new Text('Error: ${snapshot.error}');
         switch (snapshot.connectionState) {
           case ConnectionState.waiting: return new Text('Loading...');
           default:
             return new ListView(
+              //children: snapshot.data.data(document)
               children: snapshot.data.documents.map((DocumentSnapshot document) {
                 return new ListTile(
+                  //title: new Text(snapshot.data.data.values(_user.getFriends)),
                   title: new Text(document['Username']),
                   subtitle: new Text(document['Main']),
                   trailing: new RaisedButton(
@@ -59,7 +84,7 @@ class FreindsListPageState extends State<FreindsListPage>{
             );
         }
       },
-    );
+    );*/
   }
 
 

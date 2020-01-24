@@ -20,6 +20,7 @@ class User {
   String _main; // Players main character
   String _secondary; // Players secondary
   String _region; // Players region they are located in
+  List _friendsList = new List<String>();
 
   /*
   static int _maxFriends = 31;
@@ -51,6 +52,17 @@ class User {
   // region
   String get region => _region;
   set setRegion(String region) { _region = region; }
+
+  // friends list
+  List get getFriends => _friendsList;
+  set setFriends(List friendsList) { _friendsList = friendsList; }
+
+  Future<String> convertIdToUsername(String id) async
+  {
+    DocumentSnapshot friend = await Firestore.instance.collection('Users').document(id).get();
+    return friend['Username'];
+
+  }
 
   // takes a user id as a string
   // sets the users userId and populates the users remaining fields

@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import './chatPage.dart' as chatp;
+import './friendsListPage.dart' as friendsListp;
 
 
 class ChallengePage extends StatelessWidget {
@@ -35,10 +36,19 @@ class ChallengePage extends StatelessWidget {
                 //Should get mains from firebase
                 Text(this.main, style: profStyle),
                 RaisedButton(
-                  child: Text('Smash', style: TextStyle(fontSize: 30, color: Colors.white)),
+                  child: Text('Smash', style: TextStyle(fontSize: 20, color: Colors.white)),
                   color: Colors.redAccent,
                   onPressed: () {
                     goToChatPage(context, userId, peerId);
+                  },
+                  ),
+                  RaisedButton(
+                  child: Text('Add Friend', style: TextStyle(fontSize: 20, color: Colors.white)),
+                  color: Colors.deepPurple,
+                  onPressed: () {
+                    Firestore.instance.collection('Users').document(userId).updateData({
+                      'Friends List' : FieldValue.arrayUnion([peerId])});
+                    //goToFriendsListPage(context,userId, peerId);
                   },
                   ),
                 RaisedButton(
@@ -111,5 +121,12 @@ class ChallengePage extends StatelessWidget {
           main: this.main,
           peerId: this.peerId,
           chatId: chatId)));
+  }
+
+  void goToFriendsListPage(BuildContext context, String userId, String peerId) async{
+    Navigator.push(
+      context, 
+      MaterialPageRoute(builder: (context) => 
+        friendsListp.FreindsListPage()));
   }
 } 
