@@ -78,8 +78,8 @@ class MessagePageState extends State<MessagePage>{
                 image: il.ImageLinker.linkImage(snapshot.data['Main']),
                 height: 25.0,
                 width: 25.0,
-                alignment: Alignment.centerLeft,
               ),
+              trailing: getLastMessage(context, conversation),
               onTap: (){
                 Navigator.push(
                   context,
@@ -94,11 +94,44 @@ class MessagePageState extends State<MessagePage>{
             );
           }
           else{
-            return CircularProgressIndicator();
+            return Text("");
           }
         }, 
       ),
       width: 175.0,
+    );
+  }
+
+  Widget getLastMessage(BuildContext context, DocumentSnapshot conversation){
+    return Container(
+      child: StreamBuilder(
+        stream: Firestore.instance.collection("Chats")
+            .document(conversation.data["chatId"])
+            .collection(conversation.data["chatId"])
+            .orderBy('createdAt', descending: true)
+            .snapshots(),
+        builder: (context, AsyncSnapshot<QuerySnapshot> snapshot){
+          if(snapshot.connectionState == ConnectionState.active){
+            if(snapshot.data.documents.isNotEmpty){
+              return Text(snapshot.data.documents
+                  .first["content"],
+                maxLines: 1,
+                style: TextStyle(
+                  fontSize: 15.0,
+                  color: Colors.blueGrey[100]
+                )
+              );
+            }
+            else{
+              return Text("");
+            }
+          }
+          else{
+            return CircularProgressIndicator();
+          }
+        }
+      ),
+      padding: EdgeInsets.fromLTRB(15.0, 10.0, 0.0, 10.0),
     );
   }
 
