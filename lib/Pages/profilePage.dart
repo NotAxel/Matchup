@@ -96,8 +96,8 @@ class ProfilePageState extends State<ProfilePage> with SingleTickerProviderState
             //Should get username from firebase
             Text(''),
             //Should get profile pic from firebase
-/*             Center(child: Image.asset('assets/images/default_profile.jpg', height: 300)), */
-            Center(child: Image.asset(nameMap[_user.getMain], height: 300)),
+            Center(child: Image.asset('assets/images/default_profile.jpg', height: 300)), 
+            //Center(child: Image.asset(nameMap[_user.getMain], height: 300)),
             Container(height: 50),
             //Should get mains from firebase
 //            Text(_user.getMain, style: profStyle),

@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:matchup/bizlogic/constants.dart' as con;
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:matchup/bizlogic/User.dart';
@@ -80,7 +81,7 @@ class _UserInfoEntryPage extends State<UserInfoEntryPage> {
              _secondaryChar = newValue;
             });
           },
-          items: <String>['Fox', 'Marth', 'Sheik', 'Falco']
+          items: con.Constants.characters
             .map<DropdownMenuItem<String>>((String value){
               return DropdownMenuItem<String>(
                 value: value,
@@ -112,7 +113,7 @@ class _UserInfoEntryPage extends State<UserInfoEntryPage> {
               _mainChar = newValue;
             });
           },
-          items: <String>['Fox', 'Marth', 'Sheik', 'Falco']
+          items: con.Constants.characters
             .map<DropdownMenuItem<String>>((String value){
               return DropdownMenuItem<String>(
                 value: value,
@@ -143,7 +144,7 @@ class _UserInfoEntryPage extends State<UserInfoEntryPage> {
                 _region = newValue;
               });
             },
-            items: <String>['','North West', 'West Coast', 'Mountain', 'North', 'Central', 'South', 'Mid West', 'East Coast', 'South East']
+            items: con.Constants.regions
               .map<DropdownMenuItem<String>>((String value){
                 return DropdownMenuItem<String>(
                   value: value,
