@@ -9,7 +9,6 @@ class Message{
     _content = content;
     _toId = toId;
     _fromId = fromId;
-    _timeStamp = DateTime.now().millisecondsSinceEpoch.toString();
   }
 
   // content
@@ -26,5 +25,6 @@ class Message{
 
   // timeStamp
   get getTimeStamp => _timeStamp;
+  set setTimeStamp(String timeStamp){ _timeStamp = timeStamp; }
 
 }

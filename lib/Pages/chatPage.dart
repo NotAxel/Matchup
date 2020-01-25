@@ -135,75 +135,59 @@ class _ChatPageState extends State<ChatPage> {
     );
   }
 
-  // building messages
-  // arguments are the index of the current item being built obtained from listBuilder
-  // and document is the snapshot of the current message log for the given chatId
-  // if the fromId of the message is the current users, the message displays on right
-  // otherwise, the fromId is from the peerId and appears on left
-  Widget buildMessageBoxes(int index, DocumentSnapshot document) {
-    if (document['fromId'] == widget.user.getUserId) {
-      // Right (my message)
-      return Row(
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: <Widget>[
-        // Text
-        Container(
-          child: Text(
-            document['content'],
-            style: TextStyle(color: Colors.white),
-          ),
-          padding: EdgeInsets.fromLTRB(15.0, 10.0, 15.0, 10.0),
-          width: 175.0,
-          decoration: BoxDecoration(
-              color: Colors.blue[400],
-              borderRadius: BorderRadius.circular(8.0)),
-          margin: EdgeInsets.only(
-              bottom: isLastMessageRight(index) ? 20.0 : 10.0,
-          ),
-        )
-      ]);
-    } 
-    else {
-      String timeStamp = document['timeStamp'];
-      // row for left side messages - from peer
-      return Row(
-        children: <Widget>[
-          Container(
-            // column containing message box and timestamp
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                // message box
-                Container(
-                  child: Text(
-                    document['content'],
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 14),
-                  ),
-                  padding: EdgeInsets.fromLTRB(15.0, 10.0, 15.0, 10.0),
-                  width: 175.0,
-                  decoration: BoxDecoration(
-                      color: Colors.grey[300],
-                      borderRadius: BorderRadius.circular(8.0)),
-                ),
-                buildMessageTimeStamp(timeStamp),
-              ]
-            ),
-            margin: EdgeInsets.only(
-                bottom: isLastMessageRight(index) ? 20.0 : 10.0),
-          )
-        ]
-      );
+  // chooses if the row main axis alignment is end or start
+  // end places message box on right of row for user message
+  // start places message box on left of row for peer message
+  MainAxisAlignment rowMainAxisAlignment(bool isUserMessage) {
+    if (isUserMessage){
+      return MainAxisAlignment.end;
     }
+    return MainAxisAlignment.start;
   }
 
+  // chooses if the column cross axis alignment is end or start
+  // end puts the widget on the right side of the column for user message
+  // start puts the widget on the left side of the column for peer message
+  CrossAxisAlignment columnCrossAxisAlignment(bool isUserMessage) {
+    if (isUserMessage){
+      return CrossAxisAlignment.end;
+    }
+    return CrossAxisAlignment.start;
+  }
+
+  // returns black for user message text
+  // returns black for peer message text
+  Color messageTextColor(bool isUserMessage){
+    if (isUserMessage){
+      return Colors.white;
+    }
+    return Colors.black;
+  }
+
+  // returns blue for user message box 
+  // returns grey for peer message text
+  Color messageBoxColor(bool isUserMessage){
+    if (isUserMessage){
+      return Colors.blue[400];
+    }
+    return Colors.grey[300];
+  }
+
+  // translatest the milliseconds since epoch time
+  // into utc time and returns the string
+  // example: 24 Jan 2017 9:30 PM
+  String formatTimeStamp(String timeStamp){
+    return DateFormat('dd MMM y').add_jm()
+      .format(DateTime.fromMillisecondsSinceEpoch(int.parse(timeStamp)));
+  }
+
+  // returns a containter that holds a text widget
+  // the text widgets data is the time the message was sent
   Widget buildMessageTimeStamp(String timeStamp){
     // time stamp
     return Container(
       child: Text(
-          DateFormat('dd MMM').add_jm()
-          .format(DateTime.fromMillisecondsSinceEpoch(int.parse(timeStamp))),
+          formatTimeStamp(timeStamp),
           style: TextStyle(
             color: Colors.blueGrey,
             fontSize: 12.0,
@@ -213,27 +197,53 @@ class _ChatPageState extends State<ChatPage> {
     );
   }
 
-  bool isLastMessageLeft(int index) {
+  EdgeInsets messageContainerMargins(int index) {
     if ((index > 0 &&
             listMessage != null &&
             listMessage[index - 1]['idFrom'] == widget.user.getUserId) ||
         index == 0) {
-      return true;
+      return EdgeInsets.only(bottom: 20);
     } else {
-      return false;
+      return EdgeInsets.only(bottom: 10);
     }
   }
 
-  bool isLastMessageRight(int index) {
-    if ((index > 0 &&
-            listMessage != null &&
-            listMessage[index - 1]['idFrom'] != widget.user.getUserId) ||
-        index == 0) {
-      return true;
-    } else {
-      return false;
-    }
+  // building messages
+  // index is the index of the current item being built obtained from listBuilder
+  // and document is the snapshot of the current message log for the given chatId
+  // if the fromId of the message is the current users, the message displays on right
+  // otherwise, the fromId is from the peerId and appears on left
+  Widget buildMessageBoxes(int index, DocumentSnapshot document){
+    String timeStamp = document['timeStamp'];
+    bool isUserMessage = document['fromId'] == widget.user.getUserId;
+    // Right (my message)
+    return Row(
+      mainAxisAlignment: rowMainAxisAlignment(isUserMessage),
+      children: <Widget>[
+        Container(
+          child: Column(
+            crossAxisAlignment: columnCrossAxisAlignment(isUserMessage),
+            children: <Widget>[
+              Container(
+                child: Text(
+                  document['content'],
+                  style: TextStyle(color: messageTextColor(isUserMessage)),
+                ),
+                padding: EdgeInsets.fromLTRB(15.0, 10.0, 15.0, 10.0),
+                width: 175.0,
+                decoration: BoxDecoration(
+                  color: messageBoxColor(isUserMessage),
+                  borderRadius: BorderRadius.circular(8.0)),
+              ),
+              buildMessageTimeStamp(timeStamp),
+              ]
+            ),
+            margin: messageContainerMargins(index)
+          )
+        ]
+      );
   }
+
 
   // container that holds send message button and message input field 
   Widget buildMessageInputContainer(BuildContext context){
@@ -314,6 +324,7 @@ class _ChatPageState extends State<ChatPage> {
   // receives a message with updated contents when the chat box is submitted
   // creates a message document using a time stamp to ensure uniqueness in the given chatId
   void sendMessage() {
+    _message.setTimeStamp = DateTime.now().millisecondsSinceEpoch.toString();
     if (_message.getContent != "") {
       DocumentReference messageReference = Firestore.instance
           .collection("Chats")
