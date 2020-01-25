@@ -58,26 +58,52 @@ class _ChatPageState extends State<ChatPage> {
     );
   }
 
+  // takes a file location as a string
+  // file location should be in the format
+  // assets/images/small_sprites/characterName.png
+  // returns sprite of the users main
+  Widget buildPeerMainCharacterSprite(String main){
+    return Container(
+      key: Key("MAIN_SPRITE"),
+      child: Image.asset(main, cacheWidth: 30, cacheHeight: 30,),
+      padding: EdgeInsets.only(right: 10),
+    );
+  }
+
+  // takes a file location as a string
+  // file location should be in the format
+  // assets/images/small_sprites/characterName.png
+  // returns sprite of the users secondary 
+  Widget buildPeerSecondaryCharacterSprite(String secondary){
+    return Container(
+      key: Key("SECONDARY_SPRITE"),
+      child: Image.asset(secondary, cacheWidth: 30, cacheHeight: 30,),
+      padding: EdgeInsets.only(
+        left: 10,
+        right: 50),
+    );
+  }
+
+  // takes a string for the peer username
+  // returns a text widget to be displayed in peer info
+  // in the app bar
+  Widget buildPeerUserName(String username){
+    return Expanded(
+      child: Center(
+        child: Text(username), 
+      )
+    );
+  }
+
+  // constructs the information to be placed in the app bar about the peer
   Widget buildPeerInfo(){
     return Row(children: <Widget>[
       // puts the image of the users main left of their name
-      Container(
-        child: Image.asset(nameMap[widget.peer["Main"]], cacheWidth: 30, cacheHeight: 30,),
-        padding: EdgeInsets.only(right: 10),
-      ),
+      buildPeerMainCharacterSprite(nameMap[widget.peer["Main"]]),
       // places text for the Username in between main and secondary
-      Expanded(
-        child: Center(
-          child: Text(widget.peer["Username"]), 
-        )
-      ),
+      buildPeerUserName(widget.peer["Username"]),
       // puts the image of the users secondary right of their name
-      Container(
-        child: Image.asset(nameMap[widget.peer["Secondary"]], cacheWidth: 30, cacheHeight: 30,),
-        padding: EdgeInsets.only(
-          left: 10,
-          right: 50),
-      ),
+      buildPeerSecondaryCharacterSprite(nameMap[widget.peer["Secondary"]])
       ],
     );
   }
@@ -93,6 +119,8 @@ class _ChatPageState extends State<ChatPage> {
     );
   }
 
+  // this can probably be made into its own class
+  // so that it is reusable
   Widget loadingCircle(){
     return Center(
         child: CircularProgressIndicator(
@@ -264,6 +292,7 @@ class _ChatPageState extends State<ChatPage> {
 
   Widget buildSendFriendCodeButton(BuildContext context){
     return Flexible(
+      key: Key("SEND_FRIEND_CODE_BUTTON"),
       child: Material(
         child: IconButton(
           color: Colors.lightBlue,
@@ -283,6 +312,7 @@ class _ChatPageState extends State<ChatPage> {
 
   Widget buildMessageInput(BuildContext context){
     return Flexible(
+        key: Key("MESSAGE_INPUT_FIELD"),
         child: TextField(
         controller: messageController,
         minLines: 1,
@@ -293,8 +323,6 @@ class _ChatPageState extends State<ChatPage> {
           hintText: 'Send a message...',
         ),
         focusNode: focusNode,
-        onSubmitted: (messageContents) {
-        },
       ),
       flex: 6,
     );
@@ -303,6 +331,7 @@ class _ChatPageState extends State<ChatPage> {
 
   Widget buildSendButton(){
     return Flexible(
+      key: Key("SEND_MESSAGE_BUTTON"),
       child: Material(
         child: IconButton(
           color: Colors.lightBlue,

@@ -51,26 +51,35 @@ class ProfilePageState extends State<ProfilePage> with SingleTickerProviderState
         ));
   }
 
+  // this can probably be made into its own class
+  // so that it is reusable
+  Widget loadingCircle(){
+    return Center(
+        child: CircularProgressIndicator(
+            valueColor: AlwaysStoppedAnimation<Color>(
+                Colors.lightBlue)));
+  }
+
   @override
   Widget build(BuildContext context) {
     final User _user = UserProvider.of(context).user;
     final VoidCallback logoutCallback = HomePageProvider.of(context).logoutCallback;
-    return Column(
-          children: [
-            Text(''),
-            Container(height: 50),
-            Text(_user.getUserName, style: profStyle),
-            //Should get username from firebase
-            Text(''),
-            //Should get profile pic from firebase
-            Center(child: Image.asset(nameMap[_user.getMain], height: 300)), 
-            //Center(child: Image.asset(nameMap[_user.getMain], height: 300)),
-            Container(height: 50),
-            //Should get mains from firebase
-//            Text(_user.getMain, style: profStyle),
-            Text("Main: " + _user.getMain + "\nSecondary: " + _user.getSecondary, style: profStyle),
-            _showForm(logoutCallback),
-            ]
-        );
+    if (_user == null){
+      return loadingCircle();
+    }
+    else{
+      return Column(
+        children: [
+          Text(''),
+          Container(height: 50),
+          Text(_user.getUserName, style: profStyle),
+          Text(''),
+          Center(child: Image.asset(nameMap[_user.getMain], height: 300)), 
+          Container(height: 50),
+          Text("Main: " + _user.getMain + "\nSecondary: " + _user.getSecondary, style: profStyle),
+          _showForm(logoutCallback),
+        ]
+      );
+    }
   }
 }
