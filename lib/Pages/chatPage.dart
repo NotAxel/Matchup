@@ -99,11 +99,11 @@ class _ChatPageState extends State<ChatPage> {
   Widget buildPeerInfo(){
     return Row(children: <Widget>[
       // puts the image of the users main left of their name
-      buildPeerMainCharacterSprite(nameMap[widget.peer["Main"]]),
+      buildPeerMainCharacterSprite(Constants.minSpritesMap[widget.peer["Main"]]),
       // places text for the Username in between main and secondary
       buildPeerUserName(widget.peer["Username"]),
       // puts the image of the users secondary right of their name
-      buildPeerSecondaryCharacterSprite(nameMap[widget.peer["Secondary"]])
+      buildPeerSecondaryCharacterSprite(Constants.minSpritesMap[widget.peer["Secondary"]])
       ],
     );
   }
