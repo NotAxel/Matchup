@@ -5,7 +5,6 @@ import 'package:matchup/Pages/filterPopupContent.dart';
 import 'package:matchup/bizlogic/User.dart';
 import 'package:matchup/bizlogic/userProvider.dart';
 import './challengePage.dart' as cp;
-import 'package:matchup/bizlogic/mainToImageLinker.dart' as il;
 import 'package:matchup/Pages/filterPopupForm.dart' as fpf;
 import 'package:matchup/bizlogic/constants.dart' as con;
 
@@ -72,18 +71,18 @@ class MatchPageState extends State<MatchPage>{
                       fontWeight: FontWeight.bold,
                     )
                   ),
-                  onTap: (){
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => cp.ChallengePage(
-                        user: _user, 
-                        peer: snapshot.data.documents.elementAt(index),
+                    onTap: (){
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => cp.ChallengePage(
+                          user: _user, 
+                          peer: snapshot.data.documents.elementAt(index),
                         )
-                      )
-                    );
-                  },
-                );
-              },
+                        )
+                      );
+                    },
+                  );
+                },
               separatorBuilder: (BuildContext context, int index) =>  Divider(
                 color: Colors.blueGrey,
                 indent: 15,
