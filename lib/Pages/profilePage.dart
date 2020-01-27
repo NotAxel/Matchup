@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:matchup/Pages/homepage.dart';
+import 'package:matchup/Pages/loadingCircle.dart';
 import 'package:matchup/bizlogic/User.dart';
 import 'package:matchup/bizlogic/constants.dart';
 import 'package:matchup/bizlogic/userProvider.dart';
@@ -51,21 +52,13 @@ class ProfilePageState extends State<ProfilePage> with SingleTickerProviderState
         ));
   }
 
-  // this can probably be made into its own class
-  // so that it is reusable
-  Widget loadingCircle(){
-    return Center(
-        child: CircularProgressIndicator(
-            valueColor: AlwaysStoppedAnimation<Color>(
-                Colors.lightBlue)));
-  }
 
   @override
   Widget build(BuildContext context) {
     final User _user = UserProvider.of(context).user;
     final VoidCallback logoutCallback = HomePageProvider.of(context).logoutCallback;
     if (_user == null){
-      return loadingCircle();
+      return LoadingCircle.loadingCircle();
     }
     else{
       return Column(

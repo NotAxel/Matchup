@@ -1,9 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+
 import 'package:matchup/bizlogic/User.dart';
 import 'package:matchup/bizlogic/message.dart';
 import 'package:matchup/bizlogic/constants.dart';
-import 'package:intl/intl.dart';
+import 'package:matchup/bizlogic/chatPageLogic.dart';
+import 'package:matchup/Pages/loadingCircle.dart';
 
 class ChatPage extends StatefulWidget {
   final User user;
@@ -24,7 +26,7 @@ class _ChatPageState extends State<ChatPage> {
   final FocusNode focusNode = new FocusNode();
 
   Message _message;
-  var listMessage;
+  List<DocumentSnapshot> listMessage;
 
   @override
   void initState() {
@@ -119,15 +121,6 @@ class _ChatPageState extends State<ChatPage> {
     );
   }
 
-  // this can probably be made into its own class
-  // so that it is reusable
-  Widget loadingCircle(){
-    return Center(
-        child: CircularProgressIndicator(
-            valueColor: AlwaysStoppedAnimation<Color>(
-                Colors.lightBlue)));
-  }
-
   Widget buildMessageList(BuildContext context){
     return Expanded(
       child: StreamBuilder(
@@ -142,7 +135,7 @@ class _ChatPageState extends State<ChatPage> {
             return snapshotError(snapshot);
           }
           else if (!snapshot.hasData) {
-            return loadingCircle();
+            return LoadingCircle.loadingCircle();
           } 
           else {
             listMessage = snapshot.data.documents;
@@ -163,59 +156,13 @@ class _ChatPageState extends State<ChatPage> {
     );
   }
 
-  // chooses if the row main axis alignment is end or start
-  // end places message box on right of row for user message
-  // start places message box on left of row for peer message
-  MainAxisAlignment rowMainAxisAlignment(bool isUserMessage) {
-    if (isUserMessage){
-      return MainAxisAlignment.end;
-    }
-    return MainAxisAlignment.start;
-  }
-
-  // chooses if the column cross axis alignment is end or start
-  // end puts the widget on the right side of the column for user message
-  // start puts the widget on the left side of the column for peer message
-  CrossAxisAlignment columnCrossAxisAlignment(bool isUserMessage) {
-    if (isUserMessage){
-      return CrossAxisAlignment.end;
-    }
-    return CrossAxisAlignment.start;
-  }
-
-  // returns black for user message text
-  // returns black for peer message text
-  Color messageTextColor(bool isUserMessage){
-    if (isUserMessage){
-      return Colors.white;
-    }
-    return Colors.black;
-  }
-
-  // returns blue for user message box 
-  // returns grey for peer message text
-  Color messageBoxColor(bool isUserMessage){
-    if (isUserMessage){
-      return Colors.blue[400];
-    }
-    return Colors.grey[300];
-  }
-
-  // translatest the milliseconds since epoch time
-  // into utc time and returns the string
-  // example: 24 Jan 2017 9:30 PM
-  String formatTimeStamp(String timeStamp){
-    return DateFormat('dd MMM y').add_jm()
-      .format(DateTime.fromMillisecondsSinceEpoch(int.parse(timeStamp)));
-  }
-
   // returns a containter that holds a text widget
   // the text widgets data is the time the message was sent
   Widget buildMessageTimeStamp(String timeStamp){
     // time stamp
     return Container(
       child: Text(
-          formatTimeStamp(timeStamp),
+          ChatPageLogic.formatTimeStamp(timeStamp),
           style: TextStyle(
             color: Colors.blueGrey,
             fontSize: 12.0,
@@ -223,17 +170,6 @@ class _ChatPageState extends State<ChatPage> {
         ),
       padding: EdgeInsets.only(left: 10),
     );
-  }
-
-  EdgeInsets messageContainerMargins(int index) {
-    if ((index > 0 &&
-            listMessage != null &&
-            listMessage[index - 1]['idFrom'] == widget.user.getUserId) ||
-        index == 0) {
-      return EdgeInsets.only(bottom: 20);
-    } else {
-      return EdgeInsets.only(bottom: 10);
-    }
   }
 
   // building messages
@@ -246,32 +182,31 @@ class _ChatPageState extends State<ChatPage> {
     bool isUserMessage = document['fromId'] == widget.user.getUserId;
     // Right (my message)
     return Row(
-      mainAxisAlignment: rowMainAxisAlignment(isUserMessage),
+      mainAxisAlignment: ChatPageLogic.rowMainAxisAlignment(isUserMessage),
       children: <Widget>[
         Container(
           child: Column(
-            crossAxisAlignment: columnCrossAxisAlignment(isUserMessage),
+            crossAxisAlignment: ChatPageLogic.columnCrossAxisAlignment(isUserMessage),
             children: <Widget>[
               Container(
                 child: Text(
                   document['content'],
-                  style: TextStyle(color: messageTextColor(isUserMessage)),
+                  style: TextStyle(color: ChatPageLogic.messageTextColor(isUserMessage)),
                 ),
                 padding: EdgeInsets.fromLTRB(15.0, 10.0, 15.0, 10.0),
                 width: 175.0,
                 decoration: BoxDecoration(
-                  color: messageBoxColor(isUserMessage),
+                  color: ChatPageLogic.messageBoxColor(isUserMessage),
                   borderRadius: BorderRadius.circular(8.0)),
               ),
               buildMessageTimeStamp(timeStamp),
               ]
             ),
-            margin: messageContainerMargins(index)
+            margin: ChatPageLogic.messageContainerMargins(index)
           )
         ]
       );
   }
-
 
   // container that holds send message button and message input field 
   Widget buildMessageInputContainer(BuildContext context){
@@ -371,7 +306,7 @@ class _ChatPageState extends State<ChatPage> {
         });
       });
       listScrollController.animateTo(0.0,
-          duration: Duration(milliseconds: 300), curve: Curves.easeOut);
+          duration: Duration(milliseconds: 0), curve: Curves.fastOutSlowIn);
     }
   }
 }

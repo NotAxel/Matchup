@@ -46,13 +46,6 @@ class HomePageState extends State<HomePage> with SingleTickerProviderStateMixin 
     controller.dispose();
     super.dispose();
   }
-
-  Widget loadingCircle(){
-    return Center(
-        child: CircularProgressIndicator(
-            valueColor: AlwaysStoppedAnimation<Color>(
-                Colors.lightBlue)));
-  }
   
   @override
   Widget build(BuildContext context) {
