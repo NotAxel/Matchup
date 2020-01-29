@@ -3,7 +3,7 @@ class Message{
   String _content;
   String _toId;
   String _fromId;
-  String _timeStamp;
+  int _timeStamp;
   
   Message(String content, String toId, String fromId){
     _content = content;
@@ -25,6 +25,6 @@ class Message{
 
   // timeStamp
   get getTimeStamp => _timeStamp;
-  set setTimeStamp(String timeStamp){ _timeStamp = timeStamp; }
+  set setTimeStamp(int timeStamp){ _timeStamp = timeStamp; }
 
 }

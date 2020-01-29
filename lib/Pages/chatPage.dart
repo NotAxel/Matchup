@@ -158,7 +158,7 @@ class _ChatPageState extends State<ChatPage> {
 
   // returns a containter that holds a text widget
   // the text widgets data is the time the message was sent
-  Widget buildMessageTimeStamp(String timeStamp){
+  Widget buildMessageTimeStamp(int timeStamp){
     // time stamp
     return Container(
       child: Text(
@@ -178,7 +178,7 @@ class _ChatPageState extends State<ChatPage> {
   // if the fromId of the message is the current users, the message displays on right
   // otherwise, the fromId is from the peerId and appears on left
   Widget buildMessageBoxes(int index, DocumentSnapshot document){
-    String timeStamp = document['timeStamp'];
+    int timeStamp = document['timeStamp'];
     bool isUserMessage = document['fromId'] == widget.user.getUserId;
     // Right (my message)
     return Row(
@@ -288,7 +288,7 @@ class _ChatPageState extends State<ChatPage> {
   // receives a message with updated contents when the chat box is submitted
   // creates a message document using a time stamp to ensure uniqueness in the given chatId
   void sendMessage() {
-    _message.setTimeStamp = DateTime.now().millisecondsSinceEpoch.toString();
+    _message.setTimeStamp = DateTime.now().millisecondsSinceEpoch;
     if (_message.getContent != "") {
       DocumentReference messageReference = Firestore.instance
           .collection("Chats")

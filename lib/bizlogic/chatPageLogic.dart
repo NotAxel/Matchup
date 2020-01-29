@@ -1,9 +1,9 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 class ChatPageLogic{
-  // chooses if the row main axis alignment is end or start
+  static const double LAST_MESSAGE_MARGIN = 20.0; 
+  static const double INTERMEDIATE_MESSAGE_MARGIN = 10.0;
   // end places message box on right of row for user message
   // start places message box on left of row for peer message
   static MainAxisAlignment rowMainAxisAlignment(bool isUserMessage) {
@@ -44,17 +44,20 @@ class ChatPageLogic{
   // translatest the milliseconds since epoch time
   // into utc time and returns the string
   // example: 24 Jan 2017 9:30 PM
-  static String formatTimeStamp(String timeStamp){
-    return DateFormat('dd MMM y').add_jm()
-      .format(DateTime.fromMillisecondsSinceEpoch(int.parse(timeStamp)));
+  static String formatTimeStamp(int timeStamp){
+    if (timeStamp != null){
+      return DateFormat('dd MMM y').add_jm()
+        .format(DateTime.fromMillisecondsSinceEpoch(timeStamp));
+    }
+    return "";
   }
 
   static EdgeInsets messageContainerMargins(int index){
     if (index == 0){
-      return EdgeInsets.only(bottom: 20);
+      return EdgeInsets.only(bottom: LAST_MESSAGE_MARGIN);
     } 
     else {
-      return EdgeInsets.only(bottom: 10);
+      return EdgeInsets.only(bottom: INTERMEDIATE_MESSAGE_MARGIN);
     }
   }
 }
