@@ -87,4 +87,29 @@ void main(){
       expect(actualInsets, expectedInsets);
     });
   });
+  test('user messages are placed on the right of message rows', (){
+    // ARRANGE
+    MainAxisAlignment expectedAllignment = MainAxisAlignment.end;
+    bool isUserMessage = true;
+    MainAxisAlignment actualAllignment;
+
+    // ACT
+    actualAllignment = ChatPageLogic.rowMainAxisAlignment(isUserMessage);
+
+    // ASSERT
+    expect(actualAllignment, expectedAllignment);
+  });
+
+  test('peer messages are placed on the right of message rows', (){
+    // ARRANGE
+    MainAxisAlignment expectedAllignment = MainAxisAlignment.start;
+    bool isUserMessage = false;
+    MainAxisAlignment actualAllignment;
+
+    // ACT
+    actualAllignment = ChatPageLogic.rowMainAxisAlignment(isUserMessage);
+
+    // ASSERT
+    expect(actualAllignment, expectedAllignment);
+  });
 }
