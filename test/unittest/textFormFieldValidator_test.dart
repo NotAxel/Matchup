@@ -139,8 +139,28 @@ void main(){
       expect(actualError, FRIEND_CODE_ERROR);
     });
     
-    test("friend code doesnt begin with SW-", (){
+    test("friend code doesnt begin with SW- but is otherwise valid", (){
+      // ARRANGE
+      Validator validator = FriendCodeValidator();
+      String friendCode = "XZ_1234-5678-9123";
 
-    })
+      // ACT
+      String actualError = validator.validate(friendCode);
+
+      // ASSERT
+      expect(actualError, FRIEND_CODE_ERROR);
+    });
+
+    test("friend code doesnt have second dash but is otherwise valid", (){
+      // ARRANGE
+      Validator validator = FriendCodeValidator();
+      String friendCode = "XZ_1234-5678-9123";
+
+      // ACT
+      String actualError = validator.validate(friendCode);
+
+      // ASSERT
+      expect(actualError, FRIEND_CODE_ERROR);
+    });
   });
 }

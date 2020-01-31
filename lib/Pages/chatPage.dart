@@ -13,14 +13,15 @@ class ChatPage extends StatefulWidget {
   final String chatId;
 
   const ChatPage(
-      {Key key, this.user, this.peer, this.chatId})
-      : super(key: key);
+    {Key key, this.user, this.peer, this.chatId})
+    : super(key: key);
 
   @override
   _ChatPageState createState() => _ChatPageState();
 }
 
 class _ChatPageState extends State<ChatPage> {
+  // make instance variables have underscores
   final TextEditingController messageController = new TextEditingController();
   final ScrollController listScrollController = new ScrollController();
   final FocusNode focusNode = new FocusNode();
@@ -184,6 +185,7 @@ class _ChatPageState extends State<ChatPage> {
       mainAxisAlignment: ChatPageLogic.rowMainAxisAlignment(isUserMessage),
       children: <Widget>[
         Container(
+          // make another function for column - don't go passed 2 children deep without new function
           child: Column(
             crossAxisAlignment: ChatPageLogic.columnCrossAxisAlignment(isUserMessage),
             children: <Widget>[
@@ -215,7 +217,8 @@ class _ChatPageState extends State<ChatPage> {
           buildSendFriendCodeButton(context),
           buildMessageInput(context),
           buildSendButton(),
-        ],),
+        ],
+      ),
       padding: EdgeInsets.fromLTRB(10, 10, 0, 10),
       decoration: new BoxDecoration(
         border: new Border(top: new BorderSide(color: Colors.grey[100], width: 0.5)),
@@ -246,8 +249,8 @@ class _ChatPageState extends State<ChatPage> {
 
   Widget buildMessageInput(BuildContext context){
     return Flexible(
-        key: Key("MESSAGE_INPUT_FIELD"),
-        child: TextField(
+      key: Key("MESSAGE_INPUT_FIELD"),
+      child: TextField(
         controller: messageController,
         minLines: 1,
         maxLines: 5,
@@ -290,10 +293,10 @@ class _ChatPageState extends State<ChatPage> {
     _message.setTimeStamp = DateTime.now().millisecondsSinceEpoch;
     if (_message.getContent != "") {
       DocumentReference messageReference = Firestore.instance
-          .collection("Chats")
-          .document(widget.chatId)
-          .collection(widget.chatId)
-          .document(_message.getTimeStamp);
+        .collection("Chats")
+        .document(widget.chatId)
+        .collection(widget.chatId)
+        .document(_message.getTimeStamp);
 
       // this method allows for an asyncrhonous write to occur without the whole function being async
       Firestore.instance.runTransaction((transaction) async {
@@ -305,7 +308,7 @@ class _ChatPageState extends State<ChatPage> {
         });
       });
       listScrollController.animateTo(0.0,
-          duration: Duration(milliseconds: 0), curve: Curves.fastOutSlowIn);
+        duration: Duration(milliseconds: 0), curve: Curves.fastOutSlowIn);
     }
   }
 }

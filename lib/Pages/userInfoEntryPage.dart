@@ -81,11 +81,12 @@ class _UserInfoEntryPage extends State<UserInfoEntryPage> {
         icon: Icon(Icons.arrow_downward),
         isExpanded: true,
         hint:Text(
-            hintText, // Text drop down at base
-            textAlign: TextAlign.justify,
-            style: TextStyle( // Text Style base 
-              fontSize: 20.0,
-              )),
+          hintText, // Text drop down at base
+          textAlign: TextAlign.justify,
+          style: TextStyle( // Text Style base 
+            fontSize: 20.0,
+          )
+        ),
         iconSize: 24,
           elevation: 16,
           style: TextStyle(color: Colors.deepPurple),

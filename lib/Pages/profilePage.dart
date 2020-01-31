@@ -35,7 +35,8 @@ class ProfilePageState extends State<ProfilePage> with SingleTickerProviderState
                 style: new TextStyle(fontSize: 20.0, color: Colors.white)),
             onPressed: logoutCallback 
           ),
-        ));
+        )
+    );
   }
 
   Widget _showForm(VoidCallback logoutCallback) {
@@ -51,7 +52,6 @@ class ProfilePageState extends State<ProfilePage> with SingleTickerProviderState
           ),
         ));
   }
-
 
   @override
   Widget build(BuildContext context) {
