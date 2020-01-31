@@ -180,7 +180,6 @@ class _ChatPageState extends State<ChatPage> {
   Widget buildMessageBoxes(int index, DocumentSnapshot document){
     int timeStamp = document['timeStamp'];
     bool isUserMessage = document['fromId'] == widget.user.getUserId;
-    // Right (my message)
     return Row(
       mainAxisAlignment: ChatPageLogic.rowMainAxisAlignment(isUserMessage),
       children: <Widget>[

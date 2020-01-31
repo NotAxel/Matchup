@@ -87,29 +87,87 @@ void main(){
       expect(actualInsets, expectedInsets);
     });
   });
-  test('user messages are placed on the right of message rows', (){
-    // ARRANGE
-    MainAxisAlignment expectedAllignment = MainAxisAlignment.end;
-    bool isUserMessage = true;
-    MainAxisAlignment actualAllignment;
 
-    // ACT
-    actualAllignment = ChatPageLogic.rowMainAxisAlignment(isUserMessage);
+  group("rowMainAxisAlignment", (){
+    test('user messages are placed on the right of message rows', (){
+      // ARRANGE
+      MainAxisAlignment expectedAllignment = MainAxisAlignment.end;
+      bool isUserMessage = true;
+      MainAxisAlignment actualAllignment;
 
-    // ASSERT
-    expect(actualAllignment, expectedAllignment);
+      // ACT
+      actualAllignment = ChatPageLogic.rowMainAxisAlignment(isUserMessage);
+
+      // ASSERT
+      expect(actualAllignment, expectedAllignment);
+    });
+
+    test('peer messages are placed on the left of message rows', (){
+      // ARRANGE
+      MainAxisAlignment expectedAllignment = MainAxisAlignment.start;
+      bool isUserMessage = false;
+      MainAxisAlignment actualAllignment;
+
+      // ACT
+      actualAllignment = ChatPageLogic.rowMainAxisAlignment(isUserMessage);
+
+      // ASSERT
+      expect(actualAllignment, expectedAllignment);
+    });
   });
 
-  test('peer messages are placed on the right of message rows', (){
-    // ARRANGE
-    MainAxisAlignment expectedAllignment = MainAxisAlignment.start;
-    bool isUserMessage = false;
-    MainAxisAlignment actualAllignment;
+  group("columnCrossAxisAlignment", (){
+    test("user messages appears on the right of message columns", (){
+      // ARRANGE
+      CrossAxisAlignment expectedAllignment = CrossAxisAlignment.end;
+      bool isUserMessage = true;
+      CrossAxisAlignment actualAllignment;
 
-    // ACT
-    actualAllignment = ChatPageLogic.rowMainAxisAlignment(isUserMessage);
+      // ACT
+      actualAllignment = ChatPageLogic.columnCrossAxisAlignment(isUserMessage);
 
-    // ASSERT
-    expect(actualAllignment, expectedAllignment);
+      // ASSERT
+      expect(actualAllignment, expectedAllignment);
+    });
+
+    test("peer messages appears on the left of message columns", (){
+      // ARRANGE
+      CrossAxisAlignment expectedAllignment = CrossAxisAlignment.start;
+      bool isUserMessage = false;
+      CrossAxisAlignment actualAllignment;
+
+      // ACT
+      actualAllignment = ChatPageLogic.columnCrossAxisAlignment(isUserMessage);
+
+      // ASSERT
+      expect(actualAllignment, expectedAllignment);
+    });
+  });
+  group("messageTextColor", (){
+    test("user message text is white", (){
+      // ARRANGE
+      Color expectedColor = Colors.white;
+      bool isUserMessage = true;
+      Color actualColor;
+
+      // ACT
+      actualColor = ChatPageLogic.messageTextColor(isUserMessage);
+
+      // ASSERT
+      expect(actualColor, expectedColor);
+    });
+    
+    test("peer message text is black", (){
+      // ARRANGE
+      Color expectedColor = Colors.black;
+      bool isUserMessage = false;
+      Color actualColor;
+
+      // ACT
+      actualColor = ChatPageLogic.messageTextColor(isUserMessage);
+
+      // ASSERT
+      expect(actualColor, expectedColor);
+    });
   });
 }

@@ -1,9 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:matchup/Pages/loadingCircle.dart';
 import 'package:matchup/bizlogic/constants.dart' as con;
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:matchup/bizlogic/authProvider.dart';
 import 'package:matchup/bizlogic/authentication.dart';
+import 'package:matchup/bizlogic/friendCodeValidator.dart';
+import 'package:matchup/bizlogic/validator.dart';
 
 class UserInfoEntryPage extends StatefulWidget {
   final VoidCallback logoutCallback;
@@ -15,6 +18,10 @@ class UserInfoEntryPage extends StatefulWidget {
 }
 
 class _UserInfoEntryPage extends State<UserInfoEntryPage> {
+  static const MAIN = "main";
+  static const SECONDARY = "secondary";
+  static const REGION = "region";
+
   TextStyle style = TextStyle(fontFamily: 'Montserrat', fontSize: 20.0);
   Container _underLine = Container(height: 2, color: Colors.deepPurple);
   String _errorMessage;
@@ -25,12 +32,8 @@ class _UserInfoEntryPage extends State<UserInfoEntryPage> {
   String _region = 'Please select a region';
   String _nintendoID;
   String _userID;
-  String _userEmail = "waiting"; // used for testing
-
-  // creating single instance of user to be used throughout program duration
 
   bool _isLoading;
-  bool _isUserForm;
   final _formKey = new GlobalKey<FormState>();
 
   @override
@@ -38,9 +41,9 @@ class _UserInfoEntryPage extends State<UserInfoEntryPage> {
     _errorMessage = "";
     _isLoading = false;
     _mainChar = null;
+    _secondaryChar = null;
     _region = null;
     _nintendoID = null;
-    _isUserForm = true;
     super.initState();
   }
 
@@ -48,25 +51,37 @@ class _UserInfoEntryPage extends State<UserInfoEntryPage> {
     _formKey.currentState.reset();
     _errorMessage = "";
     _mainChar = null;
+    _secondaryChar = null;
     _region = null;
     _nintendoID = null;
   }
 
-  void toggleFormMode() {
-    resetForm();
+  void submitDropdownValue(String value, String hintText){
     setState(() {
-      _isUserForm = !_isUserForm;
+      if (hintText == MAIN){
+        _mainChar = value;
+      }
+      else if (hintText == SECONDARY){
+        _secondaryChar = value; 
+      }
+      else if (hintText == REGION){
+        _region = value;
+      }
     });
   }
 
-  Widget showSecondaryField() {
+  // the hint text determines what value the dropdown menu will change
+  // the dropdown items should correspond with the list related to the hint text
+  // eg if you give main as hint text, dropdownItems should be the list of characters
+  Widget showDropdown(String hintText, List<String> dropdownItems){
+    String value;
     return new Center(
       child: DropdownButton<String>(
-        value: _secondaryChar,
+        value: value,
         icon: Icon(Icons.arrow_downward),
         isExpanded: true,
         hint:Text(
-            'Secondary', // Text drop down at base
+            hintText, // Text drop down at base
             textAlign: TextAlign.justify,
             style: TextStyle( // Text Style base 
               fontSize: 20.0,
@@ -76,11 +91,9 @@ class _UserInfoEntryPage extends State<UserInfoEntryPage> {
           style: TextStyle(color: Colors.deepPurple),
           underline: _underLine,
           onChanged: (String newValue) {
-            setState(() {
-             _secondaryChar = newValue;
-            });
+            submitDropdownValue(newValue, hintText);
           },
-          items: con.Constants.characters
+          items: dropdownItems
             .map<DropdownMenuItem<String>>((String value){
               return DropdownMenuItem<String>(
                 value: value,
@@ -89,71 +102,9 @@ class _UserInfoEntryPage extends State<UserInfoEntryPage> {
           }).toList(),
       ));
   } 
-  
-
-  Widget showMainField(){
-    return new Center(
-      child: DropdownButton<String>(
-        value: _mainChar,
-        icon: Icon(Icons.arrow_downward),
-        isExpanded: true,
-        hint:Text(
-            'Main', // Text drop down at base
-            textAlign: TextAlign.justify,
-            style: TextStyle( // Text Style base 
-              fontSize: 20.0,
-              )),
-        iconSize: 24,
-          elevation: 16,
-          style: TextStyle(color: Colors.deepPurple),
-          underline: _underLine,
-          onChanged: (String newValue) {
-            setState(() {
-              _mainChar = newValue;
-            });
-          },
-          items: con.Constants.characters
-            .map<DropdownMenuItem<String>>((String value){
-              return DropdownMenuItem<String>(
-                value: value,
-                child: Text(value),
-              );
-          }).toList(),
-      ));
-  } 
-
-  Widget showRegionField() {
-    return new Center(
-      child: DropdownButton<String>(
-          value: _region,
-          icon: Icon(Icons.arrow_downward),
-          isExpanded: true,
-          hint: Text(
-            'Region', // Text drop down at base
-            textAlign: TextAlign.justify,
-            style: TextStyle( // Text Style base 
-              fontSize: 20.0,
-              )),
-          iconSize: 24,
-            elevation: 24,
-            style: TextStyle(color: Colors.deepPurple),
-            underline: _underLine,
-            onChanged: (String newValue) {
-              setState(() {
-                _region = newValue;
-              });
-            },
-            items: con.Constants.regions
-              .map<DropdownMenuItem<String>>((String value){
-                return DropdownMenuItem<String>(
-                  value: value,
-                  child: Text(value),
-                );
-            }).toList(),
-        ));
-  }
 
   Widget showNintendoIDEntryForm() {
+    Validator friendCodeValidator = new FriendCodeValidator();
     return new Center(
       child: TextFormField(
         obscureText: false,
@@ -164,8 +115,8 @@ class _UserInfoEntryPage extends State<UserInfoEntryPage> {
         decoration: InputDecoration(
           hintText: "Nintendo ID",
         ),
-        validator: (value) => value.isEmpty ? 'Nintendo ID can\'t be empty' : null,
-        onSaved: (value) => _nintendoID = value.trim(),
+        validator: (value) => friendCodeValidator.validate(value),
+        onSaved: (value) => _nintendoID = friendCodeValidator.save(value),
       )); 
   }
 
@@ -183,12 +134,6 @@ class _UserInfoEntryPage extends State<UserInfoEntryPage> {
         validator: (value) => value.isEmpty ? 'Username cannot be empty' : null,
         onSaved: (value) => _userName = value.trim(),
       )); 
-  }
-
-  Widget showUserEmail() {
-    return new Center (
-      child: Text(_userEmail)
-    );
   }
 
   Widget showSaveButton() {
@@ -219,7 +164,6 @@ class _UserInfoEntryPage extends State<UserInfoEntryPage> {
         final BaseAuth auth = AuthProvider.of(context).auth;
         FirebaseUser currUser = await auth.getCurrentUser();
         _userID = currUser.uid;
-        _userEmail = currUser.email;
         Firestore.instance.collection('Users').document(_userID).setData({
           'Username' : _userName, 
           'Main' : _mainChar, 
@@ -259,17 +203,14 @@ class _UserInfoEntryPage extends State<UserInfoEntryPage> {
           child: new ListView(
             shrinkWrap: true,
             children: <Widget>[
-              showMainField(),
-              showSecondaryField(),
-              showRegionField(),
+              showDropdown(MAIN, con.Constants.characters),
+              showDropdown(SECONDARY, con.Constants.characters),
+              showDropdown(REGION, con.Constants.regions),
               showNintendoIDEntryForm(),
               showUserNameField(),
               showSaveButton(),
               showErrorMessage(),
-              showUserEmail(),
-              
             ],
-            
           ),
         ));
   }
@@ -293,16 +234,21 @@ class _UserInfoEntryPage extends State<UserInfoEntryPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Profile Customization'),
-      ),
-      body: Stack(
-        children: <Widget>[
-          _showUserInfoEntryForm(),
-        ],
-
-      ));
+    if (_isLoading){
+      return LoadingCircle.loadingCircle();
+    }
+    else{
+      return Scaffold(
+        appBar: AppBar(
+          title: Text('Profile Customization'),
+        ),
+        body: Stack(
+          children: <Widget>[
+            _showUserInfoEntryForm(),
+          ],
+        )
+      );
+    }
   }
 
 }
