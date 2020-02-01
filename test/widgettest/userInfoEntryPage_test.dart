@@ -24,3 +24,5 @@ Future<Widget> makeTestableWidget(WidgetTester tester, Widget child, BaseAuth au
       )
   ,);
 }
+
+void main(){}

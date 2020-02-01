@@ -151,10 +151,61 @@ void main(){
       expect(actualError, FRIEND_CODE_ERROR);
     });
 
+    test('''friend code doesnt have a valid int in the first 4 digits 
+      but is otherwise valid''', (){
+      // ARRANGE
+      Validator validator = FriendCodeValidator();
+      String friendCode = "SW-1ABC-5678-9123";
+
+      // ACT
+      String actualError = validator.validate(friendCode);
+
+      // ASSERT
+      expect(actualError, FRIEND_CODE_ERROR);
+    });
+
     test("friend code doesnt have second dash but is otherwise valid", (){
       // ARRANGE
       Validator validator = FriendCodeValidator();
-      String friendCode = "XZ_1234-5678-9123";
+      String friendCode = "SW-1234!5678-9123";
+
+      // ACT
+      String actualError = validator.validate(friendCode);
+
+      // ASSERT
+      expect(actualError, FRIEND_CODE_ERROR);
+    });
+
+    test('''friend code doesnt have a valid int in the second 4 digits 
+      but is otherwise valid''', (){
+      // ARRANGE
+      Validator validator = FriendCodeValidator();
+      String friendCode = "SW-1ABC-5ABC-9123";
+
+      // ACT
+      String actualError = validator.validate(friendCode);
+
+      // ASSERT
+      expect(actualError, FRIEND_CODE_ERROR);
+    });
+
+    test("friend code doesnt have third dash but is otherwise valid", (){
+      // ARRANGE
+      Validator validator = FriendCodeValidator();
+      String friendCode = "SW-1234-5678!9123";
+
+      // ACT
+      String actualError = validator.validate(friendCode);
+
+      // ASSERT
+      expect(actualError, FRIEND_CODE_ERROR);
+    });
+
+    test('''friend code doesnt have a valid int in the third 4 digits 
+      but is otherwise valid''', (){
+      // ARRANGE
+      Validator validator = FriendCodeValidator();
+      String friendCode = "SW-1ABC-5678-9ABC";
 
       // ACT
       String actualError = validator.validate(friendCode);
