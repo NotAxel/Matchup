@@ -143,6 +143,7 @@ void main(){
       // ARRANGE
       Validator validator = FriendCodeValidator();
       String friendCode = "XZ_1234-5678-9123";
+      print(friendCode.substring(0, 3));
 
       // ACT
       String actualError = validator.validate(friendCode);
@@ -156,6 +157,7 @@ void main(){
       // ARRANGE
       Validator validator = FriendCodeValidator();
       String friendCode = "SW-1ABC-5678-9123";
+      print(friendCode.substring(3, 7));
 
       // ACT
       String actualError = validator.validate(friendCode);
@@ -168,6 +170,7 @@ void main(){
       // ARRANGE
       Validator validator = FriendCodeValidator();
       String friendCode = "SW-1234!5678-9123";
+      print(friendCode.substring(7, 8));
 
       // ACT
       String actualError = validator.validate(friendCode);
@@ -180,7 +183,8 @@ void main(){
       but is otherwise valid''', (){
       // ARRANGE
       Validator validator = FriendCodeValidator();
-      String friendCode = "SW-1ABC-5ABC-9123";
+      String friendCode = "SW-1234-5ABC-9123";
+      print(friendCode.substring(8, 12));
 
       // ACT
       String actualError = validator.validate(friendCode);
@@ -193,6 +197,7 @@ void main(){
       // ARRANGE
       Validator validator = FriendCodeValidator();
       String friendCode = "SW-1234-5678!9123";
+      print(friendCode.substring(12, 13));
 
       // ACT
       String actualError = validator.validate(friendCode);
@@ -205,13 +210,28 @@ void main(){
       but is otherwise valid''', (){
       // ARRANGE
       Validator validator = FriendCodeValidator();
-      String friendCode = "SW-1ABC-5678-9ABC";
+      String friendCode = "SW-1234-5678-9ABC";
+      print(friendCode.substring(13, 17));
 
       // ACT
       String actualError = validator.validate(friendCode);
 
       // ASSERT
       expect(actualError, FRIEND_CODE_ERROR);
+    });
+
+     test("testing save with a valid code", (){ 
+      // ARRANGE
+      Validator validator = FriendCodeValidator();
+      String friendCode = "   SW-1234-5678-9123   ";
+      String expectedCode = "SW-1234-5678-9123";
+      print(friendCode.substring(13, 17));
+
+      // ACT
+      String actualCode = validator.save(friendCode);
+
+      // ASSERT
+      expect(actualCode, expectedCode);
     });
   });
 }

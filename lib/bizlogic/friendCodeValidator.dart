@@ -17,11 +17,11 @@ class FriendCodeValidator implements Validator{
   String checkFormatting(String friendCode){
     if (friendCode.length != 17 ||
       friendCode.substring(0, 3) != "SW-" || 
-      int.tryParse(friendCode.substring(3, 6)) == null ||
-      friendCode.substring(7, 7) != "-" || 
-      int.tryParse(friendCode.substring(8, 11)) == null ||
-      friendCode.substring(12, 12) != "-" ||
-      int.tryParse(friendCode.substring(13, 16)) == null){
+      int.tryParse(friendCode.substring(3, 7)) == null ||
+      friendCode.substring(7, 8) != "-" || 
+      int.tryParse(friendCode.substring(8, 12)) == null ||
+      friendCode.substring(12, 13) != "-" ||
+      int.tryParse(friendCode.substring(13, 17)) == null){
       return formattingError;
     }
     return null;
