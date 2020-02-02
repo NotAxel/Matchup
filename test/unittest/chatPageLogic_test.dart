@@ -41,7 +41,7 @@ void main(){
       actualDate = ChatPageLogic.formatTimeStamp(timeStamp);
 
       // ASSERT
-      expect(expectedDate, actualDate);
+      expect(actualDate, expectedDate);
     });
 
     test('given a null time stamp, returns empty string', (){
