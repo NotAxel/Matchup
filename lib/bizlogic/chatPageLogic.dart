@@ -42,7 +42,10 @@ class ChatPageLogic{
   }
 
   // translatest the milliseconds since epoch time
-  // into utc time and returns the string
+  // into local time and returns the string
+  // when testing on machines in different time zones,
+  // this function will fail when using a static time
+  // as your expected value
   // example: 24 Jan 2017 9:30 PM
   static String formatTimeStamp(int timeStamp){
     if (timeStamp != null){
