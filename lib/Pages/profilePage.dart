@@ -57,7 +57,9 @@ class ProfilePageState extends State<ProfilePage> with SingleTickerProviderState
   Widget build(BuildContext context) {
     final User _user = UserProvider.of(context).user;
     final VoidCallback logoutCallback = HomePageProvider.of(context).logoutCallback;
-    if (_user == null){
+    if (_user.getUserName == null ||
+      _user.getMain == null ||
+      _user.getSecondary == null){
       return LoadingCircle.loadingCircle();
     }
     else{

@@ -56,7 +56,20 @@ class _UserInfoEntryPage extends State<UserInfoEntryPage> {
     _nintendoID = null;
   }
 
-  void submitDropdownValue(String value, String hintText){
+  String getDropdownButtonValue(String hintText){
+    if (hintText == MAIN){
+      return _mainChar;
+    }
+    else if (hintText == SECONDARY){
+      return _secondaryChar;
+    }
+    else if (hintText == REGION){
+      return _region;
+    }
+    return null;
+  }
+
+  void setDropdownButtonValue(String value, String hintText){
     setState(() {
       if (hintText == MAIN){
         _mainChar = value;
@@ -74,10 +87,9 @@ class _UserInfoEntryPage extends State<UserInfoEntryPage> {
   // the dropdown items should correspond with the list related to the hint text
   // eg if you give main as hint text, dropdownItems should be the list of characters
   Widget showDropdown(String hintText, List<String> dropdownItems){
-    String value;
     return new Center(
       child: DropdownButton<String>(
-        value: value,
+        value: getDropdownButtonValue(hintText),
         icon: Icon(Icons.arrow_downward),
         isExpanded: true,
         hint:Text(
@@ -88,20 +100,21 @@ class _UserInfoEntryPage extends State<UserInfoEntryPage> {
           )
         ),
         iconSize: 24,
-          elevation: 16,
-          style: TextStyle(color: Colors.deepPurple),
-          underline: _underLine,
-          onChanged: (String newValue) {
-            submitDropdownValue(newValue, hintText);
-          },
-          items: dropdownItems
-            .map<DropdownMenuItem<String>>((String value){
-              return DropdownMenuItem<String>(
-                value: value,
-                child: Text(value),
-              );
+        elevation: 16,
+        style: TextStyle(color: Colors.deepPurple),
+        underline: _underLine,
+        onChanged: (String newValue) {
+          setDropdownButtonValue(newValue, hintText);
+        },
+        items: dropdownItems
+          .map<DropdownMenuItem<String>>((String value){
+            return DropdownMenuItem<String>(
+              value: value,
+              child: Text(value),
+            );
           }).toList(),
-      ));
+      )
+    );
   } 
 
   Widget showNintendoIDEntryForm() {
@@ -220,6 +233,7 @@ class _UserInfoEntryPage extends State<UserInfoEntryPage> {
     if(_errorMessage.length > 0 && _errorMessage != null) {
       return new Text (
         _errorMessage,
+        softWrap: true,
         style: TextStyle(
             fontSize: 13.0,
             color: Colors.red,
