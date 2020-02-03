@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:matchup/bizlogic/User.dart';
 import 'package:matchup/bizlogic/authProvider.dart';
@@ -13,6 +14,10 @@ LOGGED_IN,
 }
 
 class RootPage extends StatefulWidget{
+  final BaseAuth auth;
+
+  RootPage(this.auth);
+
   @override
   State<StatefulWidget> createState() => _RootPageState();
 }
@@ -26,45 +31,50 @@ class _RootPageState extends State<RootPage>{
   // this will serve as a check if the user actually still exists in the Firebase
   // then initialize the users data
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    final BaseAuth auth = AuthProvider.of(context).auth;
-    auth.getCurrentUser().then((user) {
+  void initState() {
+    super.initState();
+    determineAuthStatus();
+  }
+
+  @override
+  void didUpdateWidget(RootPage oldWidget){
+    super.didUpdateWidget(oldWidget);
+    determineAuthStatus();
+  }
+
+  void determineAuthStatus(){
+    widget.auth.getCurrentUser().then((user) {
       // user is signed in
       if (user != null) {
         // first and only instantiation of user singleton
         print("CREATING THE USER NOW");
         _user = User();
 
-        auth.fetchSignInMethodsForEmail().then((signInMethods){
+        widget.auth.fetchSignInMethodsForEmail().then((signInMethods){
           if (signInMethods.length > 0){
             _user.initializeData(user).then((value){
-              setState(() {
-                authStatus = AuthStatus.LOGGED_IN;
-              });
+              authStatus = AuthStatus.LOGGED_IN;
             });
           }
           else{
-            setState(() {
-              print("setting status to NOT_LOGGED_IN");
-              authStatus = AuthStatus.NOT_LOGGED_IN;
-            });
+            print("setting status to NOT_LOGGED_IN");
+            authStatus = AuthStatus.NOT_LOGGED_IN;
           }
         });
       }
       // no user is signed in
       else{
-        setState(() {
-          print("setting status to NOT_LOGGED_IN");
-          authStatus = AuthStatus.NOT_LOGGED_IN;
-        });
+        print("setting status to NOT_LOGGED_IN");
+        authStatus = AuthStatus.NOT_LOGGED_IN;
       }
     });
   }
 
+
   // first get the current user
   // then initialize the users data once the user has been retrieved
   // then set the state to logged in
+  // TODO: future void async
   void loginCallback() {
     print("CREATING THE USER NOW");
     _user = User();
@@ -79,8 +89,17 @@ class _RootPageState extends State<RootPage>{
     });
   }
 
-  void logoutCallback() {
-    Navigator.of(context).maybePop();
+  Future<void> logoutCallback(bool deleteAccount) async{
+    final BaseAuth auth = AuthProvider.of(context).auth;
+    if (deleteAccount){
+      final FirebaseUser firebaseUser = await auth.getCurrentUser();
+      print("DELETING ACCOUNT");
+      await firebaseUser.delete();
+      await auth.signOut();
+    }
+    else{
+      await auth.signOut();
+    }
     setState(() {
       print("successfully logged out");
       authStatus = AuthStatus.NOT_LOGGED_IN;
@@ -110,7 +129,8 @@ class _RootPageState extends State<RootPage>{
           user: _user,
           child: LogInSignupPage(
             loginCallback: loginCallback,
-            logoutCallback: logoutCallback),
+            logoutCallback: logoutCallback,
+          )
         );
         break;
       case AuthStatus.LOGGED_IN:
@@ -122,7 +142,8 @@ class _RootPageState extends State<RootPage>{
               logoutCallback: logoutCallback,
             ),
           );
-        } else
+        } 
+        else
           return buildWaitingScreen();
         break;
       default:

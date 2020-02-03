@@ -1,12 +1,15 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:matchup/Pages/homepage.dart';
 import 'package:matchup/Pages/loadingCircle.dart';
 import 'package:matchup/bizlogic/User.dart';
+import 'package:matchup/bizlogic/authProvider.dart';
+import 'package:matchup/bizlogic/authentication.dart';
 import 'package:matchup/bizlogic/constants.dart';
 import 'package:matchup/bizlogic/userProvider.dart';
 
 class ProfilePage extends StatefulWidget {
-  final VoidCallback logoutCallback;
+  final Future<void> Function(bool) logoutCallback;
   final User user;
 
   ProfilePage({this.user, this.logoutCallback});
@@ -19,7 +22,7 @@ class ProfilePageState extends State<ProfilePage> with SingleTickerProviderState
 
   var profStyle = TextStyle(fontSize: 25);
 
-  Widget showLogOutButton(VoidCallback logoutCallback){
+  Widget showLogOutButton(Future<void> Function(bool) logoutCallback){
     return new Padding(
         padding: EdgeInsets.fromLTRB(115.0, 10.0, 115.0, 0.0),
         child: SizedBox(
@@ -33,13 +36,13 @@ class ProfilePageState extends State<ProfilePage> with SingleTickerProviderState
             color: Colors.blueAccent,
             child: new Text('Logout',
                 style: new TextStyle(fontSize: 20.0, color: Colors.white)),
-            onPressed: logoutCallback 
+            onPressed: ()=>logoutCallback(false) 
           ),
         )
     );
   }
 
-  Widget _showForm(VoidCallback logoutCallback) {
+  Widget _showForm(void Function(bool) logoutCallback) {
     return new Container(
         padding: EdgeInsets.all(16.0),
         child: new Form(
@@ -55,8 +58,17 @@ class ProfilePageState extends State<ProfilePage> with SingleTickerProviderState
 
   @override
   Widget build(BuildContext context) {
+    print("building profile page");
+    //// check if the user has data before accessing their profile
+    //final BaseAuth auth = AuthProvider.of(context).auth;
+    //auth.getCurrentUser().then((value){
+
+    //});
     final User _user = UserProvider.of(context).user;
-    final VoidCallback logoutCallback = HomePageProvider.of(context).logoutCallback;
+    final void Function(bool) logoutCallback = HomePageProvider.of(context).logoutCallback;
+    //if (false){
+
+    //}
     if (_user.getUserName == null ||
       _user.getMain == null ||
       _user.getSecondary == null){

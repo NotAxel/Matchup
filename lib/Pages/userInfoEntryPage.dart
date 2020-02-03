@@ -9,9 +9,9 @@ import 'package:matchup/bizlogic/friendCodeValidator.dart';
 import 'package:matchup/bizlogic/validator.dart';
 
 class UserInfoEntryPage extends StatefulWidget {
-  final VoidCallback logoutCallback;
+  final Future<void> Function(bool) logoutCallback;
 
-  UserInfoEntryPage({this.logoutCallback});
+  UserInfoEntryPage(this.logoutCallback);
 
   @override
   _UserInfoEntryPage createState() => _UserInfoEntryPage();
@@ -210,23 +210,25 @@ class _UserInfoEntryPage extends State<UserInfoEntryPage> {
   }
 
   Widget _showUserInfoEntryForm() {
-    return new Container(
-        padding: EdgeInsets.all(16.0),
-        child: new Form(
-          key: _formKey,
-          child: new ListView(
-            shrinkWrap: true,
-            children: <Widget>[
-              showDropdown(MAIN, con.Constants.characters),
-              showDropdown(SECONDARY, con.Constants.characters),
-              showDropdown(REGION, con.Constants.regions),
-              showNintendoIDEntryForm(),
-              showUserNameField(),
-              showSaveButton(),
-              showErrorMessage(),
-            ],
-          ),
-        ));
+  return new Container(
+      padding: EdgeInsets.all(16.0),
+      child: new Form(
+        key: _formKey,
+        child: new ListView(
+          shrinkWrap: true,
+          children: <Widget>[
+            showDropdown(MAIN, con.Constants.characters),
+            showDropdown(SECONDARY, con.Constants.characters),
+            showDropdown(REGION, con.Constants.regions),
+            showNintendoIDEntryForm(),
+            showUserNameField(),
+            showSaveButton(),
+            showErrorMessage(),
+          ],
+        ),
+        onWillPop: cancelForm,
+      )
+    );
   }
 
   Widget showErrorMessage() {
@@ -245,6 +247,43 @@ class _UserInfoEntryPage extends State<UserInfoEntryPage> {
         height: 0.0,
       );
     }
+  }
+
+  // yes or no option buttons that go in the cancel form alert
+  Widget alertButton(String hintText, VoidCallback alertButtonOnPressed){
+    return FlatButton(
+      child: Text(hintText),
+      onPressed: alertButtonOnPressed
+    );
+  }
+
+  // allows the current page to be popped
+  // deletes the user from the firebase authentication
+  void yesOnPressed() {
+    BaseAuth auth = AuthProvider.of(context).auth;
+    Navigator.pop(context, true);
+    widget.logoutCallback(true);
+  }
+
+  // returns to the account creation form
+  void noOnPressed(){
+    Navigator.pop(context, false);
+  }
+
+  // popup that alerts the user they are about to cancel account creation
+  // appears when the user attempts to press the back button
+  Future<bool> cancelForm(){
+    return showDialog(
+      context: context,
+      builder: (context)=>AlertDialog(
+        title: Text('''Are you sure you want to cancel account creation?\n
+Your progress will be lost, and your email will not be associated with an account.'''),
+        actions: <Widget>[
+          alertButton("Yes", yesOnPressed),
+          alertButton("No", noOnPressed)
+        ],
+      )
+    );
   }
 
   @override

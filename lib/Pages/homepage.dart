@@ -6,7 +6,7 @@ import './matchPage.dart' as matchp;
 import './friendsListPage.dart' as freindsLp;
 
 class HomePage extends StatefulWidget{
-  final VoidCallback logoutCallback;
+  final Future<void> Function(bool) logoutCallback;
 
   HomePage({this.logoutCallback});
 
@@ -16,7 +16,7 @@ class HomePage extends StatefulWidget{
 
 // this class will be used to pass the callback to the tabs created by homepage
 class HomePageProvider extends InheritedWidget{
-  final VoidCallback logoutCallback;
+  final Future<void> Function(bool) logoutCallback;
   final Widget child;
 
   HomePageProvider(this.logoutCallback, this.child);

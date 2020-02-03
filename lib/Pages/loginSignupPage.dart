@@ -8,7 +8,7 @@ import 'userInfoEntryPage.dart';
 
 class LogInSignupPage extends StatefulWidget {
   final VoidCallback loginCallback;
-  final VoidCallback logoutCallback;
+  final Future<void> Function(bool) logoutCallback;
 
   LogInSignupPage({this.loginCallback, this.logoutCallback});
   
@@ -226,9 +226,8 @@ class _LogInSignupPageState extends State<LogInSignupPage> {
         }
         // successfully logged in and heading to user info entry page
         else if (_isLoginForm == false){
-          // push a info entry page second so that once the form is completed, info entry is popped to the homepage
           Navigator.push(context,
-          MaterialPageRoute(builder: (context) => UserInfoEntryPage(logoutCallback: widget.logoutCallback))
+          MaterialPageRoute(builder: (context) => UserInfoEntryPage(widget.logoutCallback))
           );
         }
       } catch (e) {
