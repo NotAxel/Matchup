@@ -57,8 +57,8 @@ void main() {
     MockAuth mockAuth = new MockAuth();
     when(mockAuth.signIn(expectedEmail, expectedPassword)).thenAnswer((value){return Future.value("test id");});
 
-    bool didSignIn = false;
-    LogInSignupPage page = LogInSignupPage(loginCallback: () => didSignIn = true,);
+    Future<bool> didSignIn = Future.value(false);
+    LogInSignupPage page = LogInSignupPage(loginCallback: () => didSignIn = Future.value(true),);
 
     // ACT 
     // pump the login page
@@ -101,8 +101,8 @@ void main() {
       when(mockAuth.signIn(expectedEmail, expectedPassword)).thenAnswer((value){return Future.value("test id");});
 
       // check if login call back is used
-      bool didSignIn = false;
-      LogInSignupPage page = LogInSignupPage(loginCallback: () => didSignIn = true,);
+      Future<bool> didSignIn = Future.value(false);
+      LogInSignupPage page = LogInSignupPage(loginCallback: () => didSignIn = Future.value(true),);
 
 
       String emailErrorMessage = 'Email field cannot be empty';
@@ -157,8 +157,8 @@ void main() {
     MockAuth mockAuth = new MockAuth();
     when(mockAuth.signUp(expectedEmail, expectedPassword)).thenAnswer((value){return Future.value("test id");});
 
-    bool didSignIn = false;
-    LogInSignupPage page = LogInSignupPage(loginCallback: () => didSignIn = true,);
+    Future<bool> didSignIn = Future.value(false);
+    LogInSignupPage page = LogInSignupPage(loginCallback: () => didSignIn = Future.value(true),);
 
     // ACT
 
@@ -209,8 +209,8 @@ void main() {
       MockAuth mockAuth = new MockAuth();
       when(mockAuth.signUp(expectedEmail, expectedPassword)).thenThrow(StateError(errorMessage));
 
-      bool didSignIn = false;
-      LogInSignupPage page = LogInSignupPage(loginCallback: () => didSignIn = true,);
+      Future<bool> didSignIn = Future.value(false);
+      LogInSignupPage page = LogInSignupPage(loginCallback: () => didSignIn = Future.value(true),);
 
       // ACT
       // pump the login page
@@ -265,8 +265,8 @@ void main() {
         return Future.value("test id");
       });
 
-      bool didSignIn = false;
-      LogInSignupPage page = LogInSignupPage(loginCallback: () => didSignIn = true,);
+      Future<bool> didSignIn = Future.value(false);
+      LogInSignupPage page = LogInSignupPage(loginCallback: () => didSignIn = Future.value(true),);
 
       // ACT
 
