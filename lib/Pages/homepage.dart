@@ -22,8 +22,9 @@ class HomePageProvider extends InheritedWidget{
   HomePageProvider(this.logoutCallback, this.child);
 
   @override
-  bool updateShouldNotify(InheritedWidget oldWidget) {
-    return true;
+  bool updateShouldNotify(HomePageProvider oldWidget) {
+    return oldWidget.child != child ||
+    oldWidget.logoutCallback != logoutCallback;
   }
 
   // by using this function to add the call back to the context in the tabstate build,

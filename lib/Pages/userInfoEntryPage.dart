@@ -10,8 +10,9 @@ import 'package:matchup/bizlogic/validator.dart';
 
 class UserInfoEntryPage extends StatefulWidget {
   final Future<void> Function(bool) logoutCallback;
+  final String parent;
 
-  UserInfoEntryPage(this.logoutCallback);
+  UserInfoEntryPage(this.logoutCallback, this.parent);
 
   @override
   _UserInfoEntryPage createState() => _UserInfoEntryPage();
@@ -226,7 +227,6 @@ class _UserInfoEntryPage extends State<UserInfoEntryPage> {
             showErrorMessage(),
           ],
         ),
-        onWillPop: cancelForm,
       )
     );
   }
@@ -258,14 +258,19 @@ class _UserInfoEntryPage extends State<UserInfoEntryPage> {
   }
 
   // allows the current page to be popped
-  // deletes the user from the firebase authentication
-  void yesOnPressed() {
+  // pops the dialog
+  // returns true to the onWillPop
+  // this will pop the userInfoEntry page
+  // using maybe pop if came from loginSignup
+  Future<void> yesOnPressed() async{
     BaseAuth auth = AuthProvider.of(context).auth;
+    await widget.logoutCallback(true);
     Navigator.pop(context, true);
-    widget.logoutCallback(true);
   }
 
   // returns to the account creation form
+  // by popping the dialog
+  // returns false so that userInfoEntry isnt popped
   void noOnPressed(){
     Navigator.pop(context, false);
   }
@@ -292,15 +297,22 @@ Your progress will be lost, and your email will not be associated with an accoun
       return LoadingCircle.loadingCircle();
     }
     else{
-      return Scaffold(
-        appBar: AppBar(
-          title: Text('Profile Customization'),
+      return WillPopScope(
+              child: Scaffold(
+          appBar: AppBar(
+            title: Text('Profile Customization'),
+            leading: IconButton(
+                icon: Icon(Icons.cancel), 
+                onPressed: ()=>Navigator.maybePop(context))
+            
+          ),
+          body: Stack(
+            children: <Widget>[
+              _showUserInfoEntryForm(),
+            ],
+          )
         ),
-        body: Stack(
-          children: <Widget>[
-            _showUserInfoEntryForm(),
-          ],
-        )
+        onWillPop: cancelForm,
       );
     }
   }

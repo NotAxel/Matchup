@@ -15,6 +15,8 @@ abstract class BaseAuth {
   Future<bool> isEmailVerified();
 
   Future<List<String>> fetchSignInMethodsForEmail();
+
+  Future<void> deleteUser();
 }
 
 class Auth implements BaseAuth {
@@ -56,5 +58,10 @@ class Auth implements BaseAuth {
   Future<List<String>> fetchSignInMethodsForEmail() async{
     FirebaseUser user = await _firebaseAuth.currentUser();
     return _firebaseAuth.fetchSignInMethodsForEmail(email: user.email.toString());
+  }
+
+  Future<void> deleteUser() async{
+    final FirebaseUser firebaseUser = await _firebaseAuth.currentUser();
+    await firebaseUser.delete();
   }
 }

@@ -7,7 +7,7 @@ import 'package:matchup/bizlogic/validator.dart';
 import 'userInfoEntryPage.dart';
 
 class LogInSignupPage extends StatefulWidget {
-  final VoidCallback loginCallback;
+  final Future<void> Function() loginCallback;
   final Future<void> Function(bool) logoutCallback;
 
   LogInSignupPage({this.loginCallback, this.logoutCallback});
@@ -222,12 +222,12 @@ class _LogInSignupPageState extends State<LogInSignupPage> {
         if (userId != null && userId.length > 0 && _isLoginForm) {
           // found user, collect their data information from the data base and initialize the users info
           // this can be done in the login call back
-          widget.loginCallback();
+          await widget.loginCallback();
         }
         // successfully logged in and heading to user info entry page
         else if (_isLoginForm == false){
           Navigator.push(context,
-          MaterialPageRoute(builder: (context) => UserInfoEntryPage(widget.logoutCallback))
+            MaterialPageRoute(builder: (context) => UserInfoEntryPage(widget.logoutCallback, "LoginSignupPage"))
           );
         }
       } catch (e) {
