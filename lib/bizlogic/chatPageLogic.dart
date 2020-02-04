@@ -48,11 +48,11 @@ class ChatPageLogic{
   // as your expected value
   // example: 24 Jan 2017 9:30 PM
   static String formatTimeStamp(int timeStamp){
-    if (timeStamp != null || timeStamp < 0){
+    if (timeStamp != null){
       return DateFormat('dd MMM y').add_jm()
         .format(DateTime.fromMillisecondsSinceEpoch(timeStamp));
     }
-    return "Message time stamp not available";
+    return "";
   }
 
   static EdgeInsets messageContainerMargins(int index){

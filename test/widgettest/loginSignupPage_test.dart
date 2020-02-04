@@ -12,6 +12,7 @@ Future<Widget> makeTestableWidget(WidgetTester tester, Widget child, BaseAuth au
   final AssetBundle assetBundle = TestAssetBundle(<String, List<String>>{
     'assets/images/logo.png': <String>['assets/images/logo.png'],
     'assets/images/default_profile.jpg': <String>['assets/images/default_profile.jpg'],
+    'assets/images/regsionMap.png': <String>['assets/images/regionsMap.png'],
   });
 
   return DefaultAssetBundle(

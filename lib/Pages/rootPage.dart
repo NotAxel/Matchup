@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:matchup/Pages/loadingCircle.dart';
 import 'package:matchup/Pages/userInfoEntryPage.dart';
 import 'package:matchup/bizlogic/User.dart';
 import 'package:matchup/bizlogic/authProvider.dart';
@@ -99,15 +100,6 @@ class _RootPageState extends State<RootPage>{
     });
   }
 
-  Widget buildWaitingScreen() {
-    return Scaffold(
-      body: Container(
-        alignment: Alignment.center,
-        child: CircularProgressIndicator(),
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     print("running root build");
@@ -115,7 +107,7 @@ class _RootPageState extends State<RootPage>{
     switch (_authStatus) {
       case AuthStatus.NOT_DETERMINED:
         print("waiting");
-        return buildWaitingScreen();
+        return LoadingCircle.loadingCircle();
         break;
       case AuthStatus.NOT_LOGGED_IN:
         print("building loginSingupPage");
@@ -145,7 +137,7 @@ class _RootPageState extends State<RootPage>{
         }
         break;
       default:
-        return buildWaitingScreen();
+        return LoadingCircle.loadingCircle();
     }
   }
 }

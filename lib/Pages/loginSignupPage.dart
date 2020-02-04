@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:matchup/Pages/errorMessage.dart';
+import 'package:matchup/Pages/loadingCircle.dart';
 import 'package:matchup/bizlogic/authProvider.dart';
 import 'package:matchup/bizlogic/authentication.dart';
 import 'package:matchup/bizlogic/emailValidator.dart';
@@ -156,29 +158,6 @@ class _LogInSignupPageState extends State<LogInSignupPage> {
     );
   }
 
-  Widget showErrorMessage() {
-    if (_errorMessage.length > 0 && _errorMessage != null) {
-      print('bulding error message');
-      return Flexible(
-        child: new Text(
-        _errorMessage,
-        key: Key('error message'),
-        style: TextStyle(
-            fontSize: 15.0,
-            color: Colors.red,
-            height: 1.0,
-            fontWeight: FontWeight.w300),
-        ),
-        fit: FlexFit.loose,
-        flex: 1
-      );
-    } else {
-      return new Container(
-        height: 0.0,
-      );
-    }
-  }
-
 // Check if form is valid before perform login or signup
   bool validateAndSave() {
     final form = _formKey.currentState;
@@ -241,19 +220,9 @@ class _LogInSignupPageState extends State<LogInSignupPage> {
     }
   }
 
-  Widget buildWaitingScreen() {
-    print("building wait screen");
-    return Scaffold(
-      body: Container(
-        alignment: Alignment.center,
-        child: CircularProgressIndicator(),
-      ),
-    );
-  }
-
   Widget _showLogInForm() {
     if (_isLoading){
-      return buildWaitingScreen();
+      return LoadingCircle.loadingCircle();
     }
     else{
      return Container(
@@ -267,7 +236,7 @@ class _LogInSignupPageState extends State<LogInSignupPage> {
               showPasswordField(),
               showLogInButton(),
               showSwitchButton(),
-              showErrorMessage(),
+              ErrorMessage.showErrorMessage(_errorMessage),
             ],
           ),
         )

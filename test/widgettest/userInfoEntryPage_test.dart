@@ -12,6 +12,7 @@ Future<Widget> makeTestableWidget(WidgetTester tester, Widget child, BaseAuth au
   final AssetBundle assetBundle = TestAssetBundle(<String, List<String>>{
     'assets/images/logo.png': <String>['assets/images/logo.png'],
     'assets/images/default_profile.jpg': <String>['assets/images/default_profile.jpg'],
+    
   });
 
   return DefaultAssetBundle(
@@ -23,6 +24,15 @@ Future<Widget> makeTestableWidget(WidgetTester tester, Widget child, BaseAuth au
         ),
       )
   ,);
+}
+
+class Keys{
+  static const Key main = Key('main'); // the logo found on login/signup
+  static const Key secondary = Key('secondary'); // the email field found on login/signup
+  static const Key region = Key('region'); // the password field found on login/signup
+  static const Key login = Key('login'); // the login button found on login/signup
+  static const Key switchButton = Key('switch between login/signup'); // the button that switches login/signup found on login/signup
+  static const Key errorMessage = Key('error message'); // the error message text found on login/signup
 }
 
 void main(){}
