@@ -179,7 +179,7 @@ class _ChatPageState extends State<ChatPage> {
   // if the fromId of the message is the current users, the message displays on right
   // otherwise, the fromId is from the peerId and appears on left
   Widget buildMessageBoxes(int index, DocumentSnapshot document){
-    int timeStamp = document['timeStamp'];
+    int timeStamp = int.tryParse(document['timeStamp']);
     bool isUserMessage = document['fromId'] == widget.user.getUserId;
     return Row(
       mainAxisAlignment: ChatPageLogic.rowMainAxisAlignment(isUserMessage),

@@ -24,7 +24,7 @@ class Message{
   set setFromId(String fromId){ _fromId = fromId; } 
 
   // timeStamp
-  get getTimeStamp => _timeStamp;
+  String get getTimeStamp => _timeStamp.toString();
   set setTimeStamp(int timeStamp){ _timeStamp = timeStamp; }
 
 }
