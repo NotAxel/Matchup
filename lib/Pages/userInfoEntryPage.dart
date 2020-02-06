@@ -83,6 +83,7 @@ class _UserInfoEntryPage extends State<UserInfoEntryPage> {
   // the hint text determines what value the dropdown menu will change
   // the dropdown items should correspond with the list related to the hint text
   // eg if you give main as hint text, dropdownItems should be the list of characters
+  // keys will be: main, secondary, region from constants above
   // TODO: user should not be able to enter empty string or null for dropdown
   Widget showDropdown(String hintText, List<String> dropdownItems){
     return new Center(
@@ -246,10 +247,12 @@ class _UserInfoEntryPage extends State<UserInfoEntryPage> {
   // appears when the user attempts to press the back button
   Future<bool> cancelForm(){
     return showDialog(
+      barrierDismissible: false,
       context: context,
       builder: (context)=>AlertDialog(
         key: Key("cancelForm"),
-        title: Text('''Are you sure you want to cancel account creation?\n
+        title: Text("Cancel Form"),
+        content: Text('''Are you sure you want to cancel account creation?\n
 Your progress will be lost, and your email will not be associated with an account.'''),
         actions: <Widget>[
           alertButton("Yes", yesOnPressed),

@@ -1,11 +1,14 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:matchup/Pages/errorMessage.dart';
 import 'package:matchup/Pages/loadingCircle.dart';
 import 'package:matchup/Pages/userInfoEntryPage.dart';
 import 'package:matchup/bizlogic/User.dart';
 import 'package:matchup/bizlogic/authProvider.dart';
 import 'package:matchup/bizlogic/authentication.dart';
+import 'package:matchup/bizlogic/passwordValidator.dart';
 import 'package:matchup/bizlogic/userProvider.dart';
+import 'package:matchup/bizlogic/validator.dart';
 import 'homepage.dart';
 import 'loginSignupPage.dart';
 
@@ -25,7 +28,12 @@ class RootPage extends StatefulWidget{
 }
 
 class _RootPageState extends State<RootPage>{
+  bool isLoading = false;
+  String email = "";
+  String password = "";
+  String errorMessage = "";
   AuthStatus _authStatus = AuthStatus.NOT_DETERMINED;
+  final GlobalKey<FormState> formKey = new GlobalKey<FormState>(debugLabel: "passwordForm");
   User user;
 
   @override
@@ -87,17 +95,149 @@ class _RootPageState extends State<RootPage>{
     });
   }
 
-  Future<void> logoutCallback(bool deleteAccount) async{
+  Future<void> logoutCallback(bool deleteUser) async{
     final BaseAuth auth = AuthProvider.of(context).auth;
-    if (deleteAccount){
-      print("DELETING ACCOUNT");
-      await auth.deleteUser();
+    if (deleteUser){
+      await tryDeleteUser(auth);
     }
+    print("Signing out user");
     await auth.signOut();
     setState(() {
       print("logout callback");
       _authStatus = AuthStatus.NOT_LOGGED_IN;
     });
+  }
+
+  // handles the recent login error thrown by auth.deleteUser
+  // reauthenticates user if necessary then attemps to delete the account
+  Future<void> tryDeleteUser(BaseAuth auth) async{
+    bool deleted;
+
+    print("DELETING ACCOUNT");
+    deleted = await auth.deleteUser();
+
+    // only need to re-enter password if the reauthentication error occurs
+    while (!deleted){
+      await tryReauthenticateUser();
+      deleted = await auth.deleteUser();
+    }
+  }
+
+  // popup that alerts the user they are about to cancel account creation
+  // appears when the user attempts to press the back button
+  Future<void> tryReauthenticateUser() async {
+    return showDialog(
+      barrierDismissible: false,
+      context: context,
+      builder: (context){
+        return AlertDialog(
+          key: Key("tryReauthenticateUser"),
+          title: Text("Please reauthenticate your password"),
+          content: Text('''In order to procede with account deletion,\n
+you must enter your password again.'''),
+          actions: <Widget>[
+            passwordInputForm(),
+          ],
+        );
+      }
+    );
+  }
+
+  // returns a column with a text field for password input,
+  // a button to submit the password
+  // and a possible error message
+  Widget passwordInputForm(){
+    return Container(
+      child: Form(
+        key: formKey,
+        child: SizedBox(
+          height: 400,
+          width: 400,
+          child: Column(
+            children: <Widget>[
+              buildPasswordField(),
+              buildPasswordButton(),
+              ErrorMessage.showErrorMessage(errorMessage),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget buildPasswordField(){
+    Validator passwordValidator = PasswordValidator();
+    return Flexible(
+      child: Padding(
+        padding: EdgeInsets.fromLTRB(0.0, 20, 0, 50.0),
+        child: new TextFormField(
+            key: Key('password'),
+            maxLines: 1,
+            obscureText: true,
+            autofocus: false,
+            decoration: InputDecoration(
+                //contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
+                hintText: "Password",
+                icon: new Icon(Icons.lock,
+                color: Colors.blueGrey
+                )),
+            validator: (value) => passwordValidator.validate(value),
+            onSaved: (value) => password = passwordValidator.save(value),
+        ),
+      ),
+      fit: FlexFit.loose,
+      flex: 1
+    );
+  }
+  Widget buildPasswordButton(){
+    return FlatButton(
+      key: Key("passwordButton"),
+      child: Text("submit"),
+      onPressed: validateAndSubmit
+    );
+  }
+
+  // Check if form is valid before perform login or signup
+  bool validateAndSave() {
+    final FormState form = formKey.currentState;
+    if (form.validate()) {
+      email = user.getEmail;
+      form.save();
+      return true;
+    }
+    setState(() {
+      isLoading = false;
+    });
+    return false;
+  }
+
+  // Perform login or signup
+  void validateAndSubmit() async {
+    final BaseAuth auth = AuthProvider.of(context).auth;
+    setState(() {
+      errorMessage = "";
+      isLoading = true;
+    });
+    if (validateAndSave()) {
+      print("passed validate and save");
+      try {
+        // use this future to test the loading icon
+        print("calling reauthenticate function");
+        errorMessage = await auth.reauthenticateWithCredential(email, password);
+        setState(() {
+          isLoading = false;
+        });
+        print("attempting to pop password form");
+        Navigator.pop(context, true);
+      } catch (e) {
+        print("IN ERROR HANDLER");
+        print('Error $e');
+        setState(() {
+          isLoading = false;
+          errorMessage = e.message;
+        });
+      }
+    }
   }
 
   @override

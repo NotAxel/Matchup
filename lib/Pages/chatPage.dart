@@ -283,7 +283,7 @@ class _ChatPageState extends State<ChatPage> {
         ),
         color: Colors.grey[300],
       ),
-      flex: 1,
+    flex: 1,
     );
   }
 

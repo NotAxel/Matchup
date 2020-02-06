@@ -1,5 +1,4 @@
 class Constants {
-  static const String Empty = '';
   // Characters
   static const String Main = 'Main';
   static const String Fox = 'Fox';
@@ -179,7 +178,6 @@ class Constants {
 
 
   static const List<String> regions = <String>[
-    Empty,
     NorthWest,
     WestCoast,
     Mountain,
@@ -192,7 +190,6 @@ class Constants {
   ];
 
   static const List<String> characters = <String>[
-    Empty,
     Banjo,
     Bayonetta,
     Bowser,
