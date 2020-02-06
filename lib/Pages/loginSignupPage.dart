@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:matchup/Pages/errorMessage.dart';
-import 'package:matchup/Pages/loadingCircle.dart';
+import 'package:matchup/Widgets/errorMessage.dart';
+import 'package:matchup/Widgets/loadingCircle.dart';
+import 'package:matchup/Widgets/passwordFormField.dart';
 import 'package:matchup/bizlogic/authProvider.dart';
 import 'package:matchup/bizlogic/authentication.dart';
 import 'package:matchup/bizlogic/emailValidator.dart';
-import 'package:matchup/bizlogic/passwordValidator.dart';
 import 'package:matchup/bizlogic/validator.dart';
 import 'userInfoEntryPage.dart';
 
@@ -20,10 +20,9 @@ class LogInSignupPage extends StatefulWidget {
 
 class _LogInSignupPageState extends State<LogInSignupPage> {
   _LogInSignupPageState();
-  TextStyle style = TextStyle(fontFamily: 'Montserrat', fontSize: 20.0);
   String _email;
-  String _password;
-  String _errorMessage;
+  PasswordFormField _passwordFormField = new PasswordFormField();
+  ErrorMessage _errorMessage = new ErrorMessage();
 
   bool _isLoginForm;
   bool _isLoading;
@@ -31,7 +30,7 @@ class _LogInSignupPageState extends State<LogInSignupPage> {
 
   @override
   void initState() {
-    _errorMessage = "";
+    _errorMessage.setMessage = null;
     _isLoading = false;
     _isLoginForm = true;
     super.initState();
@@ -39,9 +38,9 @@ class _LogInSignupPageState extends State<LogInSignupPage> {
 
   void resetForm(){
     _formKey.currentState.reset();
-    _errorMessage = "";
+    _errorMessage.setMessage = null;
     _email = null;
-    _password = null;
+    _passwordFormField.setPassword = null;
   }
 
   void toggleFormMode() {
@@ -71,7 +70,6 @@ class _LogInSignupPageState extends State<LogInSignupPage> {
             key: Key('email'),
             obscureText: false,
             maxLines: 1,
-            style: style,
             autofocus: false,
             keyboardType: TextInputType.emailAddress,
             decoration: InputDecoration(
@@ -88,31 +86,6 @@ class _LogInSignupPageState extends State<LogInSignupPage> {
     );
   } 
 
-  Widget showPasswordField(){
-    Validator passwordValidator = PasswordValidator();
-    return Flexible(
-      child: Padding(
-        padding: EdgeInsets.fromLTRB(0.0, 20, 0, 50.0),
-        child: new TextFormField(
-            key: Key('password'),
-            maxLines: 1,
-            obscureText: true,
-            autofocus: false,
-            style: style,
-            decoration: InputDecoration(
-                //contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-                hintText: "Password",
-                icon: new Icon(Icons.lock,
-                color: Colors.blueGrey
-                )),
-            validator: (value) => passwordValidator.validate(value),
-            onSaved: (value) => _password = passwordValidator.save(value),
-        ),
-      ),
-      fit: FlexFit.loose,
-      flex: 1
-    );
-  }
 
   // https://stackoverflow.com/questions/50293503/how-to-set-the-width-of-a-raisedbutton-in-flutter
   Widget showLogInButton(){
@@ -125,7 +98,7 @@ class _LogInSignupPageState extends State<LogInSignupPage> {
           elevation: 5.0,
           shape: new RoundedRectangleBorder(
               borderRadius: new BorderRadius.circular(30.0)),
-          color: Colors.deepOrange,
+          color: Colors.blue,
           child: new Text(_isLoginForm ? 'Login' : 'Create account',
               style: new TextStyle(fontSize: 20.0, color: Colors.white)),
           onPressed: validateAndSubmit,
@@ -175,7 +148,7 @@ class _LogInSignupPageState extends State<LogInSignupPage> {
   void validateAndSubmit() async {
     final BaseAuth auth = AuthProvider.of(context).auth;
     setState(() {
-      _errorMessage = "";
+      _errorMessage.setMessage = null; 
       _isLoading = true;
     });
     if (validateAndSave()) {
@@ -185,11 +158,11 @@ class _LogInSignupPageState extends State<LogInSignupPage> {
         if (_isLoginForm) {
           // use this future to test the loading icon
           print("calling sign in function");
-          userId = await auth.signIn(_email, _password);
+          userId = await auth.signIn(_email, _passwordFormField.getPassword);
           print('Signed in: $userId');
         } else {
           print("calling sign up function");
-          userId = await auth.signUp(_email, _password);
+          userId = await auth.signUp(_email, _passwordFormField.getPassword);
           //widget.auth.sendEmailVerification();
           //_showVerifyEmailSentDialog();
           print('Signed up user: $userId');
@@ -233,10 +206,10 @@ class _LogInSignupPageState extends State<LogInSignupPage> {
             children: <Widget>[
               showLogo(),
               showEmailField(),
-              showPasswordField(),
+              _passwordFormField.buildPasswordField(),
               showLogInButton(),
               showSwitchButton(),
-              ErrorMessage.showErrorMessage(_errorMessage),
+              _errorMessage.buildErrorMessage(),
             ],
           ),
         )

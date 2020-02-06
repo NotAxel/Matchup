@@ -1,14 +1,13 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:matchup/Pages/errorMessage.dart';
-import 'package:matchup/Pages/loadingCircle.dart';
+import 'package:matchup/Widgets/errorMessage.dart';
+import 'package:matchup/Widgets/loadingCircle.dart';
 import 'package:matchup/Pages/userInfoEntryPage.dart';
+import 'package:matchup/Widgets/passwordFormField.dart';
 import 'package:matchup/bizlogic/User.dart';
 import 'package:matchup/bizlogic/authProvider.dart';
 import 'package:matchup/bizlogic/authentication.dart';
-import 'package:matchup/bizlogic/passwordValidator.dart';
 import 'package:matchup/bizlogic/userProvider.dart';
-import 'package:matchup/bizlogic/validator.dart';
 import 'homepage.dart';
 import 'loginSignupPage.dart';
 
@@ -30,8 +29,8 @@ class RootPage extends StatefulWidget{
 class _RootPageState extends State<RootPage>{
   bool isLoading = false;
   String email = "";
-  String password = "";
-  String errorMessage = "";
+  PasswordFormField passwordFormField = new PasswordFormField();
+  ErrorMessage _errorMessage = new ErrorMessage();
   AuthStatus _authStatus = AuthStatus.NOT_DETERMINED;
   final GlobalKey<FormState> formKey = new GlobalKey<FormState>(debugLabel: "passwordForm");
   User user;
@@ -155,9 +154,9 @@ you must enter your password again.'''),
           width: 400,
           child: Column(
             children: <Widget>[
-              buildPasswordField(),
+              passwordFormField.buildPasswordField(),
               buildPasswordButton(),
-              ErrorMessage.showErrorMessage(errorMessage),
+              _errorMessage.buildErrorMessage(),
             ],
           ),
         ),
@@ -165,30 +164,6 @@ you must enter your password again.'''),
     );
   }
 
-  Widget buildPasswordField(){
-    Validator passwordValidator = PasswordValidator();
-    return Flexible(
-      child: Padding(
-        padding: EdgeInsets.fromLTRB(0.0, 20, 0, 50.0),
-        child: new TextFormField(
-            key: Key('password'),
-            maxLines: 1,
-            obscureText: true,
-            autofocus: false,
-            decoration: InputDecoration(
-                //contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-                hintText: "Password",
-                icon: new Icon(Icons.lock,
-                color: Colors.blueGrey
-                )),
-            validator: (value) => passwordValidator.validate(value),
-            onSaved: (value) => password = passwordValidator.save(value),
-        ),
-      ),
-      fit: FlexFit.loose,
-      flex: 1
-    );
-  }
   Widget buildPasswordButton(){
     return FlatButton(
       key: Key("passwordButton"),
@@ -215,7 +190,7 @@ you must enter your password again.'''),
   void validateAndSubmit() async {
     final BaseAuth auth = AuthProvider.of(context).auth;
     setState(() {
-      errorMessage = "";
+      _errorMessage.setMessage = null;
       isLoading = true;
     });
     if (validateAndSave()) {
@@ -223,7 +198,7 @@ you must enter your password again.'''),
       try {
         // use this future to test the loading icon
         print("calling reauthenticate function");
-        errorMessage = await auth.reauthenticateWithCredential(email, password);
+        await auth.reauthenticateWithCredential(email, passwordFormField.getPassword);
         setState(() {
           isLoading = false;
         });
@@ -234,7 +209,7 @@ you must enter your password again.'''),
         print('Error $e');
         setState(() {
           isLoading = false;
-          errorMessage = e.message;
+          _errorMessage.setMessage = e.message;
         });
       }
     }

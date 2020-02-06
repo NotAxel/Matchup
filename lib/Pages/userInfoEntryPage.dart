@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:matchup/Pages/loadingCircle.dart';
+import 'package:matchup/Widgets/loadingCircle.dart';
 import 'package:matchup/bizlogic/constants.dart' as con;
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';

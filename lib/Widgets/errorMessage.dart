@@ -1,10 +1,17 @@
 import 'package:flutter/material.dart';
 
 class ErrorMessage{
-  static Widget showErrorMessage(String errorMessage) {
-    if(errorMessage.length > 0 && errorMessage != null) {
+  String _message;
+
+  ErrorMessage();
+
+  String get getMessage => _message;
+  set setMessage(String message) { _message = message; }
+
+  Widget buildErrorMessage() {
+    if(_message != null && _message.length > 0) {
       return new Text (
-        errorMessage,
+        _message,
         key: Key("error message"),
         softWrap: true,
         style: TextStyle(

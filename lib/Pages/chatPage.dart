@@ -5,7 +5,7 @@ import 'package:matchup/bizlogic/User.dart';
 import 'package:matchup/bizlogic/message.dart';
 import 'package:matchup/bizlogic/constants.dart';
 import 'package:matchup/bizlogic/chatPageLogic.dart';
-import 'package:matchup/Pages/loadingCircle.dart';
+import 'package:matchup/Widgets/loadingCircle.dart';
 
 class ChatPage extends StatefulWidget {
   final User user;
