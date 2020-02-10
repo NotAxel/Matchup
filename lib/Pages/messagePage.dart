@@ -3,8 +3,12 @@ import '../bizlogic/userProvider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:matchup/bizlogic/User.dart';
 import 'package:matchup/bizlogic/userProvider.dart';
+import 'package:matchup/Pages/filterPopupPage.dart';
+import 'package:matchup/Pages/filterPopupContent.dart';
 import 'package:matchup/bizlogic/constants.dart' as con;
 import './chatPage.dart' as chatp;
+import 'package:matchup/Pages/filterPopupForm.dart' as fpf;
+import 'package:matchup/Pages/deletePopupForm.dart' as dpf;
 
 class MessagePage extends StatefulWidget {
   @override
@@ -20,7 +24,14 @@ class MessagePageState extends State<MessagePage>{
       appBar: new AppBar(
         centerTitle: true,
         title: new Center(child: Text("Messages")),
-        ),
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.create),
+            onPressed: () {
+            },
+          ),
+        ]
+      ),
       body: Column(
         children: <Widget>[
           buildConversationList(context),
@@ -41,10 +52,10 @@ class MessagePageState extends State<MessagePage>{
             return snapshotError(snapshot);
           }
           else if (!snapshot.hasData) {
-            return startConversation();
+            return noConversations();
           } 
           else return ListView.separated(
-            padding: EdgeInsets.fromLTRB(15.0, 10.0, 10.0, 10.0),
+            padding: EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 10.0),
             itemBuilder: (context, index) =>
                 buildConversation(context, snapshot.data.documents[index]),
             itemCount: snapshot.data.documents.length,
@@ -81,7 +92,12 @@ class MessagePageState extends State<MessagePage>{
                 width: 35.0,
               ),
               subtitle: getLastMessage(context, conversation),
-              trailing: IconButton(icon: new Icon(Icons.delete_outline), onPressed: null),
+              trailing: IconButton(
+                icon: new Icon(Icons.delete_outline), 
+                onPressed: (){
+                  deleteConversation(context, conversation, snapshot);
+                },
+              ),
               onTap: (){
                 Navigator.push(
                   context,
@@ -100,7 +116,6 @@ class MessagePageState extends State<MessagePage>{
           }
         }, 
       ),
-      width: 175.0,
       height: 60.0,
     );
   }
@@ -138,7 +153,7 @@ class MessagePageState extends State<MessagePage>{
     );
   }
 
-  Widget startConversation(){
+  Widget noConversations(){
     return Center(
       child: Container(
         child: Text(
@@ -156,6 +171,38 @@ class MessagePageState extends State<MessagePage>{
           "uh oh, an error occurred retrieving the Firebase snapshot:\n ${snapshot.error}",
           style: TextStyle(color: Colors.red),
         ),
+      )
+    );
+  }
+
+  deleteConversation (BuildContext context, DocumentSnapshot conversation, AsyncSnapshot snap){
+    Navigator.push(
+      context,
+      FilterPopupPage(
+        top: 200,
+        left: 20,
+        bottom: 400,
+        right: 20,
+        child: FilterPopupContent(
+          content: Scaffold(
+            appBar: AppBar(
+              title: Text("DELETE CONVERSATION?"),
+              leading: new Builder(builder: (context) {
+                return IconButton(
+                  icon: Icon(Icons.arrow_back),
+                  onPressed: () {
+                    try {
+                      Navigator.pop(context);
+                    } catch(e) {}
+                  },
+                );
+              }),
+              brightness: Brightness.light,
+            ),
+            resizeToAvoidBottomPadding: false,
+            body: dpf.DeletePopupForm(conversation: conversation, otherUser: snap,),
+          ),
+        )
       )
     );
   }
