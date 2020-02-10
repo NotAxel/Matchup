@@ -81,6 +81,7 @@ class MessagePageState extends State<MessagePage>{
                 width: 35.0,
               ),
               subtitle: getLastMessage(context, conversation),
+              trailing: IconButton(icon: new Icon(Icons.delete_outline), onPressed: null),
               onTap: (){
                 Navigator.push(
                   context,
