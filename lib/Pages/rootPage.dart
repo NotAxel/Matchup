@@ -132,8 +132,7 @@ class _RootPageState extends State<RootPage>{
         return AlertDialog(
           key: Key("tryReauthenticateUser"),
           title: Text("Please reauthenticate your password"),
-          content: Text('''In order to procede with account deletion,\n
-you must enter your password again.'''),
+          content: Text('In order to procede with account deletion,\nyou must enter your password again.'),
           actions: <Widget>[
             passwordInputForm(),
           ],

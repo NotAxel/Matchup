@@ -85,7 +85,6 @@ class Auth implements BaseAuth {
   // if there was an error, returns the error message
   @override
   Future<String> reauthenticateWithCredential(String email, String password) async{
-    // TODO: implement reauthenticateWithCredential
     final FirebaseUser firebaseUser = await _firebaseAuth.currentUser();
     AuthCredential credential = EmailAuthProvider.getCredential(
       email: email, password: password);

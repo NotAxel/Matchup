@@ -6,14 +6,14 @@ import 'package:matchup/bizlogic/message.dart';
 import 'package:matchup/bizlogic/constants.dart';
 import 'package:matchup/bizlogic/chatPageLogic.dart';
 import 'package:matchup/Widgets/loadingCircle.dart';
+import 'package:matchup/bizlogic/userProvider.dart';
 
 class ChatPage extends StatefulWidget {
-  final User user;
   final DocumentSnapshot peer;
   final String chatId;
 
   const ChatPage(
-    {Key key, this.user, this.peer, this.chatId})
+    {Key key, this.peer, this.chatId})
     : super(key: key);
 
   @override
@@ -22,24 +22,20 @@ class ChatPage extends StatefulWidget {
 
 class _ChatPageState extends State<ChatPage> {
   // make instance variables have underscores
-  final TextEditingController messageController = new TextEditingController();
-  final ScrollController listScrollController = new ScrollController();
-  final FocusNode focusNode = new FocusNode();
+  final TextEditingController _messageController = new TextEditingController();
+  final ScrollController _listScrollController = new ScrollController();
+  final FocusNode _focusNode = new FocusNode();
 
+  User _user;
   Message _message;
   List<DocumentSnapshot> listMessage;
-
-  @override
-  void initState() {
-    super.initState();
-    // messages are from to the peer from the user
-    _message = new Message("", widget.peer.documentID, widget.user.getUserId);
-  }
 
   // idea for messaging structure from flutter community guide
   // https://medium.com/flutter-community/building-a-chat-app-with-flutter-and-firebase-from-scratch-9eaa7f41782e
   @override
   Widget build(BuildContext context) {
+    _user = UserProvider.of(context).user;
+    _message = new Message("", widget.peer.documentID, _user.getUserId);
     return Scaffold(
       appBar: AppBar(
         title: buildPeerInfo(),
@@ -50,8 +46,8 @@ class _ChatPageState extends State<ChatPage> {
           mainAxisSize: MainAxisSize.max,
           mainAxisAlignment: MainAxisAlignment.end,
           children: <Widget>[
-            buildMessageList(context),
-            buildMessageInputContainer(context)
+            buildMessageList(),
+            buildMessageInputContainer()
           ],
         ),
         onTap: (){
@@ -122,7 +118,7 @@ class _ChatPageState extends State<ChatPage> {
     );
   }
 
-  Widget buildMessageList(BuildContext context){
+  Widget buildMessageList(){
     return Expanded(
       child: StreamBuilder(
         stream: Firestore.instance
@@ -145,7 +141,7 @@ class _ChatPageState extends State<ChatPage> {
               itemBuilder: (context, index) =>
                 buildMessageBoxes(index, snapshot.data.documents[index]),
               itemCount: snapshot.data.documents.length,
-              controller: listScrollController,
+              controller: _listScrollController,
               scrollDirection: Axis.vertical,
               reverse: true,
               shrinkWrap: true,
@@ -180,7 +176,7 @@ class _ChatPageState extends State<ChatPage> {
   // otherwise, the fromId is from the peerId and appears on left
   Widget buildMessageBoxes(int index, DocumentSnapshot document){
     int timeStamp = int.tryParse(document['timeStamp']);
-    bool isUserMessage = document['fromId'] == widget.user.getUserId;
+    bool isUserMessage = document['fromId'] == _user.getUserId;
     return Row(
       mainAxisAlignment: ChatPageLogic.rowMainAxisAlignment(isUserMessage),
       children: <Widget>[
@@ -210,12 +206,12 @@ class _ChatPageState extends State<ChatPage> {
   }
 
   // container that holds send message button and message input field 
-  Widget buildMessageInputContainer(BuildContext context){
+  Widget buildMessageInputContainer(){
     return Container(
       child: Row(
         children: <Widget>[
-          buildSendFriendCodeButton(context),
-          buildMessageInput(context),
+          buildSendFriendCodeButton(),
+          buildMessageInput(),
           buildSendButton(),
         ],
       ),
@@ -227,14 +223,14 @@ class _ChatPageState extends State<ChatPage> {
     );
   }
 
-  Widget buildSendFriendCodeButton(BuildContext context){
+  Widget buildSendFriendCodeButton(){
     return Flexible(
       key: Key("SEND_FRIEND_CODE_BUTTON"),
       child: Material(
         child: IconButton(
           color: Colors.lightBlue,
           onPressed: (){
-            _message.setContent = widget.user.getFriendCode;
+            _message.setContent = _user.getFriendCode;
             sendMessage();
           },
           icon: Icon(
@@ -247,11 +243,11 @@ class _ChatPageState extends State<ChatPage> {
     );
   }
 
-  Widget buildMessageInput(BuildContext context){
+  Widget buildMessageInput(){
     return Flexible(
       key: Key("MESSAGE_INPUT_FIELD"),
       child: TextField(
-        controller: messageController,
+        controller: _messageController,
         minLines: 1,
         maxLines: 5,
         keyboardType: TextInputType.multiline,
@@ -259,7 +255,7 @@ class _ChatPageState extends State<ChatPage> {
         decoration: InputDecoration.collapsed(
           hintText: 'Send a message...',
         ),
-        focusNode: focusNode,
+        focusNode: _focusNode,
       ),
       flex: 6,
     );
@@ -273,9 +269,9 @@ class _ChatPageState extends State<ChatPage> {
         child: IconButton(
           color: Colors.lightBlue,
           onPressed: (){
-            _message.setContent = messageController.text;
+            _message.setContent = _messageController.text;
             sendMessage();
-            messageController.clear();
+            _messageController.clear();
           },
           icon: Icon(
             Icons.send
@@ -307,7 +303,7 @@ class _ChatPageState extends State<ChatPage> {
           'timeStamp': _message.getTimeStamp,
         });
       });
-      listScrollController.animateTo(0.0,
+      _listScrollController.animateTo(0.0,
         duration: Duration(milliseconds: 0), curve: Curves.fastOutSlowIn);
     }
   }

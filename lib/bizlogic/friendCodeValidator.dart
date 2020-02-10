@@ -1,10 +1,9 @@
 import 'package:matchup/bizlogic/validator.dart';
 
 class FriendCodeValidator implements Validator{
-  String formattingError = '''Your Nintendo Switch Friend Code
-    must begin with SW- followed by the remaining 12 digits of your code
-    with a dash after the fourth digit and the eigth digit\n
-    Example: SW-8496-9128-4205''';
+  String formattingError = 'Your Nintendo Switch Friend Code was badly formatted.\n' +
+  'Please try again.\n' +
+  'Example: SW-8496-9128-4205';
 
   String getValidatorName() {
     return "FriendCodeValidator";

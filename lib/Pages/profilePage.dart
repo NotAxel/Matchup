@@ -6,10 +6,7 @@ import 'package:matchup/bizlogic/constants.dart';
 import 'package:matchup/bizlogic/userProvider.dart';
 
 class ProfilePage extends StatefulWidget {
-  final Future<void> Function(bool) logoutCallback;
-  final User user;
-
-  ProfilePage({this.user, this.logoutCallback});
+  ProfilePage();
 
   @override
   ProfilePageState createState() => ProfilePageState();
@@ -72,7 +69,8 @@ class ProfilePageState extends State<ProfilePage> with SingleTickerProviderState
       return LoadingCircle.loadingCircle();
     }
     else{
-      return Column(
+      return Scaffold(
+        body: Column(
         children: [
           Text(''),
           Container(height: 50),
@@ -83,6 +81,7 @@ class ProfilePageState extends State<ProfilePage> with SingleTickerProviderState
           Text("Main: " + _user.getMain + "\nSecondary: " + _user.getSecondary, style: profStyle),
           _showForm(logoutCallback),
         ]
+      ),
       );
     }
   }

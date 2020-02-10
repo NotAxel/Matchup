@@ -84,7 +84,6 @@ class _UserInfoEntryPage extends State<UserInfoEntryPage> {
   // the dropdown items should correspond with the list related to the hint text
   // eg if you give main as hint text, dropdownItems should be the list of characters
   // keys will be: main, secondary, region from constants above
-  // TODO: user should not be able to enter empty string or null for dropdown
   Widget showDropdown(String hintText, List<String> dropdownItems){
     return new Center(
       child: DropdownButton<String>(
@@ -129,6 +128,7 @@ class _UserInfoEntryPage extends State<UserInfoEntryPage> {
         keyboardType: TextInputType.text,
         decoration: InputDecoration(
           hintText: "Nintendo Friend Code",
+          errorMaxLines: 5
         ),
         validator: (value) => friendCodeValidator.validate(value),
         onSaved: (value) => _nintendoID = friendCodeValidator.save(value),
