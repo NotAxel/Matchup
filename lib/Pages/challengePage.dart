@@ -42,6 +42,17 @@ class ChallengePage extends StatelessWidget {
                     goToChatPage(context, user, this.peer.documentID);
                   },
                   ),
+                  RaisedButton(
+                  child: Text('Add Friend', style: TextStyle(fontSize: 20, color: Colors.white)),
+                  color: Colors.redAccent,
+                  onPressed: () {
+                    Firestore.instance.collection('Users').document(user.getUserId).updateData({
+                      'Friends List' : FieldValue.arrayUnion([this.peer.documentID])});
+                    _showDialog(context);
+                    //add pop-up if successfull
+                  },
+                  ),
+
                 RaisedButton(
                   child: Text('Go back!'),
                   onPressed: () {
@@ -112,3 +123,28 @@ class ChallengePage extends StatelessWidget {
           chatId: chatId)));
   }
 } 
+
+
+// user defined function
+void _showDialog(BuildContext context) {
+  // flutter defined function
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      // return object of type Dialog
+      return AlertDialog(
+        title: new Text("Friend Added!"),
+        //content: new Text("Alert Dialog body"),
+        actions: <Widget>[
+          // usually buttons at the bottom of the dialog
+          new FlatButton(
+            child: new Text("Close"),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          ),
+        ],
+      );
+    },
+  );
+}
