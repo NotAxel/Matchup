@@ -71,15 +71,16 @@ class MessagePageState extends State<MessagePage>{
             return ListTile(
               title: new Text(snapshot.data['Username'],
               style: TextStyle(
-              fontSize: 30.0,
+              fontSize: 25.0,
+              fontWeight: FontWeight.bold,
               )
               ),
               leading: new Image(
                 image: AssetImage(con.Constants.minSpritesMap[snapshot.data['Main']]),
-                height: 25.0,
-                width: 25.0,
+                height: 35.0,
+                width: 35.0,
               ),
-              trailing: getLastMessage(context, conversation),
+              subtitle: getLastMessage(context, conversation),
               onTap: (){
                 Navigator.push(
                   context,
@@ -99,6 +100,7 @@ class MessagePageState extends State<MessagePage>{
         }, 
       ),
       width: 175.0,
+      height: 60.0,
     );
   }
 
@@ -108,7 +110,7 @@ class MessagePageState extends State<MessagePage>{
         stream: Firestore.instance.collection("Chats")
             .document(conversation.data["chatId"])
             .collection(conversation.data["chatId"])
-            .orderBy('createdAt', descending: true)
+            .orderBy('timeStamp', descending: true)
             .snapshots(),
         builder: (context, AsyncSnapshot<QuerySnapshot> snapshot){
           if(snapshot.connectionState == ConnectionState.active){
@@ -117,7 +119,7 @@ class MessagePageState extends State<MessagePage>{
                   .first["content"],
                 maxLines: 1,
                 style: TextStyle(
-                  fontSize: 15.0,
+                  fontSize: 12.0,
                   color: Colors.blueGrey[100]
                 )
               );
@@ -127,11 +129,11 @@ class MessagePageState extends State<MessagePage>{
             }
           }
           else{
-            return CircularProgressIndicator();
+            return Text("");
           }
         }
       ),
-      padding: EdgeInsets.fromLTRB(15.0, 10.0, 0.0, 10.0),
+      padding: EdgeInsets.fromLTRB(0.0, 5.0, 0.0, 0.0),
     );
   }
 
