@@ -21,11 +21,12 @@ class PasswordFormField{
             obscureText: true,
             autofocus: false,
             decoration: InputDecoration(
-                //contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-                hintText: "Password",
-                icon: new Icon(Icons.lock,
-                color: Colors.blueGrey
-                )),
+              contentPadding: EdgeInsets.fromLTRB(0.0, 15.0, 20.0, 0.0),
+              hintText: "Password",
+              icon: new Icon(Icons.lock,
+              color: Colors.blueGrey
+              )
+            ),
             validator: (value) => passwordValidator.validate(value),
             onSaved: (value) => _password = passwordValidator.save(value),
         ),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:matchup/Widgets/errorMessage.dart';
 import 'package:matchup/Widgets/loadingCircle.dart';
 import 'package:matchup/Widgets/passwordFormField.dart';
+import 'package:matchup/Widgets/wrappingText.dart';
 import 'package:matchup/bizlogic/authProvider.dart';
 import 'package:matchup/bizlogic/authentication.dart';
 import 'package:matchup/bizlogic/emailValidator.dart';
@@ -23,6 +24,7 @@ class _LogInSignupPageState extends State<LogInSignupPage> {
   String _email;
   PasswordFormField _passwordFormField = new PasswordFormField();
   ErrorMessage _errorMessage = new ErrorMessage();
+  final ScrollController _listScrollController = new ScrollController();
 
   bool _isLoginForm;
   bool _isLoading;
@@ -44,7 +46,6 @@ class _LogInSignupPageState extends State<LogInSignupPage> {
   }
 
   void toggleFormMode() {
-    resetForm();
     setState(() {
       _isLoginForm = !_isLoginForm;
     });
@@ -53,11 +54,12 @@ class _LogInSignupPageState extends State<LogInSignupPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-          body: Stack(
-          children: <Widget>[
-            _showLogInForm(),
-          ],
-        ));
+      resizeToAvoidBottomInset: false,
+      body: Stack(
+      children: <Widget>[
+        _showLogInForm(),
+      ],
+    ));
   }
 
   // https://stackoverflow.com/questions/52645944/flutter-expanded-vs-flexible
@@ -68,7 +70,7 @@ class _LogInSignupPageState extends State<LogInSignupPage> {
         padding: EdgeInsets.fromLTRB(0.0, 10, 0.0, 0.0),
         child: new TextFormField(
             key: Key('email'),
-            obscureText: false,
+            maxLength: 30,
             maxLines: 1,
             autofocus: false,
             keyboardType: TextInputType.emailAddress,
@@ -193,6 +195,22 @@ class _LogInSignupPageState extends State<LogInSignupPage> {
     }
   }
 
+  Widget showPasswordRequirements(){
+    String requirements = 
+      "Minimum password length:\n" +
+      "  8 characters\n" +
+      "Password must contain:\n" +
+      "  At least one upper case character\n" +
+      "  At least one lower case character\n" +
+      "  At least one numeric digit between 0 and 9\n" +
+      "  At least one special character (!@#\$&*~)\n" +
+      "Password must not contain:\n"
+      "  White space characters\n";
+    return WrappingText.wrappingText(
+      Text(requirements)
+    );
+  }
+
   Widget _showLogInForm() {
     if (_isLoading){
       return LoadingCircle.loadingCircle();
@@ -209,6 +227,7 @@ class _LogInSignupPageState extends State<LogInSignupPage> {
               _passwordFormField.buildPasswordField(),
               showLogInButton(),
               showSwitchButton(),
+              showPasswordRequirements(),
               _errorMessage.buildErrorMessage(),
             ],
           ),
