@@ -70,7 +70,6 @@ class _LogInSignupPageState extends State<LogInSignupPage> {
         padding: EdgeInsets.fromLTRB(0.0, 10, 0.0, 0.0),
         child: new TextFormField(
             key: Key('email'),
-            maxLength: 30,
             maxLines: 1,
             autofocus: false,
             keyboardType: TextInputType.emailAddress,
@@ -189,7 +188,7 @@ class _LogInSignupPageState extends State<LogInSignupPage> {
         print('Error $e');
         setState(() {
           _isLoading = false;
-          _errorMessage = e.message;
+          _errorMessage.setMessage = e.message;
         });
       }
     }
@@ -207,7 +206,9 @@ class _LogInSignupPageState extends State<LogInSignupPage> {
       "Password must not contain:\n"
       "  White space characters\n";
     return WrappingText.wrappingText(
-      Text(requirements)
+      Text(
+        requirements,
+        key: Key("password requirements"),)
     );
   }
 

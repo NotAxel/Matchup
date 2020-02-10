@@ -53,7 +53,7 @@ void main() {
     // ARRANGE
     // check if login call back is used
     String expectedEmail = 'foo@gmail.com';
-    String expectedPassword = '123456';
+    String expectedPassword = 'Test123!';
 
     MockAuth mockAuth = new MockAuth();
     when(mockAuth.signIn(expectedEmail, expectedPassword)).thenAnswer((value){return Future.value("test id");});
@@ -159,7 +159,7 @@ void main() {
     // ARRANGE
 
     String expectedEmail = 'foo@gmail.com';
-    String expectedPassword = '123456';
+    String expectedPassword = 'Test123!';
 
     MockAuth mockAuth = new MockAuth();
     when(mockAuth.signUp(expectedEmail, expectedPassword)).thenAnswer((value){return Future.value("test id");});

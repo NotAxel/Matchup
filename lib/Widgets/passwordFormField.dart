@@ -10,6 +10,7 @@ class PasswordFormField{
   String get getPassword => _password;
   set setPassword(String password) { _password = password; }
 
+  // TODO: password field should be given validator as a parameter to be used in different cases
   Widget buildPasswordField(){
     Validator passwordValidator = PasswordValidator();
     return Flexible(
@@ -21,7 +22,7 @@ class PasswordFormField{
             obscureText: true,
             autofocus: false,
             decoration: InputDecoration(
-              contentPadding: EdgeInsets.fromLTRB(0.0, 15.0, 20.0, 0.0),
+              //contentPadding: EdgeInsets.fromLTRB(0.0, 15.0, 20.0, 0.0),
               hintText: "Password",
               icon: new Icon(Icons.lock,
               color: Colors.blueGrey

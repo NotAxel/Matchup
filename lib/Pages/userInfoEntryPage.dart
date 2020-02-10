@@ -139,6 +139,7 @@ class _UserInfoEntryPage extends State<UserInfoEntryPage> {
     return new Center(
       child: TextFormField(
         obscureText: false,
+        maxLength: 30,
         maxLines: 1,
         style: style,
         autofocus: false,
