@@ -95,6 +95,7 @@ void main() {
   });
 
   // credit: https://www.youtube.com/watch?v=75i5VmTI6A0&t=16s
+  // the password requirements are causing an error with something going off screen
   testWidgets('Attempt to sign in with empty email and password field', (WidgetTester tester) async {
     await tester.runAsync(() async{
       // ARRANGE 
@@ -213,7 +214,7 @@ void main() {
   testWidgets('Attempt to sign up with an email that already exists', (WidgetTester tester) async {
       // ARRANGE
       String expectedEmail = 'foo@gmail.com';
-      String expectedPassword = '123456';
+      String expectedPassword = 'Test123!';
       String errorMessage = "The email address is already in use by another account";
 
       MockAuth mockAuth = new MockAuth();
@@ -270,7 +271,7 @@ void main() {
     await tester.runAsync(() async{
       // ARRANGE
       String expectedEmail = 'foo@gmail.com';
-      String expectedPassword = '123456';
+      String expectedPassword = 'Test123!';
 
       MockAuth mockAuth = new MockAuth();
       when(mockAuth.signUp(expectedEmail, expectedPassword)).thenAnswer((value) async{

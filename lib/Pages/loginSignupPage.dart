@@ -228,7 +228,7 @@ class _LogInSignupPageState extends State<LogInSignupPage> {
               _passwordFormField.buildPasswordField(),
               showLogInButton(),
               showSwitchButton(),
-              showPasswordRequirements(),
+              //showPasswordRequirements(),
               _errorMessage.buildErrorMessage(),
             ],
           ),

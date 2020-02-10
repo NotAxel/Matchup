@@ -57,7 +57,7 @@ void main(){
 
       expect(validator.getValidatorName(), expectedValidatorName);
       
-      String actual = validator.validate("1@gmail.com");
+      String actual = validator.validate("Test123!");
       expect(actual, null);
     });
 
