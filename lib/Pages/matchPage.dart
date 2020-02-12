@@ -4,7 +4,6 @@ import 'package:matchup/Pages/filterPopupPage.dart';
 import 'package:matchup/Pages/filterPopupContent.dart';
 import 'package:matchup/bizlogic/User.dart';
 import 'package:matchup/bizlogic/userProvider.dart';
-import './challengePage.dart' as cp;
 import 'package:matchup/Pages/filterPopupForm.dart' as fpf;
 import 'package:matchup/bizlogic/constants.dart' as con;
 
@@ -72,14 +71,8 @@ class MatchPageState extends State<MatchPage>{
                     )
                   ),
                     onTap: (){
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => cp.ChallengePage(
-                          user: _user, 
-                          peer: snapshot.data.documents.elementAt(index),
-                        )
-                        )
-                      );
+                      Navigator.pushNamed(context, "/challenge", 
+                      arguments: <Object>[snapshot.data.documents.elementAt(index)]);
                     },
                   );
                 },

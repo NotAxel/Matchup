@@ -44,8 +44,7 @@ class FreindsListPageState extends State<FreindsListPage>{
                       Navigator.push(
                       context,
                       MaterialPageRoute(builder: (context) => cp.ChallengePage(
-                        user: _user, 
-                        peer: document,
+                        document,
                         )
                       )
                     );

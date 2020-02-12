@@ -11,14 +11,15 @@ void main() => runApp(MyApp());
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    BaseAuth auth = new Auth();
     return AuthProvider(
-      auth: Auth(),
+      auth: auth,
       child: MaterialApp(
         title: 'Matchup',
         theme: new ThemeData(
           primarySwatch: Colors.blue,
         ),
-        home: new RootPage(),
+        home: new RootPage(auth),
       )
     );
   }

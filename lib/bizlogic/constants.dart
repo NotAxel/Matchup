@@ -1,5 +1,4 @@
 class Constants {
-  static const String Empty = '';
   // Characters
   static const String Main = 'Main';
   static const String Fox = 'Fox';
@@ -85,15 +84,15 @@ class Constants {
 
   // Regions
   static const String Region = 'Region';
-  static const String NorthWest = 'North West';
-  static const String WestCoast = 'West Coast';
-  static const String Mountain = 'Mountain';
-  static const String North = 'North';
-  static const String Central = 'Central';
-  static const String South = 'South';
-  static const String MidWest = 'Mid West';
-  static const String EastCoast = 'East Coast';
-  static const String SouthEast = 'South East';
+  static const String NorthWest = 'North West (NW)';
+  static const String WestCoast = 'West Coast (WC)';
+  static const String Mountain = 'Mountain (MT)';
+  static const String North = 'North (N)';
+  static const String Central = 'Central (C)';
+  static const String South = 'South (S)';
+  static const String MidWest = 'Mid West (MW)';
+  static const String EastCoast = 'East Coast (EC)';
+  static const String SouthEast = 'South East (SE)';
 
   static const Map<String, String> minSpritesMap = {
       Falcon : 'assets/images/small_sprites/falcon_sprite',
@@ -179,7 +178,6 @@ class Constants {
 
 
   static const List<String> regions = <String>[
-    Empty,
     NorthWest,
     WestCoast,
     Mountain,
@@ -192,7 +190,6 @@ class Constants {
   ];
 
   static const List<String> characters = <String>[
-    Empty,
     Banjo,
     Bayonetta,
     Bowser,
@@ -329,31 +326,31 @@ Map<String, String> nameMap = {
   "Meta Knight" : 'assets/images/characterPortraits/Meta Knight.png',
   "Mii Brawler" : 'assets/images/characterPortraits/Mii Brawler.png',
   "Mii Swordfighter" : 'assets/images/characterPortraits/Mii Swordfighter.png',
-  "Mii Gunner" : 'assets/images/characterPortraits/Daisy.png',
-  "Olimar" : 'assets/images/characterPortraits/Daisy.png',
-  "Pacman" : 'assets/images/characterPortraits/Daisy.png',
-  "Palutena" : 'assets/images/characterPortraits/Daisy.png',
-  "Pit" : 'assets/images/characterPortraits/Daisy.png',
-  "Richter" : 'assets/images/characterPortraits/Daisy.png',
-  "Ridley" : 'assets/images/characterPortraits/Daisy.png',
-  "ROB" : 'assets/images/characterPortraits/Daisy.png',
-  "Robin" : 'assets/images/characterPortraits/Daisy.png',
-  "Rosalina & Luma" : 'assets/images/characterPortraits/Daisy.png',
-  "Ryu" : 'assets/images/characterPortraits/Daisy.png',
-  "Shulk" : 'assets/images/characterPortraits/Daisy.png',
-  "Simon" : 'assets/images/characterPortraits/Daisy.png',
-  "Snake" : 'assets/images/characterPortraits/Daisy.png',
-  "Sonic" : 'assets/images/characterPortraits/Daisy.png',
-  "Squirtle" : 'assets/images/characterPortraits/Daisy.png',
-  "Toon Link" : 'assets/images/characterPortraits/Daisy.png',
-  "Villager" : 'assets/images/characterPortraits/Daisy.png',
-  "Wario" : 'assets/images/characterPortraits/Daisy.png',
-  "Wii Fit Trainer" : 'assets/images/characterPortraits/Daisy.png',
-  "Wolf" : 'assets/images/characterPortraits/Daisy.png',
-  "Zelda" : 'assets/images/characterPortraits/Daisy.png',
-  "Zero Suit Samus" : 'assets/images/characterPortraits/Daisy.png',
-  "Joker" : 'assets/images/characterPortraits/Daisy.png',
-  "Hero" : 'assets/images/characterPortraits/Daisy.png',
-  "Banjo and Kazooie" : 'assets/images/characterPortraits/Daisy.png',
-  "Terry" : 'assets/images/characterPortraits/Daisy.png',
+  "Mii Gunner" : 'assets/images/characterPortraits/Mii Gunner.png',
+  "Olimar" : 'assets/images/characterPortraits/Olimar.png',
+  "Pacman" : 'assets/images/characterPortraits/Pacman.png',
+  "Palutena" : 'assets/images/characterPortraits/Palutena.png',
+  "Pit" : 'assets/images/characterPortraits/Pit.png',
+  "Richter" : 'assets/images/characterPortraits/Richter.png',
+  "Ridley" : 'assets/images/characterPortraits/Ridley.png',
+  "ROB" : 'assets/images/characterPortraits/ROB.png',
+  "Robin" : 'assets/images/characterPortraits/Robin.png',
+  "Rosalina & Luma" : 'assets/images/characterPortraits/Rosalina & Luma.png',
+  "Ryu" : 'assets/images/characterPortraits/Ryu.png',
+  "Shulk" : 'assets/images/characterPortraits/Shulk.png',
+  "Simon" : 'assets/images/characterPortraits/Simon.png',
+  "Snake" : 'assets/images/characterPortraits/Snake.png',
+  "Sonic" : 'assets/images/characterPortraits/Sonic.png',
+  "Squirtle" : 'assets/images/characterPortraits/Squirtle.png',
+  "Toon Link" : 'assets/images/characterPortraits/Toon Link.png',
+  "Villager" : 'assets/images/characterPortraits/Villager.png',
+  "Wario" : 'assets/images/characterPortraits/Wario.png',
+  "Wii Fit Trainer" : 'assets/images/characterPortraits/Wii Fit Trainer.png',
+  "Wolf" : 'assets/images/characterPortraits/Wolf.png',
+  "Zelda" : 'assets/images/characterPortraits/Zelda.png',
+  "Zero Suit Samus" : 'assets/images/characterPortraits/Zero Suit Samus.png',
+  "Joker" : 'assets/images/characterPortraits/Joker.png',
+  "Hero" : 'assets/images/characterPortraits/Hero.png',
+  "Banjo and Kazooie" : 'assets/images/characterPortraits/Banjo and Kazooie.png',
+  "Terry" : 'assets/images/characterPortraits/Terry.png',
 };

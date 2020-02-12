@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:matchup/bizlogic/constants.dart';
 import 'package:matchup/bizlogic/User.dart';
+import 'package:matchup/bizlogic/userProvider.dart';
 import './chatPage.dart' as chatp;
 
 
@@ -9,13 +10,14 @@ class ChallengePage extends StatelessWidget {
 
   final profStyle = TextStyle(fontSize: 25);
 
-  final User user;
-  final DocumentSnapshot peer;
+  final DocumentSnapshot _peer;
+  User _user;
 
-  ChallengePage({@required this.user, @required this.peer});
+  ChallengePage(this._peer);
 
   @override
   Widget build(BuildContext context) {
+    _user = UserProvider.of(context).user;
     return Scaffold(
       appBar: AppBar(
         title: Text("Challenge"),
@@ -27,28 +29,21 @@ class ChallengePage extends StatelessWidget {
               children: <Widget>[
                 Text(''),
                 //Should get username from firebase
-                Text(this.peer.data["Username"], style: TextStyle(fontSize: 30)),
+                Text(this._peer.data["Username"], style: TextStyle(fontSize: 30)),
 //                Text(this.peer.data["Username"] + "\nUser Id\n" + this.user.getUserId +  "\nPeer Id\n" + this.peer.documentID, style: profStyle),
                 Text(''),
                 //Should get profile pic from firebase
-                Image.asset(nameMap[this.peer["Main"]], height: 300),
+                Image.asset(nameMap[this._peer["Main"]], height: 300),
                 Text(''),
                 //Should get mains from firebase
-                Text(this.peer.data["Main"], style: profStyle),
+                Text(this._peer.data["Main"], style: profStyle),
                 RaisedButton(
-                  child: Text('Smash', style: TextStyle(fontSize: 30, color: Colors.white)),
+                  child: Text('Chat', style: TextStyle(fontSize: 30, color: Colors.white)),
                   color: Colors.redAccent,
                   onPressed: () {
-                    goToChatPage(context, user, this.peer.documentID);
+                    goToChatPage(context);
                   },
                   ),
-                RaisedButton(
-                  child: Text('Go back!'),
-                  onPressed: () {
-                    // goes back
-                    Navigator.pop(context);
-                  },
-                ),
               ],
             )
           )
@@ -101,14 +96,13 @@ class ChallengePage extends StatelessWidget {
      obtains the chatId between the user and the peer
      navigates to the chatPage in order to being p2p messaging
   */
-  void goToChatPage(BuildContext context, User user, String peerId) async{
-    String chatId = await initiateChatWithPeer(user.getUserId, peerId);
-    Navigator.push(
-      context, 
-      MaterialPageRoute(builder: (context) => 
-        chatp.ChatPage(
-          user: this.user,
-          peer: this.peer,
-          chatId: chatId)));
+  void goToChatPage(BuildContext context) async{
+    String chatId = await initiateChatWithPeer(_user.getUserId, this._peer.documentID);
+    Navigator.pushNamed(context, "/chat", 
+      arguments: <Object>[
+        this._peer,
+        chatId
+      ]
+    );
   }
 } 

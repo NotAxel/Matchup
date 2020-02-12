@@ -12,6 +12,7 @@ Future<Widget> makeTestableWidget(WidgetTester tester, Widget child, BaseAuth au
   final AssetBundle assetBundle = TestAssetBundle(<String, List<String>>{
     'assets/images/logo.png': <String>['assets/images/logo.png'],
     'assets/images/default_profile.jpg': <String>['assets/images/default_profile.jpg'],
+    'assets/images/regsionMap.png': <String>['assets/images/regionsMap.png'],
   });
 
   return DefaultAssetBundle(
@@ -52,13 +53,16 @@ void main() {
     // ARRANGE
     // check if login call back is used
     String expectedEmail = 'foo@gmail.com';
-    String expectedPassword = '123456';
+    String expectedPassword = 'Test123!';
 
     MockAuth mockAuth = new MockAuth();
     when(mockAuth.signIn(expectedEmail, expectedPassword)).thenAnswer((value){return Future.value("test id");});
 
     bool didSignIn = false;
-    LogInSignupPage page = LogInSignupPage(loginCallback: () => didSignIn = true,);
+    LogInSignupPage page = LogInSignupPage(loginCallback: (){
+      didSignIn = true;
+      return;
+    });
 
     // ACT 
     // pump the login page
@@ -91,6 +95,7 @@ void main() {
   });
 
   // credit: https://www.youtube.com/watch?v=75i5VmTI6A0&t=16s
+  // the password requirements are causing an error with something going off screen
   testWidgets('Attempt to sign in with empty email and password field', (WidgetTester tester) async {
     await tester.runAsync(() async{
       // ARRANGE 
@@ -102,7 +107,10 @@ void main() {
 
       // check if login call back is used
       bool didSignIn = false;
-      LogInSignupPage page = LogInSignupPage(loginCallback: () => didSignIn = true,);
+      LogInSignupPage page = LogInSignupPage(loginCallback: (){
+        didSignIn = true;
+        return;
+      });
 
 
       String emailErrorMessage = 'Email field cannot be empty';
@@ -152,13 +160,16 @@ void main() {
     // ARRANGE
 
     String expectedEmail = 'foo@gmail.com';
-    String expectedPassword = '123456';
+    String expectedPassword = 'Test123!';
 
     MockAuth mockAuth = new MockAuth();
     when(mockAuth.signUp(expectedEmail, expectedPassword)).thenAnswer((value){return Future.value("test id");});
 
     bool didSignIn = false;
-    LogInSignupPage page = LogInSignupPage(loginCallback: () => didSignIn = true,);
+    LogInSignupPage page = LogInSignupPage(loginCallback: (){
+      didSignIn = true;
+      return;
+    });
 
     // ACT
 
@@ -203,14 +214,17 @@ void main() {
   testWidgets('Attempt to sign up with an email that already exists', (WidgetTester tester) async {
       // ARRANGE
       String expectedEmail = 'foo@gmail.com';
-      String expectedPassword = '123456';
+      String expectedPassword = 'Test123!';
       String errorMessage = "The email address is already in use by another account";
 
       MockAuth mockAuth = new MockAuth();
       when(mockAuth.signUp(expectedEmail, expectedPassword)).thenThrow(StateError(errorMessage));
 
       bool didSignIn = false;
-      LogInSignupPage page = LogInSignupPage(loginCallback: () => didSignIn = true,);
+      LogInSignupPage page = LogInSignupPage(loginCallback: (){
+        didSignIn = true;
+        return;
+      });
 
       // ACT
       // pump the login page
@@ -257,7 +271,7 @@ void main() {
     await tester.runAsync(() async{
       // ARRANGE
       String expectedEmail = 'foo@gmail.com';
-      String expectedPassword = '123456';
+      String expectedPassword = 'Test123!';
 
       MockAuth mockAuth = new MockAuth();
       when(mockAuth.signUp(expectedEmail, expectedPassword)).thenAnswer((value) async{
@@ -266,7 +280,10 @@ void main() {
       });
 
       bool didSignIn = false;
-      LogInSignupPage page = LogInSignupPage(loginCallback: () => didSignIn = true,);
+      LogInSignupPage page = LogInSignupPage(loginCallback: (){
+        didSignIn = true;
+        return;
+      });
 
       // ACT
 
