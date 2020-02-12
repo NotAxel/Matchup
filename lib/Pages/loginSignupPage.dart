@@ -22,7 +22,7 @@ class LogInSignupPage extends StatefulWidget {
 class _LogInSignupPageState extends State<LogInSignupPage> {
   _LogInSignupPageState();
   String _email;
-  PasswordFormField _passwordFormField = new PasswordFormField();
+  PasswordFormField _passwordFormField = new PasswordFormField(true);
   ErrorMessage _errorMessage = new ErrorMessage();
   final ScrollController _listScrollController = new ScrollController();
 
@@ -48,11 +48,13 @@ class _LogInSignupPageState extends State<LogInSignupPage> {
   void toggleFormMode() {
     setState(() {
       _isLoginForm = !_isLoginForm;
+      _passwordFormField.setIsLogin = _isLoginForm;
     });
   } 
 
   @override
   Widget build(BuildContext context) {
+    Size screenSize = MediaQuery.of(context).size;
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: Stack(
@@ -65,7 +67,7 @@ class _LogInSignupPageState extends State<LogInSignupPage> {
   // https://stackoverflow.com/questions/52645944/flutter-expanded-vs-flexible
   Widget showEmailField(){
     Validator emailValidator = EmailValidator();
-    return Flexible(
+    return Expanded(
       child:Padding(
         padding: EdgeInsets.fromLTRB(0.0, 10, 0.0, 0.0),
         child: new TextFormField(
@@ -82,11 +84,9 @@ class _LogInSignupPageState extends State<LogInSignupPage> {
             onSaved: (value) => _email = emailValidator.save(value),
         ),
       ),
-      fit: FlexFit.loose,
-      flex: 1,
+      flex: 4,
     );
   } 
-
 
   // https://stackoverflow.com/questions/50293503/how-to-set-the-width-of-a-raisedbutton-in-flutter
   Widget showLogInButton(){
@@ -106,7 +106,7 @@ class _LogInSignupPageState extends State<LogInSignupPage> {
         ),
       ),
       fit: FlexFit.loose,
-      flex: 1
+      flex: 2
     );
   }
   
@@ -119,7 +119,7 @@ class _LogInSignupPageState extends State<LogInSignupPage> {
         style: new TextStyle(fontSize: 18.0, fontWeight: FontWeight.w300)),
       onPressed: toggleFormMode),
       fit: FlexFit.loose,
-      flex: 1
+      flex: 2
     );
   }
   Widget showLogo(){
@@ -128,7 +128,7 @@ class _LogInSignupPageState extends State<LogInSignupPage> {
         key: Key('logo'),
         image: AssetImage('assets/images/logo.png'),
       ),
-      flex: 2
+      flex: 4
     );
   }
 
@@ -205,10 +205,15 @@ class _LogInSignupPageState extends State<LogInSignupPage> {
       "  At least one special character (!@#\$&*~)\n" +
       "Password must not contain:\n"
       "  White space characters\n";
-    return WrappingText.wrappingText(
-      Text(
-        requirements,
-        key: Key("password requirements"),)
+    return Expanded(
+      child: WrappingText.wrappingText(
+         Text(
+          requirements,
+          textScaleFactor: 0.75,
+          key: Key("password requirements"),
+        ),
+      ),
+    flex: 8,
     );
   }
 
@@ -228,7 +233,7 @@ class _LogInSignupPageState extends State<LogInSignupPage> {
               _passwordFormField.buildPasswordField(),
               showLogInButton(),
               showSwitchButton(),
-              //showPasswordRequirements(),
+              showPasswordRequirements(),
               _errorMessage.buildErrorMessage(),
             ],
           ),

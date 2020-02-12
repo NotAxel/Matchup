@@ -29,7 +29,7 @@ class RootPage extends StatefulWidget{
 class _RootPageState extends State<RootPage>{
   bool isLoading = false;
   String email = "";
-  PasswordFormField passwordFormField = new PasswordFormField();
+  PasswordFormField passwordFormField = new PasswordFormField(true);
   ErrorMessage _errorMessage = new ErrorMessage();
   AuthStatus _authStatus = AuthStatus.NOT_DETERMINED;
   final GlobalKey<FormState> formKey = new GlobalKey<FormState>(debugLabel: "passwordForm");

@@ -4,18 +4,24 @@ import 'package:matchup/bizlogic/validator.dart';
 
 class PasswordFormField{
   String _password;
+  bool _isLogin;
 
-  PasswordFormField();
+  PasswordFormField(bool isLogin){
+    _isLogin = isLogin;
+  }
 
   String get getPassword => _password;
   set setPassword(String password) { _password = password; }
 
+  bool get getIsLogin => _isLogin;
+  set setIsLogin(bool isLogin) { _isLogin = isLogin; }
+
   // TODO: password field should be given validator as a parameter to be used in different cases
   Widget buildPasswordField(){
-    Validator passwordValidator = PasswordValidator();
-    return Flexible(
+    Validator passwordValidator = PasswordValidator(_isLogin);
+    return Expanded(
       child: Padding(
-        padding: EdgeInsets.fromLTRB(0.0, 20, 0, 50.0),
+        padding: EdgeInsets.fromLTRB(0.0, 20, 0, 0.0),
         child: new TextFormField(
             key: Key('password'),
             maxLines: 1,
@@ -32,8 +38,7 @@ class PasswordFormField{
             onSaved: (value) => _password = passwordValidator.save(value),
         ),
       ),
-      fit: FlexFit.loose,
-      flex: 1
+      flex: 4
     );
   }
 }

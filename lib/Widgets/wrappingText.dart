@@ -9,7 +9,7 @@ class WrappingText{
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                text
+                Center(child: text,)
               ],
             ),
           ),

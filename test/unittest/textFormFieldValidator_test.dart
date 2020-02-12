@@ -51,8 +51,8 @@ void main(){
   });
 
   group("password validator", (){
-    test('valid password returns null', (){
-      Validator validator = PasswordValidator();
+    test('valid sign up password returns null', (){
+      Validator validator = PasswordValidator(false);
       String expectedValidatorName = "PasswordValidator";
 
       expect(validator.getValidatorName(), expectedValidatorName);
@@ -61,8 +61,8 @@ void main(){
       expect(actual, null);
     });
 
-    test('empty password returns error message', (){
-      Validator validator = PasswordValidator();
+    test('empty sign up password returns error message', (){
+      Validator validator = PasswordValidator(false);
       String expectedValidatorName = "PasswordValidator";
       String expectedErrorMessage = "Password field cannot be empty";
 
@@ -72,8 +72,40 @@ void main(){
       expect(actual, expectedErrorMessage);
     });
 
-    test('null password returns error message', (){
-      Validator validator = PasswordValidator();
+    test('null sign up password returns error message', (){
+      Validator validator = PasswordValidator(false);
+      String expectedValidatorName = "PasswordValidator";
+      String expectedErrorMessage = "Password field cannot be empty";
+
+      expect(validator.getValidatorName(), expectedValidatorName);
+      
+      String actual = validator.validate(null);
+      expect(actual, expectedErrorMessage);
+    });
+
+    test('valid log in password returns null', (){
+      Validator validator = PasswordValidator(true);
+      String expectedValidatorName = "PasswordValidator";
+
+      expect(validator.getValidatorName(), expectedValidatorName);
+      
+      String actual = validator.validate("Test123!");
+      expect(actual, null);
+    });
+
+    test('empty log in password returns error message', (){
+      Validator validator = PasswordValidator(true);
+      String expectedValidatorName = "PasswordValidator";
+      String expectedErrorMessage = "Password field cannot be empty";
+
+      expect(validator.getValidatorName(), expectedValidatorName);
+      
+      String actual = validator.validate("");
+      expect(actual, expectedErrorMessage);
+    });
+
+    test('null log in password returns error message', (){
+      Validator validator = PasswordValidator(true);
       String expectedValidatorName = "PasswordValidator";
       String expectedErrorMessage = "Password field cannot be empty";
 
