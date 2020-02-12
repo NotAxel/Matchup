@@ -84,17 +84,25 @@ class _RootPageState extends State<RootPage>{
   // then initialize the users data once the user has been retrieved
   // then set the state to logged in
   Future<void> loginCallback() async{
+    setState(() {
+      print("begin login callback");
+      _authStatus = AuthStatus.NOT_DETERMINED;
+    });
     user = User();
     final BaseAuth auth = AuthProvider.of(context).auth;
     final FirebaseUser firebaseUser = await auth.getCurrentUser();
     await user.initializeData(firebaseUser);
     setState(() {
-      print("login callback");
+      print("end login callback");
       _authStatus = AuthStatus.LOGGED_IN;
     });
   }
 
   Future<void> logoutCallback(bool deleteUser) async{
+    setState(() {
+      print("begin logout callback");
+      _authStatus = AuthStatus.NOT_DETERMINED;
+    });
     final BaseAuth auth = AuthProvider.of(context).auth;
     if (deleteUser){
       await tryDeleteUser(auth);
