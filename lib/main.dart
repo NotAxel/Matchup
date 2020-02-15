@@ -1,7 +1,9 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:matchup/bizlogic/authProvider.dart';
+import 'package:matchup/bizlogic/screenSize.dart';
 import 'Pages/rootPage.dart';
 import 'bizlogic/authentication.dart';
+import 'package:provider/provider.dart';
 
 
 // tutorial followed: https://medium.com/flutterpub/flutter-how-to-do-user-login-with-firebase-a6af760b14d5
@@ -11,15 +13,16 @@ void main() => runApp(MyApp());
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    BaseAuth auth = new Auth();
-    return AuthProvider(
-      auth: auth,
+    return MultiProvider(
+      providers: [
+        Provider<BaseAuth>(create: (context) => Auth())
+      ],
       child: MaterialApp(
         title: 'Matchup',
         theme: new ThemeData(
           primarySwatch: Colors.blue,
         ),
-        home: new RootPage(auth),
+        home: new RootPage(),
       )
     );
   }

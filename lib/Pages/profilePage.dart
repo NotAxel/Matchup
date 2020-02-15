@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
 import 'package:matchup/Pages/homepage.dart';
 import 'package:matchup/Widgets/loadingCircle.dart';
 import 'package:matchup/bizlogic/User.dart';
 import 'package:matchup/bizlogic/constants.dart';
-import 'package:matchup/bizlogic/userProvider.dart';
 
 class ProfilePage extends StatefulWidget {
   ProfilePage();
@@ -58,7 +59,7 @@ class ProfilePageState extends State<ProfilePage> with SingleTickerProviderState
     //auth.getCurrentUser().then((value){
 
     //});
-    final User _user = UserProvider.of(context).user;
+    final User _user = Provider.of<User>(context);
     final void Function(bool) logoutCallback = HomePageProvider.of(context).logoutCallback;
     //if (false){
 

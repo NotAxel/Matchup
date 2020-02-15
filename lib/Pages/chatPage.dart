@@ -1,12 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import 'package:matchup/bizlogic/User.dart';
 import 'package:matchup/bizlogic/message.dart';
 import 'package:matchup/bizlogic/constants.dart';
 import 'package:matchup/bizlogic/chatPageLogic.dart';
 import 'package:matchup/Widgets/loadingCircle.dart';
-import 'package:matchup/bizlogic/userProvider.dart';
 
 class ChatPage extends StatefulWidget {
   final DocumentSnapshot peer;
@@ -34,7 +34,7 @@ class _ChatPageState extends State<ChatPage> {
   // https://medium.com/flutter-community/building-a-chat-app-with-flutter-and-firebase-from-scratch-9eaa7f41782e
   @override
   Widget build(BuildContext context) {
-    _user = UserProvider.of(context).user;
+    _user = Provider.of<User>(context);
     _message = new Message("", widget.peer.documentID, _user.getUserId);
     return Scaffold(
       appBar: AppBar(

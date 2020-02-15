@@ -1,13 +1,14 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:matchup/bizlogic/screenSize.dart';
+import 'package:provider/provider.dart';
+
 import 'package:matchup/Widgets/errorMessage.dart';
 import 'package:matchup/Widgets/loadingCircle.dart';
 import 'package:matchup/Pages/userInfoEntryPage.dart';
 import 'package:matchup/Widgets/passwordFormField.dart';
 import 'package:matchup/bizlogic/User.dart';
-import 'package:matchup/bizlogic/authProvider.dart';
 import 'package:matchup/bizlogic/authentication.dart';
-import 'package:matchup/bizlogic/userProvider.dart';
 import 'homepage.dart';
 import 'loginSignupPage.dart';
 
@@ -18,10 +19,6 @@ LOGGED_IN,
 }
 
 class RootPage extends StatefulWidget{
-  final BaseAuth auth;
-
-  RootPage(this.auth);
-
   @override
   State<StatefulWidget> createState() => _RootPageState();
 }
@@ -49,7 +46,7 @@ class _RootPageState extends State<RootPage>{
   // then initialize the users data
   Future<void> determineAuthStatus() async{
     List<String> signInMethodsForEmail;
-    BaseAuth auth = AuthProvider.of(context).auth;
+    final BaseAuth auth = Provider.of<BaseAuth>(context, listen: false);
     FirebaseUser firebaseUser = await auth.getCurrentUser();
 
     // user is signed in
@@ -89,7 +86,7 @@ class _RootPageState extends State<RootPage>{
       _authStatus = AuthStatus.NOT_DETERMINED;
     });
     user = User();
-    final BaseAuth auth = AuthProvider.of(context).auth;
+    final BaseAuth auth = Provider.of<BaseAuth>(context, listen: false);
     final FirebaseUser firebaseUser = await auth.getCurrentUser();
     await user.initializeData(firebaseUser);
     setState(() {
@@ -103,7 +100,7 @@ class _RootPageState extends State<RootPage>{
       print("begin logout callback");
       _authStatus = AuthStatus.NOT_DETERMINED;
     });
-    final BaseAuth auth = AuthProvider.of(context).auth;
+    final BaseAuth auth = Provider.of<BaseAuth>(context, listen: false);
     if (deleteUser){
       await tryDeleteUser(auth);
     }
@@ -195,7 +192,7 @@ class _RootPageState extends State<RootPage>{
 
   // Perform login or signup
   void validateAndSubmit() async {
-    final BaseAuth auth = AuthProvider.of(context).auth;
+    final BaseAuth auth = Provider.of<BaseAuth>(context, listen: false);
     setState(() {
       _errorMessage.setMessage = null;
       isLoading = true;
@@ -233,8 +230,8 @@ class _RootPageState extends State<RootPage>{
         break;
       case AuthStatus.NOT_LOGGED_IN:
         print("building loginSingupPage");
-        return new UserProvider(
-          user: user,
+        return Provider(
+          create: (context) => user,
           child: LogInSignupPage(
             loginCallback: loginCallback,
             logoutCallback: logoutCallback,
@@ -244,8 +241,8 @@ class _RootPageState extends State<RootPage>{
       case AuthStatus.LOGGED_IN:
         if (user.hasBeenInitialized()) {
           print("building homepage");
-          return new UserProvider(
-            user: user,
+          return Provider(
+            create: (context) => user,
             child: new HomePage(
               logoutCallback: logoutCallback,
             ),

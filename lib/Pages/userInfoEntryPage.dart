@@ -1,9 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:provider/provider.dart';
+import 'package:flutter/material.dart';
+
 import 'package:matchup/Widgets/loadingCircle.dart';
 import 'package:matchup/bizlogic/constants.dart' as con;
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
-import 'package:matchup/bizlogic/authProvider.dart';
 import 'package:matchup/bizlogic/authentication.dart';
 import 'package:matchup/bizlogic/friendCodeValidator.dart';
 import 'package:matchup/bizlogic/validator.dart';
@@ -175,7 +176,7 @@ class _UserInfoEntryPage extends State<UserInfoEntryPage> {
       _isLoading = true;
     });
     if (validateAndSave()){
-      final BaseAuth auth = AuthProvider.of(context).auth;
+      final BaseAuth auth = Provider.of<BaseAuth>(context);
       FirebaseUser currUser = await auth.getCurrentUser();
       _userID = currUser.uid;
       Firestore.instance.collection('Users').document(_userID).setData({

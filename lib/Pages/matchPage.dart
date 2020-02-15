@@ -1,9 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
 import 'package:matchup/Pages/filterPopupPage.dart';
 import 'package:matchup/Pages/filterPopupContent.dart';
 import 'package:matchup/bizlogic/User.dart';
-import 'package:matchup/bizlogic/userProvider.dart';
 import 'package:matchup/Pages/filterPopupForm.dart' as fpf;
 import 'package:matchup/bizlogic/constants.dart' as con;
 
@@ -19,7 +20,7 @@ class MatchPageState extends State<MatchPage>{
 
   @override
   Widget build (BuildContext context) {
-    final User _user = UserProvider.of(context).user;
+    final User _user = Provider.of<User>(context);
     return new Scaffold(
       appBar: new AppBar(
         centerTitle: true,

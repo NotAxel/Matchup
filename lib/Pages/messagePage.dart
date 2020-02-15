@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import '../bizlogic/userProvider.dart';
+import 'package:provider/provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+
 import 'package:matchup/bizlogic/User.dart';
-import 'package:matchup/bizlogic/userProvider.dart';
 import 'package:matchup/bizlogic/constants.dart' as con;
 import './chatPage.dart' as chatp;
 
@@ -30,7 +30,7 @@ class MessagePageState extends State<MessagePage>{
   }
 
   Widget buildConversationList(BuildContext context){
-    final User _user = UserProvider.of(context).user;
+    final User _user = Provider.of<User>(context);
     return Expanded(
       child: StreamBuilder(
         stream: Firestore.instance
@@ -62,7 +62,7 @@ class MessagePageState extends State<MessagePage>{
   }
 
   Widget buildConversation(BuildContext context, DocumentSnapshot conversation){
-    final User user = UserProvider.of(context).user;
+    final User user = Provider.of<User>(context);
     return Container(
       child: FutureBuilder(
         future: Firestore.instance.collection("Users").document(conversation.documentID).get(),

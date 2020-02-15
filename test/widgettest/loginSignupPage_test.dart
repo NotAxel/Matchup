@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:provider/provider.dart';
+
 import 'package:matchup/Pages/loginSignupPage.dart';
-import 'package:matchup/bizlogic/authProvider.dart';
 import 'package:matchup/bizlogic/authentication.dart';
 import 'package:mockito/mockito.dart';
 import './assetBundle.dart';
@@ -17,8 +18,8 @@ Future<Widget> makeTestableWidget(WidgetTester tester, Widget child, BaseAuth au
 
   return DefaultAssetBundle(
     bundle: assetBundle,
-    child: AuthProvider(
-        auth: auth,
+    child: Provider<BaseAuth>(
+        create: (context) => auth,
         child: MaterialApp(
           home: child,
         ),
