@@ -70,69 +70,63 @@ class _LogInSignupPageState extends State<LogInSignupPage> {
   // https://stackoverflow.com/questions/52645944/flutter-expanded-vs-flexible
   Widget showEmailField(){
     Validator emailValidator = EmailValidator();
-    return Expanded(
-      child: Container(
-        child:Center(
-          child: Padding(
-            padding: EdgeInsets.fromLTRB(0.0, 5, 0.0, 5.0),
-            child: new TextFormField(
-                key: Key('email'),
-                maxLines: 1,
-                autofocus: false,
-                keyboardType: TextInputType.emailAddress,
-                decoration: InputDecoration(
-                    hintText: "Email",
-                    icon: new Icon(Icons.mail, 
-                    color: Colors.blueGrey,
-                    )),
-                validator: (value) => emailValidator.validate(value),
-                onSaved: (value) => _email = emailValidator.save(value),
-            ),
+    return Container(
+      child:Center(
+        child: Padding(
+          padding: EdgeInsets.fromLTRB(0.0, 5, 0.0, 5.0),
+          child: new TextFormField(
+              key: Key('email'),
+              maxLines: 1,
+              autofocus: false,
+              keyboardType: TextInputType.emailAddress,
+              decoration: InputDecoration(
+                  hintText: "Email",
+                  icon: new Icon(Icons.mail, 
+                  color: Colors.blueGrey,
+                  )),
+              validator: (value) => emailValidator.validate(value),
+              onSaved: (value) => _email = emailValidator.save(value),
           ),
         ),
-        //color: Colors.teal,
       ),
+      color: Colors.teal,
     );
   } 
 
   // https://stackoverflow.com/questions/50293503/how-to-set-the-width-of-a-raisedbutton-in-flutter
   Widget showLogInButton(){
-    return Expanded(
-      child: Container(
-        child: Center(
-          child: ButtonTheme(
-            minWidth: 300,
-            height: 50,
-            child: new RaisedButton(
-              key: Key('login'),
-              elevation: 5.0,
-              shape: new RoundedRectangleBorder(
-                  borderRadius: new BorderRadius.circular(30.0)),
-              color: Colors.blue,
-              child: new Text(_isLoginForm ? 'Login' : 'Create account',
-                  style: new TextStyle(fontSize: 20.0, color: Colors.white)),
-              onPressed: validateAndSubmit,
-            ),
+    return Container(
+      child: Center(
+        child: ButtonTheme(
+          minWidth: 300,
+          height: 50,
+          child: new RaisedButton(
+            key: Key('login'),
+            elevation: 5.0,
+            shape: new RoundedRectangleBorder(
+                borderRadius: new BorderRadius.circular(30.0)),
+            color: Colors.blue,
+            child: new Text(_isLoginForm ? 'Login' : 'Create account',
+                style: new TextStyle(fontSize: 20.0, color: Colors.white)),
+            onPressed: validateAndSubmit,
           ),
         ),
-        color: Colors.green,
       ),
+      color: Colors.green,
     );
   }
   
   Widget showSwitchButton(){
-    return Expanded(
-      child: Container(
-        child: Center(
-          child: new FlatButton(
-          key: Key('switch between login/signup'),
-          child: new Text(
-            _isLoginForm ? 'Create an account' : 'Have an account? Sign in',
-            style: new TextStyle(fontSize: 18.0, fontWeight: FontWeight.w300)),
-          onPressed: toggleFormMode),
-        ),
-        color: Colors.purple,
+    return Container(
+      child: Center(
+        child: new FlatButton(
+        key: Key('switch between login/signup'),
+        child: new Text(
+          _isLoginForm ? 'Create an account' : 'Have an account? Sign in',
+          style: new TextStyle(fontSize: 18.0, fontWeight: FontWeight.w300)),
+        onPressed: toggleFormMode),
       ),
+      color: Colors.purple,
     );
   }
   Widget showLogo(){
@@ -141,7 +135,8 @@ class _LogInSignupPageState extends State<LogInSignupPage> {
         key: Key('logo'),
         image: AssetImage('assets/images/logo.png'),
       ),
-      //color: Colors.amber,
+      alignment: Alignment.center,
+      color: Colors.amber,
     );
   }
 
@@ -219,42 +214,43 @@ class _LogInSignupPageState extends State<LogInSignupPage> {
       "Password must not contain:\n"
       "  White space characters\n";
     if (!_isLoginForm){
-      return Container(
-        child: FittedBox(
-          child: WrappingText.wrappingText( 
-            Text(
-              requirements,
-              key: Key("password requirements"),
+      return Expanded(
+        child: Container(
+          child: FittedBox(
+            child: WrappingText.wrappingText( 
+              Text(
+                requirements,
+                key: Key("password requirements"),
+              ),
             ),
           ),
-          fit: BoxFit.scaleDown,
+          alignment: Alignment.center,
+          color: Colors.amber,
         ),
-        color: Colors.amber,
+        flex: 3,
       );
     }
     return Container();
   }
 
   Widget showPasswordField(){
-    return Expanded(
-      child: Container(
-        child:Center(
-          child: Padding(
-            padding: EdgeInsets.fromLTRB(0.0, 5, 0.0, 5.0),
-            child: _passwordFormField.buildPasswordField(),
-          ),
+    return Container(
+      child:Center(
+        child: Padding(
+          padding: EdgeInsets.fromLTRB(0.0, 5, 0.0, 5.0),
+          child: _passwordFormField.buildPasswordField(),
         ),
-        //color: Colors.red,
       ),
+      color: Colors.lightBlue,
     );
   }
 
   Widget showErrorMessage(){
     return Container(
-      child:Center(
-        child: _errorMessage.buildErrorMessage(),
-      ),
-      //color: Colors.orange,
+      child:_errorMessage.buildErrorMessage(),
+      color: Colors.orange,
+      alignment: Alignment.center,
+      padding: EdgeInsets.all(5),
     );
   }
 
@@ -270,13 +266,13 @@ class _LogInSignupPageState extends State<LogInSignupPage> {
             Container(
               child: Column(
                 children: <Widget>[
-                  showLogo(), 
-                  showEmailField(), 
-                  showPasswordField(), 
+                  Expanded(child: showLogo(), flex: 3,), 
+                  Expanded(child: showEmailField(), flex: 2,), 
+                  Expanded(child: showPasswordField(), flex: 2,), 
                   showErrorMessage(),
                   showPasswordRequirements(),
-                  showLogInButton(), 
-                  showSwitchButton(),
+                  Expanded(child: showLogInButton()), 
+                  Expanded(child: showSwitchButton()),
                 ]
               ),
               height: ScreenSize.getSafeBlockHeight * 100,
@@ -290,7 +286,7 @@ class _LogInSignupPageState extends State<LogInSignupPage> {
 
   @override
   Widget build(BuildContext context) {
-    print("In login signup page build");
+    //print("In login signup page build");
     ScreenSize.init(context);
     return Scaffold(
       body: SafeArea(
