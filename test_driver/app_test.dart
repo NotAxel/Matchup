@@ -54,23 +54,71 @@ void main() {
       await driver.tap(loginButton);
     });
 
-    //test('Successful login to an existing account', () async{
-      //String expectedEmail = 'driverTestAccount@gmail.com';
-      //String expectedPassword = 'Test123!';
+    test('unsuccessful login an existing account', () async{
 
-      //SerializableFinder emailField = find.byValueKey(Keys.email);
-      //await driver.tap(emailField);  // acquire focus
-      //await driver.enterText(expectedEmail);  // enter text
-      //await driver.waitFor(find.text(expectedEmail));  // verify text appears on UI
+      try{
+        SerializableFinder logoutButton = find.byValueKey(Keys.logout);
+        await driver.tap(logoutButton, timeout: Duration(seconds: 1));
+      }
+      catch(e){
+        print("Didn't have to logout");
+      }
 
-      //SerializableFinder passwordField = find.byValueKey(Keys.password);
-      //await driver.tap(passwordField);  // acquire focus
-      //await driver.enterText(expectedPassword);  // enter text
-      //await driver.waitFor(find.text(expectedPassword));  // verify text appears on UI
+      String expectedEmail = 'driverTestAccount@gmail.com';
+      String expectedPassword = '123456';
+      String expectedErrorMessage = "The password is invalid or the user does not have a password.";
 
-      //SerializableFinder loginButton = find.byValueKey(Keys.login);
-      //await driver.tap(loginButton);
-    //});
+      SerializableFinder emailField = find.byValueKey(Keys.email);
+      await driver.tap(emailField);  // acquire focus
+      await driver.enterText(expectedEmail);  // enter text
+      await driver.waitFor(find.text(expectedEmail));  // verify text appears on UI
+
+      SerializableFinder passwordField = find.byValueKey(Keys.password);
+      await driver.tap(passwordField);  // acquire focus
+      await driver.enterText(expectedPassword);  // enter text
+      await driver.waitFor(find.text(expectedPassword));  // verify text appears on UI
+
+      SerializableFinder loginButton = find.byValueKey(Keys.login);
+      await driver.tap(loginButton);
+
+      SerializableFinder errorMessage = find.byValueKey(Keys.errorMessage);
+      expect(await driver.getText(errorMessage), expectedErrorMessage);
+    });
+
+    test('Successful signup', () async{
+      String expectedEmail = 'SuccessfulSignupTest@gmail.com';
+      String expectedPassword = 'Test123!';
+
+      try{
+        SerializableFinder logoutButton = find.byValueKey(Keys.logout);
+        await driver.tap(logoutButton, timeout: Duration(seconds: 1));
+      }
+      catch(e){
+        print("Didn't have to logout");
+      }
+
+      SerializableFinder switchButton = find.byValueKey(Keys.switchButton);
+      await driver.tap(switchButton);
+
+      SerializableFinder emailField = find.byValueKey(Keys.email);
+      await driver.tap(emailField);  // acquire focus
+      await driver.enterText(expectedEmail);  // enter text
+      await driver.waitFor(find.text(expectedEmail));  // verify text appears on UI
+
+      SerializableFinder passwordField = find.byValueKey(Keys.password);
+      await driver.tap(passwordField);  // acquire focus
+      await driver.enterText(expectedPassword);  // enter text
+      await driver.waitFor(find.text(expectedPassword));  // verify text appears on UI
+
+      SerializableFinder loginButton = find.byValueKey(Keys.login);
+      await driver.tap(loginButton);
+
+      SerializableFinder cancelButton = find.byValueKey("cancelButton");
+      await driver.tap(cancelButton);
+
+      SerializableFinder yesButton = find.text("Yes");
+      await driver.tap(yesButton);
+    });
 
     test('unsuccessful signup', () async {
       String expectedEmail = '1@gmail.com';
