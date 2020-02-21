@@ -13,7 +13,7 @@ class Keys{
 }
 
 void main() {
-  group('GROUP: Login/signup then logout | TEST: ', () {
+  group('GROUP: Login/signup | TEST: ', () {
     FlutterDriver driver;
 
     // Connect to the Flutter driver before running any tests.
@@ -28,19 +28,37 @@ void main() {
       }
     });
 
-    test('test user attempts to sign up and sees error message', () async {
-      String expectedEmail = '1@gmail.com';
-      String expectedPassword = '123456';
+    test('user successfully signs up', () async {
+      await driver.runUnsynchronized(() async{
+        String expectedEmail = 'test@gmail.com';
+        String expectedPassword = 'Test123!';
+
+        SerializableFinder switchButton = find.byValueKey(Keys.switchButton);
+        await driver.tap(switchButton);
+
+        SerializableFinder emailField = find.byValueKey(Keys.email);
+        await driver.tap(emailField);  // acquire focus
+        await driver.enterText(expectedEmail);  // enter text
+        await driver.waitFor(find.text(expectedEmail));  // verify text appears on UI
+
+        SerializableFinder passwordField = find.byValueKey(Keys.password);
+        await driver.tap(passwordField);  // acquire focus
+        await driver.enterText(expectedPassword);  // enter text
+        await driver.waitFor(find.text(expectedPassword));  // verify text appears on UI
+
+        SerializableFinder loginButton = find.byValueKey(Keys.login);
+        await driver.tap(loginButton);
+      });
+
+    });
+
+    test('user attempts to sign up and sees error message', () async {
+      String expectedEmail = 'driverTestAccount@gmail.com';
+      String expectedPassword = 'Test123!';
       String expectedErrorMessage = "The email address is already in use by another account.";
 
-      try{
-        SerializableFinder logoutButton = find.byValueKey(Keys.logout);
-        await driver.tap(logoutButton);
-      }
-      catch (e){
-        print("*_*_*Caught login button not found exception. The user did not have a token, proceed to login");
-        print("The Exception thrown is $e*_*_*");
-      }
+      SerializableFinder logoutButton = find.byValueKey(Keys.logout);
+      await driver.tap(logoutButton);
 
       SerializableFinder switchButton = find.byValueKey(Keys.switchButton);
       await driver.tap(switchButton);
@@ -67,6 +85,6 @@ void main() {
 
       SerializableFinder errorMessage = find.byValueKey(Keys.errorMessage);
       expect(await driver.getText(errorMessage), expectedErrorMessage);
-    });
+    }, skip: true);
   });
 }

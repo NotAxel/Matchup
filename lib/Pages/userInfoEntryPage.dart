@@ -24,6 +24,8 @@ class _UserInfoEntryPage extends State<UserInfoEntryPage> {
   static const SECONDARY = "secondary";
   static const REGION = "region";
 
+  BaseAuth _auth;
+
   TextStyle style = TextStyle(fontFamily: 'Montserrat', fontSize: 20.0);
   Container _underLine = Container(height: 2, color: Colors.deepPurple);
   String _mainChar;
@@ -176,18 +178,17 @@ class _UserInfoEntryPage extends State<UserInfoEntryPage> {
       _isLoading = true;
     });
     if (validateAndSave()){
-      final BaseAuth auth = Provider.of<BaseAuth>(context);
-      FirebaseUser currUser = await auth.getCurrentUser();
+      FirebaseUser currUser = await _auth.getCurrentUser();
       _userID = currUser.uid;
-      Firestore.instance.collection('Users').document(_userID).setData({
+      await Firestore.instance.collection('Users').document(_userID).setData({
         'Username' : _userName, 
         'Main' : _mainChar, 
         'Secondary' : _secondaryChar, 
         'Region' : _region, 
         'Username' : _userName, 
         'NintendoID' : _nintendoID});
-      Navigator.of(context).pop();
     }
+    Navigator.of(context).pop();
   }
 
   // Check if form is valid before saving user information
@@ -287,6 +288,7 @@ Your progress will be lost, and your email will not be associated with an accoun
 
   @override
   Widget build(BuildContext context) {
+    _auth = Provider.of<BaseAuth>(context);
     if (_isLoading){
       return LoadingCircle.loadingCircle();
     }

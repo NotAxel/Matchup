@@ -1,6 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:matchup/bizlogic/screenSize.dart';
 import 'package:provider/provider.dart';
 
 import 'package:matchup/Widgets/errorMessage.dart';
@@ -57,6 +56,7 @@ class _RootPageState extends State<RootPage>{
 
       signInMethodsForEmail = await auth.fetchSignInMethodsForEmail();
       if (signInMethodsForEmail.length > 0){
+        print("Initializing user data");
         await user.initializeData(firebaseUser);
         print("setting status to LOGGED_IN");
         _authStatus = AuthStatus.LOGGED_IN;
