@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:matchup/bizlogic/constants.dart' as ct;
+import 'package:matchup/bizlogic/constants.dart' as ct;   //remove unused import
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:matchup/bizlogic/authProvider.dart';
@@ -32,7 +32,7 @@ class _DeletePopupForm extends State<DeletePopupForm> {
     );
   }
 
-  Widget _showFilterForm() {
+  Widget _showFilterForm() {  //change name to delteForm
     return new Container(
       padding: EdgeInsets.all(16.0),
       child: new Form(
@@ -56,7 +56,7 @@ class _DeletePopupForm extends State<DeletePopupForm> {
     );
   }
 
-  Widget showSaveButton() {
+  Widget showSaveButton() { //change name to YES button
     return new Padding(
       padding: EdgeInsets.fromLTRB(5.0, 15, 5, 0),
       child: SizedBox(
@@ -77,7 +77,7 @@ class _DeletePopupForm extends State<DeletePopupForm> {
     );
   }
 
-  Widget showResetButton() {
+  Widget showResetButton() {  //change to NO button
     return new Padding(
       padding: EdgeInsets.fromLTRB(5.0, 15, 5, 0),
       child: SizedBox(
@@ -109,7 +109,7 @@ class _DeletePopupForm extends State<DeletePopupForm> {
     );
   }
 
-  Text assignHint(String text) {
+  Text assignHint(String text) {  //remove unused function
     return Text(
       text,
       textAlign: TextAlign.center,

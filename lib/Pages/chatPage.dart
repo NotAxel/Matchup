@@ -290,7 +290,6 @@ class _ChatPageState extends State<ChatPage> {
     );
   }
 
-
   Widget buildSendButton(){
     return Flexible(
       child: Material(
