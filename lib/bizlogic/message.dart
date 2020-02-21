@@ -3,13 +3,12 @@ class Message{
   String _content;
   String _toId;
   String _fromId;
-  String _timeStamp;
+  int _timeStamp;
   
   Message(String content, String toId, String fromId){
     _content = content;
     _toId = toId;
     _fromId = fromId;
-    _timeStamp = DateTime.now().millisecondsSinceEpoch.toString();
   }
 
   // content
@@ -25,6 +24,7 @@ class Message{
   set setFromId(String fromId){ _fromId = fromId; } 
 
   // timeStamp
-  get getTimeStamp => _timeStamp;
+  String get getTimeStamp => _timeStamp.toString();
+  set setTimeStamp(int timeStamp){ _timeStamp = timeStamp; }
 
 }

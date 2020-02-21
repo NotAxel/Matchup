@@ -72,6 +72,17 @@ class User {
     }
   }
 
+  bool hasBeenInitialized(){
+    return 
+      _userId != null &&
+      _email != null &&
+      _userName != null &&
+      _main != null && 
+      _secondary != null &&
+      _friendCode != null &&
+      _region != null;
+  }
+
 
   /*
   // friendsList

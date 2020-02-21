@@ -1,42 +1,41 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+
 import 'package:matchup/bizlogic/User.dart';
 import 'package:matchup/bizlogic/message.dart';
 import 'package:matchup/bizlogic/constants.dart';
-import 'package:intl/intl.dart';
+import 'package:matchup/bizlogic/chatPageLogic.dart';
+import 'package:matchup/Widgets/loadingCircle.dart';
+import 'package:matchup/bizlogic/userProvider.dart';
 
 class ChatPage extends StatefulWidget {
-  final User user;
   final DocumentSnapshot peer;
   final String chatId;
 
   const ChatPage(
-      {Key key, this.user, this.peer, this.chatId})
-      : super(key: key);
+    {Key key, this.peer, this.chatId})
+    : super(key: key);
 
   @override
   _ChatPageState createState() => _ChatPageState();
 }
 
 class _ChatPageState extends State<ChatPage> {
-  final TextEditingController messageController = new TextEditingController();
-  final ScrollController listScrollController = new ScrollController();
-  final FocusNode focusNode = new FocusNode();
+  // make instance variables have underscores
+  final TextEditingController _messageController = new TextEditingController();
+  final ScrollController _listScrollController = new ScrollController();
+  final FocusNode _focusNode = new FocusNode();
 
+  User _user;
   Message _message;
-  var listMessage;
-
-  @override
-  void initState() {
-    super.initState();
-    // messages are from to the peer from the user
-    _message = new Message("", widget.peer.documentID, widget.user.getUserId);
-  }
+  List<DocumentSnapshot> listMessage;
 
   // idea for messaging structure from flutter community guide
   // https://medium.com/flutter-community/building-a-chat-app-with-flutter-and-firebase-from-scratch-9eaa7f41782e
   @override
   Widget build(BuildContext context) {
+    _user = UserProvider.of(context).user;
+    _message = new Message("", widget.peer.documentID, _user.getUserId);
     return Scaffold(
       appBar: AppBar(
         title: buildPeerInfo(),
@@ -47,8 +46,8 @@ class _ChatPageState extends State<ChatPage> {
           mainAxisSize: MainAxisSize.max,
           mainAxisAlignment: MainAxisAlignment.end,
           children: <Widget>[
-            buildMessageList(context),
-            buildMessageInputContainer(context)
+            buildMessageList(),
+            buildMessageInputContainer()
           ],
         ),
         onTap: (){
@@ -58,26 +57,52 @@ class _ChatPageState extends State<ChatPage> {
     );
   }
 
+  // takes a file location as a string
+  // file location should be in the format
+  // assets/images/small_sprites/characterName.png
+  // returns sprite of the users main
+  Widget buildPeerMainCharacterSprite(String main){
+    return Container(
+      key: Key("MAIN_SPRITE"),
+      child: Image.asset(main, cacheWidth: 30, cacheHeight: 30,),
+      padding: EdgeInsets.only(right: 10),
+    );
+  }
+
+  // takes a file location as a string
+  // file location should be in the format
+  // assets/images/small_sprites/characterName.png
+  // returns sprite of the users secondary 
+  Widget buildPeerSecondaryCharacterSprite(String secondary){
+    return Container(
+      key: Key("SECONDARY_SPRITE"),
+      child: Image.asset(secondary, cacheWidth: 30, cacheHeight: 30,),
+      padding: EdgeInsets.only(
+        left: 10,
+        right: 50),
+    );
+  }
+
+  // takes a string for the peer username
+  // returns a text widget to be displayed in peer info
+  // in the app bar
+  Widget buildPeerUserName(String username){
+    return Expanded(
+      child: Center(
+        child: Text(username), 
+      )
+    );
+  }
+
+  // constructs the information to be placed in the app bar about the peer
   Widget buildPeerInfo(){
     return Row(children: <Widget>[
       // puts the image of the users main left of their name
-      Container(
-        child: Image.asset(nameMap[widget.peer["Main"]], cacheWidth: 30, cacheHeight: 30,),
-        padding: EdgeInsets.only(right: 10),
-      ),
+      buildPeerMainCharacterSprite(Constants.minSpritesMap[widget.peer["Main"]]),
       // places text for the Username in between main and secondary
-      Expanded(
-        child: Center(
-          child: Text(widget.peer["Username"]), 
-        )
-      ),
+      buildPeerUserName(widget.peer["Username"]),
       // puts the image of the users secondary right of their name
-      Container(
-        child: Image.asset(nameMap[widget.peer["Secondary"]], cacheWidth: 30, cacheHeight: 30,),
-        padding: EdgeInsets.only(
-          left: 10,
-          right: 50),
-      ),
+      buildPeerSecondaryCharacterSprite(Constants.minSpritesMap[widget.peer["Secondary"]])
       ],
     );
   }
@@ -93,14 +118,7 @@ class _ChatPageState extends State<ChatPage> {
     );
   }
 
-  Widget loadingCircle(){
-    return Center(
-        child: CircularProgressIndicator(
-            valueColor: AlwaysStoppedAnimation<Color>(
-                Colors.lightBlue)));
-  }
-
-  Widget buildMessageList(BuildContext context){
+  Widget buildMessageList(){
     return Expanded(
       child: StreamBuilder(
         stream: Firestore.instance
@@ -114,7 +132,7 @@ class _ChatPageState extends State<ChatPage> {
             return snapshotError(snapshot);
           }
           else if (!snapshot.hasData) {
-            return loadingCircle();
+            return LoadingCircle.loadingCircle();
           } 
           else {
             listMessage = snapshot.data.documents;
@@ -123,7 +141,7 @@ class _ChatPageState extends State<ChatPage> {
               itemBuilder: (context, index) =>
                 buildMessageBoxes(index, snapshot.data.documents[index]),
               itemCount: snapshot.data.documents.length,
-              controller: listScrollController,
+              controller: _listScrollController,
               scrollDirection: Axis.vertical,
               reverse: true,
               shrinkWrap: true,
@@ -135,75 +153,13 @@ class _ChatPageState extends State<ChatPage> {
     );
   }
 
-  // building messages
-  // arguments are the index of the current item being built obtained from listBuilder
-  // and document is the snapshot of the current message log for the given chatId
-  // if the fromId of the message is the current users, the message displays on right
-  // otherwise, the fromId is from the peerId and appears on left
-  Widget buildMessageBoxes(int index, DocumentSnapshot document) {
-    if (document['fromId'] == widget.user.getUserId) {
-      // Right (my message)
-      return Row(
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: <Widget>[
-        // Text
-        Container(
-          child: Text(
-            document['content'],
-            style: TextStyle(color: Colors.white),
-          ),
-          padding: EdgeInsets.fromLTRB(15.0, 10.0, 15.0, 10.0),
-          width: 175.0,
-          decoration: BoxDecoration(
-              color: Colors.blue[400],
-              borderRadius: BorderRadius.circular(8.0)),
-          margin: EdgeInsets.only(
-              bottom: isLastMessageRight(index) ? 20.0 : 10.0,
-          ),
-        )
-      ]);
-    } 
-    else {
-      String timeStamp = document['timeStamp'];
-      // row for left side messages - from peer
-      return Row(
-        children: <Widget>[
-          Container(
-            // column containing message box and timestamp
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                // message box
-                Container(
-                  child: Text(
-                    document['content'],
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 14),
-                  ),
-                  padding: EdgeInsets.fromLTRB(15.0, 10.0, 15.0, 10.0),
-                  width: 175.0,
-                  decoration: BoxDecoration(
-                      color: Colors.grey[300],
-                      borderRadius: BorderRadius.circular(8.0)),
-                ),
-                buildMessageTimeStamp(timeStamp),
-              ]
-            ),
-            margin: EdgeInsets.only(
-                bottom: isLastMessageRight(index) ? 20.0 : 10.0),
-          )
-        ]
-      );
-    }
-  }
-
-  Widget buildMessageTimeStamp(String timeStamp){
+  // returns a containter that holds a text widget
+  // the text widgets data is the time the message was sent
+  Widget buildMessageTimeStamp(int timeStamp){
     // time stamp
     return Container(
       child: Text(
-          DateFormat('dd MMM').add_jm()
-          .format(DateTime.fromMillisecondsSinceEpoch(int.parse(timeStamp))),
+          ChatPageLogic.formatTimeStamp(timeStamp),
           style: TextStyle(
             color: Colors.blueGrey,
             fontSize: 12.0,
@@ -213,37 +169,52 @@ class _ChatPageState extends State<ChatPage> {
     );
   }
 
-  bool isLastMessageLeft(int index) {
-    if ((index > 0 &&
-            listMessage != null &&
-            listMessage[index - 1]['idFrom'] == widget.user.getUserId) ||
-        index == 0) {
-      return true;
-    } else {
-      return false;
-    }
-  }
-
-  bool isLastMessageRight(int index) {
-    if ((index > 0 &&
-            listMessage != null &&
-            listMessage[index - 1]['idFrom'] != widget.user.getUserId) ||
-        index == 0) {
-      return true;
-    } else {
-      return false;
-    }
+  // building messages
+  // index is the index of the current item being built obtained from listBuilder
+  // and document is the snapshot of the current message log for the given chatId
+  // if the fromId of the message is the current users, the message displays on right
+  // otherwise, the fromId is from the peerId and appears on left
+  Widget buildMessageBoxes(int index, DocumentSnapshot document){
+    int timeStamp = int.tryParse(document['timeStamp']);
+    bool isUserMessage = document['fromId'] == _user.getUserId;
+    return Row(
+      mainAxisAlignment: ChatPageLogic.rowMainAxisAlignment(isUserMessage),
+      children: <Widget>[
+        Container(
+          // make another function for column - don't go passed 2 children deep without new function
+          child: Column(
+            crossAxisAlignment: ChatPageLogic.columnCrossAxisAlignment(isUserMessage),
+            children: <Widget>[
+              Container(
+                child: Text(
+                  document['content'],
+                  style: TextStyle(color: ChatPageLogic.messageTextColor(isUserMessage)),
+                ),
+                padding: EdgeInsets.fromLTRB(15.0, 10.0, 15.0, 10.0),
+                width: 175.0,
+                decoration: BoxDecoration(
+                  color: ChatPageLogic.messageBoxColor(isUserMessage),
+                  borderRadius: BorderRadius.circular(8.0)),
+              ),
+              buildMessageTimeStamp(timeStamp),
+              ]
+            ),
+            margin: ChatPageLogic.messageContainerMargins(index)
+          )
+        ]
+      );
   }
 
   // container that holds send message button and message input field 
-  Widget buildMessageInputContainer(BuildContext context){
+  Widget buildMessageInputContainer(){
     return Container(
       child: Row(
         children: <Widget>[
-          buildSendFriendCodeButton(context),
-          buildMessageInput(context),
+          buildSendFriendCodeButton(),
+          buildMessageInput(),
           buildSendButton(),
-        ],),
+        ],
+      ),
       padding: EdgeInsets.fromLTRB(10, 10, 0, 10),
       decoration: new BoxDecoration(
         border: new Border(top: new BorderSide(color: Colors.grey[100], width: 0.5)),
@@ -252,13 +223,14 @@ class _ChatPageState extends State<ChatPage> {
     );
   }
 
-  Widget buildSendFriendCodeButton(BuildContext context){
+  Widget buildSendFriendCodeButton(){
     return Flexible(
+      key: Key("SEND_FRIEND_CODE_BUTTON"),
       child: Material(
         child: IconButton(
           color: Colors.lightBlue,
           onPressed: (){
-            _message.setContent = widget.user.getFriendCode;
+            _message.setContent = _user.getFriendCode;
             sendMessage();
           },
           icon: Icon(
@@ -271,10 +243,11 @@ class _ChatPageState extends State<ChatPage> {
     );
   }
 
-  Widget buildMessageInput(BuildContext context){
+  Widget buildMessageInput(){
     return Flexible(
-        child: TextField(
-        controller: messageController,
+      key: Key("MESSAGE_INPUT_FIELD"),
+      child: TextField(
+        controller: _messageController,
         minLines: 1,
         maxLines: 5,
         keyboardType: TextInputType.multiline,
@@ -282,9 +255,7 @@ class _ChatPageState extends State<ChatPage> {
         decoration: InputDecoration.collapsed(
           hintText: 'Send a message...',
         ),
-        focusNode: focusNode,
-        onSubmitted: (messageContents) {
-        },
+        focusNode: _focusNode,
       ),
       flex: 6,
     );
@@ -292,13 +263,14 @@ class _ChatPageState extends State<ChatPage> {
 
   Widget buildSendButton(){
     return Flexible(
+      key: Key("SEND_MESSAGE_BUTTON"),
       child: Material(
         child: IconButton(
           color: Colors.lightBlue,
           onPressed: (){
-            _message.setContent = messageController.text;
+            _message.setContent = _messageController.text;
             sendMessage();
-            messageController.clear();
+            _messageController.clear();
           },
           icon: Icon(
             Icons.send
@@ -306,19 +278,20 @@ class _ChatPageState extends State<ChatPage> {
         ),
         color: Colors.grey[300],
       ),
-      flex: 1,
+    flex: 1,
     );
   }
 
   // receives a message with updated contents when the chat box is submitted
   // creates a message document using a time stamp to ensure uniqueness in the given chatId
   void sendMessage() {
+    _message.setTimeStamp = DateTime.now().millisecondsSinceEpoch;
     if (_message.getContent != "") {
       DocumentReference messageReference = Firestore.instance
-          .collection("Chats")
-          .document(widget.chatId)
-          .collection(widget.chatId)
-          .document(_message.getTimeStamp);
+        .collection("Chats")
+        .document(widget.chatId)
+        .collection(widget.chatId)
+        .document(_message.getTimeStamp);
 
       // this method allows for an asyncrhonous write to occur without the whole function being async
       Firestore.instance.runTransaction((transaction) async {
@@ -329,8 +302,8 @@ class _ChatPageState extends State<ChatPage> {
           'timeStamp': _message.getTimeStamp,
         });
       });
-      listScrollController.animateTo(0.0,
-          duration: Duration(milliseconds: 300), curve: Curves.easeOut);
+      _listScrollController.animateTo(0.0,
+        duration: Duration(milliseconds: 0), curve: Curves.fastOutSlowIn);
     }
   }
 }

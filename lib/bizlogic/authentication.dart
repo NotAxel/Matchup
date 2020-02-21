@@ -15,6 +15,10 @@ abstract class BaseAuth {
   Future<bool> isEmailVerified();
 
   Future<List<String>> fetchSignInMethodsForEmail();
+
+  Future<bool> deleteUser();
+
+  Future<String> reauthenticateWithCredential(String email, String password);
 }
 
 class Auth implements BaseAuth {
@@ -56,5 +60,35 @@ class Auth implements BaseAuth {
   Future<List<String>> fetchSignInMethodsForEmail() async{
     FirebaseUser user = await _firebaseAuth.currentUser();
     return _firebaseAuth.fetchSignInMethodsForEmail(email: user.email.toString());
+  }
+
+  // returns true if the user was successfully deleted
+  // returns false if an error was caught
+  Future<bool> deleteUser() async{
+    final FirebaseUser firebaseUser = await _firebaseAuth.currentUser();
+    if (firebaseUser != null){
+      try{
+        await firebaseUser.delete();
+      }
+      catch(ERROR_REQUIRES_RECENT_LOGIN){
+        return false;
+      }
+      return true;
+    }
+    else{
+      return false;
+    }
+  }
+
+  // returns null if the user was successfully authenticated 
+  // with the given email and password
+  // if there was an error, returns the error message
+  @override
+  Future<String> reauthenticateWithCredential(String email, String password) async{
+    final FirebaseUser firebaseUser = await _firebaseAuth.currentUser();
+    AuthCredential credential = EmailAuthProvider.getCredential(
+      email: email, password: password);
+    AuthResult result = await firebaseUser.reauthenticateWithCredential(credential);
+    return result.user.uid;
   }
 }
