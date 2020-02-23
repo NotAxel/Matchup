@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -180,7 +181,6 @@ class _RootPageState extends State<RootPage>{
   bool validateAndSave() {
     final FormState form = formKey.currentState;
     if (form.validate()) {
-      email = user.getEmail;
       form.save();
       return true;
     }
@@ -193,6 +193,7 @@ class _RootPageState extends State<RootPage>{
   // Perform login or signup
   void validateAndSubmit() async {
     final BaseAuth auth = Provider.of<BaseAuth>(context, listen: false);
+    FirebaseUser user = await auth.getCurrentUser();
     setState(() {
       _errorMessage.setMessage = null;
       isLoading = true;
@@ -200,15 +201,15 @@ class _RootPageState extends State<RootPage>{
     if (validateAndSave()) {
       print("passed validate and save");
       try {
-        // use this future to test the loading icon
         print("calling reauthenticate function");
-        await auth.reauthenticateWithCredential(email, passwordFormField.getPassword);
+        await auth.reauthenticateWithCredential(user.email, passwordFormField.getPassword);
         setState(() {
           isLoading = false;
         });
         print("attempting to pop password form");
         Navigator.pop(context, true);
-      } catch (e) {
+      } 
+      catch (e) {
         print("IN ERROR HANDLER");
         print('Error $e');
         setState(() {
@@ -252,7 +253,7 @@ class _RootPageState extends State<RootPage>{
         // should go to user info entry since they will have a token when they reopen
         else{
           print("building userInfoEntry from homepage");
-          return UserInfoEntryPage(logoutCallback, "RootPage");
+          return UserInfoEntryPage(loginCallback, logoutCallback, "RootPage");
         }
         break;
       default:

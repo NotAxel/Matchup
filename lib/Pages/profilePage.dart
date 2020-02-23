@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:matchup/Widgets/actionConfirmation.dart';
 import 'package:provider/provider.dart';
 
 import 'package:matchup/Pages/homepage.dart';
@@ -13,8 +14,9 @@ class ProfilePage extends StatefulWidget {
   ProfilePageState createState() => ProfilePageState();
 }
 
-class ProfilePageState extends State<ProfilePage> with SingleTickerProviderStateMixin {
+class ProfilePageState extends State<ProfilePage>{
 
+  ActionConfirmation _confirmer;
   var profStyle = TextStyle(fontSize: 25);
 
   Widget showLogOutButton(Future<void> Function(bool) logoutCallback){
@@ -37,6 +39,29 @@ class ProfilePageState extends State<ProfilePage> with SingleTickerProviderState
     );
   }
 
+  Widget showDeleteAccountButton(Future<void> Function(bool) logoutCallback){
+    return new Padding(
+        padding: EdgeInsets.fromLTRB(115.0, 10.0, 115.0, 0.0),
+        child: SizedBox(
+          height: 40.0,
+          width: 100,
+          child: new RaisedButton(
+            key: Key('DeleteAccount'),
+            elevation: 5.0,
+            shape: new RoundedRectangleBorder(
+                borderRadius: new BorderRadius.circular(30.0)),
+            color: Colors.redAccent,
+            child: new Text('Delete Account',
+                style: new TextStyle(fontSize: 20.0, color: Colors.white)),
+            onPressed: _confirmer.confirmAction 
+          ),
+        )
+    );
+  }
+
+  Future<void> confirmDeletion() async{
+  }
+
   Widget _showForm(void Function(bool) logoutCallback) {
     return new Container(
         padding: EdgeInsets.all(16.0),
@@ -45,7 +70,8 @@ class ProfilePageState extends State<ProfilePage> with SingleTickerProviderState
           child: new ListView(
             shrinkWrap: true,
             children: <Widget>[
-              showLogOutButton(logoutCallback)
+              showLogOutButton(logoutCallback),
+              showDeleteAccountButton(logoutCallback)
             ],
           ),
         ));
@@ -54,16 +80,23 @@ class ProfilePageState extends State<ProfilePage> with SingleTickerProviderState
   @override
   Widget build(BuildContext context) {
     print("building profile page");
-    //// check if the user has data before accessing their profile
-    //final BaseAuth auth = AuthProvider.of(context).auth;
-    //auth.getCurrentUser().then((value){
+    // check if the user has data before accessing their profile
+    // final BaseAuth auth = AuthProvider.of(context).auth;
+    // auth.getCurrentUser().then((value){
 
-    //});
     final User _user = Provider.of<User>(context);
-    final void Function(bool) logoutCallback = HomePageProvider.of(context).logoutCallback;
-    //if (false){
+    final Future<void> Function(bool) logoutCallback = HomePageProvider.of(context).logoutCallback;
 
-    //}
+    _confirmer = ActionConfirmation(
+      context,
+      "Are you sure you want to delete your account?",
+      // confirm deletion 
+      () async { await logoutCallback(true); },
+      // deny deletion 
+      () { Navigator.pop(context, false); },
+      useRootNavigatior: false
+    );
+
     if (_user.getUserName == null ||
       _user.getMain == null ||
       _user.getSecondary == null){
