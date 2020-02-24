@@ -284,7 +284,6 @@ class _ChatPageState extends State<ChatPage> {
     );
   }
 
-
   Widget buildSendButton(){
     return Flexible(
       key: Key("SEND_MESSAGE_BUTTON"),
