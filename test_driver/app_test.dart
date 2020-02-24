@@ -10,6 +10,13 @@ class Keys{
   static const String switchButton = 'switch between login/signup'; // the button that switches login/signup found on login/signup
   static const String logout = 'logout'; // the login button found on login/signup
   static const String errorMessage = 'error message'; // the error message text found on login/signup
+  static const String userName = 'Username'; 
+  static const String friendCode = 'FriendCode'; 
+  static const String main = 'Main'; 
+  static const String secondary = 'Secondary'; 
+  static const String region = 'Region'; 
+  static const String saveProfile = 'SaveProfile'; // the error message text found on login/signup
+  static const String deleteAccount = 'DeleteAccount'; 
 }
 
 void main() {
@@ -31,14 +38,6 @@ void main() {
     test('Successful login to an existing account', () async{
       String expectedEmail = 'driverTestAccount@gmail.com';
       String expectedPassword = 'Test123!';
-
-      try{
-        SerializableFinder logoutButton = find.byValueKey(Keys.logout);
-        await driver.tap(logoutButton, timeout: Duration(seconds: 1));
-      }
-      catch(e){
-        print("Didn't have to logout");
-      }
 
       SerializableFinder emailField = find.byValueKey(Keys.email);
       await driver.tap(emailField);  // acquire focus
@@ -159,5 +158,78 @@ void main() {
       SerializableFinder errorMessage = find.byValueKey(Keys.errorMessage);
       expect(await driver.getText(errorMessage), expectedErrorMessage);
     });
+
+    test('Successful signup, customize profile, then delete account from profile page', () async{
+      await driver.runUnsynchronized(() async{
+        String expectedEmail = 'SuccessfulSignupTest@gmail.com';
+        String expectedPassword = 'Test123!';
+
+        try{
+          SerializableFinder logoutButton = find.byValueKey(Keys.logout);
+          await driver.tap(logoutButton, timeout: Duration(seconds: 1));
+        }
+        catch(e){
+          print("Didn't have to logout");
+        }
+
+        // login signup page
+        // last test ends on sign up page so we dont need to switch
+
+        SerializableFinder emailField = find.byValueKey(Keys.email);
+        await driver.tap(emailField);  // acquire focus
+        await driver.enterText(expectedEmail);  // enter text
+        await driver.waitFor(find.text(expectedEmail));  // verify text appears on UI
+
+        SerializableFinder passwordField = find.byValueKey(Keys.password);
+        await driver.tap(passwordField);  // acquire focus
+        await driver.enterText(expectedPassword);  // enter text
+        await driver.waitFor(find.text(expectedPassword));  // verify text appears on UI
+
+        SerializableFinder loginButton = find.byValueKey(Keys.login);
+        await driver.tap(loginButton);
+
+        // userInfoEntry Page
+        // username
+        SerializableFinder usernameField = find.byValueKey(Keys.userName);
+        await driver.tap(usernameField);
+        await driver.enterText('test');
+
+        // friend code
+        SerializableFinder friendCodeField = find.byValueKey(Keys.friendCode);
+        await driver.tap(friendCodeField);
+        await driver.enterText('SW-1234-1234-1234');
+
+        // main
+        SerializableFinder mainDropdown = find.byValueKey(Keys.main);
+        await driver.tap(mainDropdown);
+
+        SerializableFinder mainText = find.text("Bowser");
+        await driver.tap(mainText);
+
+        // secondary
+        SerializableFinder secondaryDropdown = find.byValueKey(Keys.secondary);
+        await driver.tap(secondaryDropdown);
+
+        SerializableFinder secondaryText = find.text("Bowser");
+        await driver.tap(secondaryText);
+
+        SerializableFinder regionDropDown = find.byValueKey(Keys.region);
+        await driver.tap(regionDropDown);
+
+        SerializableFinder regionText = find.text('West Coast (WC)');
+        await driver.tap(regionText);
+
+        SerializableFinder finder = find.byValueKey(Keys.saveProfile);
+        await driver.tap(finder);
+
+        // flutter bugged out, deletes by hand but not in driver
+        SerializableFinder deleteButton = find.byValueKey(Keys.deleteAccount);
+        await driver.tap(deleteButton);
+
+        await driver.waitFor(find.text("Yes"));
+        SerializableFinder yesButton = find.text("Yes");
+        await driver.tap(yesButton);
+      });
+    }, skip: true);
   });
 }

@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 class ActionConfirmation{
   BuildContext _context;
   String _cancelMessage;
-  VoidCallback _yesOnPressed;
-  VoidCallback _noOnPressed;
+  Future<void> Function() _yesOnPressed;
+  Future<void> Function() _noOnPressed;
   bool useRootNavigatior;
 
   ActionConfirmation(this._context, this._cancelMessage, this._yesOnPressed, this._noOnPressed, {this.useRootNavigatior = true});
@@ -12,11 +12,13 @@ class ActionConfirmation{
   // yes or no option buttons that go in the cancel form alert
   // the Key for yes button: yesButton
   // the Key for no button: noButton
-  Widget _alertButton(String hintText, VoidCallback alertButtonOnPressed){
+  Widget _alertButton(String hintText, Future<void> Function() alertButtonOnPressed){
     return FlatButton(
       key: Key(hintText.toLowerCase() + "Button"),
       child: Text(hintText),
-      onPressed: alertButtonOnPressed
+      onPressed: () async{
+        await alertButtonOnPressed();
+      }
     );
   }
 

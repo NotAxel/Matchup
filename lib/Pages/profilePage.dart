@@ -59,9 +59,6 @@ class ProfilePageState extends State<ProfilePage>{
     );
   }
 
-  Future<void> confirmDeletion() async{
-  }
-
   Widget _showForm(void Function(bool) logoutCallback) {
     return new Container(
         padding: EdgeInsets.all(16.0),
@@ -93,7 +90,7 @@ class ProfilePageState extends State<ProfilePage>{
       // confirm deletion 
       () async { await logoutCallback(true); },
       // deny deletion 
-      () { Navigator.pop(context, false); },
+      () async { Navigator.pop(context, false); },
       useRootNavigatior: false
     );
 

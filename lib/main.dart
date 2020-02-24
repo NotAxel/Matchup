@@ -1,7 +1,4 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:matchup/bizlogic/User.dart';
-import 'package:matchup/bizlogic/screenSize.dart';
 import 'Pages/rootPage.dart';
 import 'bizlogic/authentication.dart';
 import 'package:provider/provider.dart';
@@ -17,7 +14,6 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         Provider<BaseAuth>(create: (context) => Auth()),
-        Provider<User>(create: (context) => User())
       ],
       child: MaterialApp(
         title: 'Matchup',

@@ -22,9 +22,9 @@ class UserInfoEntryPage extends StatefulWidget {
 }
 
 class _UserInfoEntryPage extends State<UserInfoEntryPage> {
-  static const MAIN = "main";
-  static const SECONDARY = "secondary";
-  static const REGION = "region";
+  static const MAIN = "Main";
+  static const SECONDARY = "Secondary";
+  static const REGION = "Region";
 
   BaseAuth _auth;
   ActionConfirmation _confirmer;
@@ -126,7 +126,7 @@ class _UserInfoEntryPage extends State<UserInfoEntryPage> {
     Validator friendCodeValidator = new FriendCodeValidator();
     return new Center(
       child: TextFormField(
-        key: Key("friendCode"),
+        key: Key("FriendCode"),
         obscureText: false,
         maxLines: 1,
         style: style,
@@ -144,6 +144,7 @@ class _UserInfoEntryPage extends State<UserInfoEntryPage> {
   Widget showUserNameField() {
     return new Center(
       child: TextFormField(
+        key: Key("Username"),
         obscureText: false,
         maxLength: 30,
         maxLines: 1,
@@ -165,6 +166,7 @@ class _UserInfoEntryPage extends State<UserInfoEntryPage> {
         child: SizedBox(
         height: height,
           child: new RaisedButton(
+            key: Key("SaveProfile"),
             elevation: 10.0,
             color: Colors.deepOrange,
             shape: new RoundedRectangleBorder(
@@ -255,10 +257,10 @@ This will also delete your account.''',
       // confirm cancelation 
       () async {
         await widget.logoutCallback(true);
-        Navigator.pop(context, true);
+        Navigator.maybePop(context, true);
       }, 
       // deny cancelation
-      () => Navigator.pop(context, false) // deny cancelation
+      () async => Navigator.pop(context, false) // deny cancelation
     );
 
     if (_isLoading){
