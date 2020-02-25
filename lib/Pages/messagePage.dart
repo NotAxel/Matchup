@@ -4,7 +4,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:matchup/bizlogic/User.dart';
 import 'package:matchup/bizlogic/userProvider.dart';
 import 'package:matchup/Pages/filterPopupPage.dart';
-import 'package:matchup/Pages/filterPopupContent.dart';
 import 'package:matchup/bizlogic/constants.dart' as con;
 import './chatPage.dart' as chatp;
 import 'package:matchup/Pages/filterPopupForm.dart' as fpf; //remove unused imports
