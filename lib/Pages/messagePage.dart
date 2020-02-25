@@ -202,7 +202,6 @@ class MessagePageState extends State<MessagePage>{
           ),
           resizeToAvoidBottomPadding: false,
           body: dpf.DeletePopupForm(conversation: conversation, otherUser: snap,),
-          //),
         )
       )
     );
