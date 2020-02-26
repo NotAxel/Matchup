@@ -46,7 +46,7 @@ class _DeletePopupForm extends State<DeletePopupForm> {
             showButtons(),
           ],
         )
-      )
+      ),
     );
   }
 

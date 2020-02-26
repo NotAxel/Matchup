@@ -192,9 +192,12 @@ class _UserInfoEntryPage extends State<UserInfoEntryPage> {
         'Region' : _region, 
         'Username' : _userName, 
         'NintendoID' : _nintendoID});
+      await widget.loginCallback();
+      Navigator.of(context).pop();
     }
-    await widget.loginCallback();
-    Navigator.of(context).pop();
+    setState(() {
+      _isLoading = false;
+    });
   }
 
   // Check if form is valid before saving user information
@@ -204,9 +207,6 @@ class _UserInfoEntryPage extends State<UserInfoEntryPage> {
       form.save();
       return true;
     }
-    setState(() {
-      _isLoading = false;
-    });
     return false;
   }
 
@@ -260,7 +260,7 @@ This will also delete your account.''',
         Navigator.maybePop(context, true);
       }, 
       // deny cancelation
-      () async => Navigator.pop(context, false) // deny cancelation
+      () async => Navigator.pop(context, false) 
     );
 
     if (_isLoading){

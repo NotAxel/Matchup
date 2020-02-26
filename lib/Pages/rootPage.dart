@@ -105,6 +105,7 @@ class _RootPageState extends State<RootPage>{
     if (deleteUser){
       await tryDeleteUser(auth);
     }
+    user.tearDown();
     print("Signing out user");
     await auth.signOut();
     setState(() {

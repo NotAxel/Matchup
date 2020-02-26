@@ -183,7 +183,7 @@ class MessagePageState extends State<MessagePage>{
       FilterPopupPage(
         top: 200,
         left: 20,
-        bottom: 400,
+        bottom: 200,
         right: 20,
         child: Scaffold(
           appBar: AppBar(
