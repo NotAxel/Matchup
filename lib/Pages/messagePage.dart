@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
-import '../bizlogic/userProvider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import '../bizlogic/userProvider.dart';
 import 'package:matchup/bizlogic/User.dart';
 import 'package:matchup/bizlogic/userProvider.dart';
 import 'package:matchup/Pages/filterPopupPage.dart';
 import 'package:matchup/bizlogic/constants.dart' as con;
-import './chatPage.dart' as chatp;
-import 'package:matchup/Pages/filterPopupForm.dart' as fpf; //remove unused imports
 import 'package:matchup/Pages/deletePopupForm.dart' as dpf;
+import './chatPage.dart' as chatp;
 
 class MessagePage extends StatefulWidget {
   @override
@@ -39,26 +38,26 @@ class MessagePageState extends State<MessagePage>{
     );
   }
 
+  //main page layout, creates the overall list
   Widget buildConversationList(BuildContext context){
-    final User _user = UserProvider.of(context).user; //remove underscore; only need for privates of file
+    final User user = UserProvider.of(context).user; 
     return Expanded(
       child: StreamBuilder(
         stream: Firestore.instance
-            .collection("Users").document(_user.getUserId)  //snapshots of chats for current user
-            .collection("Chats").orderBy("chatId", descending: true).snapshots(), //TODO order by time
+            .collection("Users").document(user.getUserId)//snapshots of chats collection for current user
+            .collection("Chats").orderBy("chatId", descending: true).snapshots(), //TODO order by time if possible
         builder: (context, snapshot){
           if (snapshot.hasError){
             return snapshotError(snapshot);
           }
-          else if (!snapshot.hasData) {   //TODO FIX not showing no Conversation widget
+          else if (snapshot.data.documents.length == 0) {//if collection returns an empty list
             return noConversations();
           } 
           else {
-            print(snapshot.data);
             return ListView.separated(
             padding: EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 10.0),
-            itemBuilder: (context, index) =>
-                buildConversation(context, snapshot.data.documents[index]),
+            itemBuilder: (context, index) => //for each conversation builds a tile
+              buildConversation(context, snapshot.data.documents[index]),
             itemCount: snapshot.data.documents.length,
             controller: listScrollController,
             scrollDirection: Axis.vertical,
@@ -74,15 +73,15 @@ class MessagePageState extends State<MessagePage>{
     );
   }
 
+  //creates each tile for individual conversations
   Widget buildConversation(BuildContext context, DocumentSnapshot conversation){
-    final User user = UserProvider.of(context).user;
     return Container(
-      child: FutureBuilder(
+      child: FutureBuilder(//need FutureBuilder for the .get(), returns the data of the other user
         future: Firestore.instance.collection("Users").document(conversation.documentID).get(),
         builder: (context, snapshot){
           if(snapshot.connectionState == ConnectionState.done){
             return ListTile(
-              title: new Text(snapshot.data['Username'],  //fixed indentation
+              title: new Text(snapshot.data['Username'],
                 style: TextStyle(
                   fontSize: 25.0,
                   fontWeight: FontWeight.bold,
@@ -100,7 +99,7 @@ class MessagePageState extends State<MessagePage>{
                   deleteConversation(context, conversation, snapshot);
                 },
               ),
-              onTap: (){
+              onTap: (){  //navigates to chat page
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (BuildContext context) =>
@@ -121,6 +120,7 @@ class MessagePageState extends State<MessagePage>{
     );
   }
 
+  //gets preview of most recent message for the subtitle
   Widget getLastMessage(BuildContext context, DocumentSnapshot conversation){
     return Container(
       child: StreamBuilder(
@@ -153,13 +153,14 @@ class MessagePageState extends State<MessagePage>{
       padding: EdgeInsets.fromLTRB(0.0, 5.0, 0.0, 0.0),
     );
   }
-
+  
+  //when the users collection fo chats is empty
   Widget noConversations(){
     return Center(
       child: Container(
         child: Text(
-          "No current messages :(\n Go to Matchup Listing to SMASH!",
-          style: TextStyle(color: Colors.blueGrey[300]),
+          "   No current messages :(\n\nGo to MatchList to SMASH!",
+          style: TextStyle(color: Colors.blueGrey[300], fontSize: 20),
         ),
       )
     );
@@ -176,6 +177,7 @@ class MessagePageState extends State<MessagePage>{
     );
   }
 
+  //creates the popup to confirm account deletion
   deleteConversation(BuildContext context, DocumentSnapshot conversation, AsyncSnapshot snap){
     Navigator.push(
       context,
