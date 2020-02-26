@@ -1,12 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:matchup/Widgets/timeStamp.dart';
+import 'package:provider/provider.dart';
 
 import 'package:matchup/bizlogic/User.dart';
 import 'package:matchup/bizlogic/message.dart';
 import 'package:matchup/bizlogic/constants.dart';
-import 'package:matchup/bizlogic/chatPageLogic.dart';
 import 'package:matchup/Widgets/loadingCircle.dart';
-import 'package:matchup/bizlogic/userProvider.dart';
 
 class ChatPage extends StatefulWidget {
   final DocumentSnapshot peer;
@@ -21,6 +21,10 @@ class ChatPage extends StatefulWidget {
 }
 
 class _ChatPageState extends State<ChatPage> {
+  // constants for message box margins
+  static const double LAST_MESSAGE_MARGIN = 20.0; 
+  static const double INTERMEDIATE_MESSAGE_MARGIN = 10.0;
+
   // make instance variables have underscores
   final TextEditingController _messageController = new TextEditingController();
   final ScrollController _listScrollController = new ScrollController();
@@ -34,7 +38,7 @@ class _ChatPageState extends State<ChatPage> {
   // https://medium.com/flutter-community/building-a-chat-app-with-flutter-and-firebase-from-scratch-9eaa7f41782e
   @override
   Widget build(BuildContext context) {
-    _user = UserProvider.of(context).user;
+    _user = Provider.of<User>(context);
     _message = new Message("", widget.peer.documentID, _user.getUserId);
     return Scaffold(
       appBar: AppBar(
@@ -138,8 +142,13 @@ class _ChatPageState extends State<ChatPage> {
             listMessage = snapshot.data.documents;
             return ListView.builder(
               padding: EdgeInsets.all(10.0),
-              itemBuilder: (context, index) =>
-                buildMessageBoxes(index, snapshot.data.documents[index]),
+              itemBuilder: (BuildContext context, int index){
+                // last message has a larger bottom padding
+                if (index == 0){
+                  return buildMessages(snapshot.data.documents[index], EdgeInsets.only(bottom: LAST_MESSAGE_MARGIN));
+                }
+                return buildMessages(snapshot.data.documents[index], EdgeInsets.only(bottom: INTERMEDIATE_MESSAGE_MARGIN));
+              },
               itemCount: snapshot.data.documents.length,
               controller: _listScrollController,
               scrollDirection: Axis.vertical,
@@ -153,57 +162,71 @@ class _ChatPageState extends State<ChatPage> {
     );
   }
 
-  // returns a containter that holds a text widget
-  // the text widgets data is the time the message was sent
-  Widget buildMessageTimeStamp(int timeStamp){
-    // time stamp
-    return Container(
-      child: Text(
-          ChatPageLogic.formatTimeStamp(timeStamp),
-          style: TextStyle(
-            color: Colors.blueGrey,
-            fontSize: 12.0,
-          )
-        ),
-      padding: EdgeInsets.only(left: 10),
-    );
-  }
 
   // building messages
   // index is the index of the current item being built obtained from listBuilder
   // and document is the snapshot of the current message log for the given chatId
   // if the fromId of the message is the current users, the message displays on right
   // otherwise, the fromId is from the peerId and appears on left
-  Widget buildMessageBoxes(int index, DocumentSnapshot document){
+  Widget buildMessages(DocumentSnapshot document,EdgeInsets messageContainerMargins){
     int timeStamp = int.tryParse(document['timeStamp']);
     bool isUserMessage = document['fromId'] == _user.getUserId;
+
+    if (isUserMessage){
+      return buildMessageBox(document['content'], 
+      MainAxisAlignment.end, // end places message box on right of row for user message
+      CrossAxisAlignment.end, // end puts the widget on the right side of the column for user message
+      Colors.white, 
+      Colors.blue[400],
+      timeStamp, 
+      messageContainerMargins);
+    }
+    return buildMessageBox(document['content'], 
+    MainAxisAlignment.start, // end places message box on right of row for user message
+    CrossAxisAlignment.start, // end puts the widget on the right side of the column for user message
+    Colors.black,
+    Colors.grey[300],
+    timeStamp, 
+    messageContainerMargins);
+  }
+
+  Widget buildMessageBox(
+    String content,
+    MainAxisAlignment _rowMainAxisAlignment,
+    CrossAxisAlignment _columnCrossAxisAlignment,
+    Color _messageTextColor,
+    Color _messageBoxColor,
+    int _timeStamp,
+    EdgeInsets _messageContainerMargins){
+
     return Row(
-      mainAxisAlignment: ChatPageLogic.rowMainAxisAlignment(isUserMessage),
+      mainAxisAlignment: _rowMainAxisAlignment,
       children: <Widget>[
         Container(
           // make another function for column - don't go passed 2 children deep without new function
           child: Column(
-            crossAxisAlignment: ChatPageLogic.columnCrossAxisAlignment(isUserMessage),
+            crossAxisAlignment: _columnCrossAxisAlignment,
             children: <Widget>[
               Container(
                 child: Text(
-                  document['content'],
-                  style: TextStyle(color: ChatPageLogic.messageTextColor(isUserMessage)),
+                  content,
+                  style: TextStyle(color: _messageTextColor),
                 ),
                 padding: EdgeInsets.fromLTRB(15.0, 10.0, 15.0, 10.0),
                 width: 175.0,
                 decoration: BoxDecoration(
-                  color: ChatPageLogic.messageBoxColor(isUserMessage),
+                  color: _messageBoxColor,
                   borderRadius: BorderRadius.circular(8.0)),
               ),
-              buildMessageTimeStamp(timeStamp),
+              TimeStamp.buildTimeStamp(_timeStamp),
               ]
             ),
-            margin: ChatPageLogic.messageContainerMargins(index)
+            margin: _messageContainerMargins
           )
         ]
       );
   }
+
 
   // container that holds send message button and message input field 
   Widget buildMessageInputContainer(){

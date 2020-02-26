@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 abstract class BaseAuth {
@@ -62,21 +63,31 @@ class Auth implements BaseAuth {
     return _firebaseAuth.fetchSignInMethodsForEmail(email: user.email.toString());
   }
 
-  // returns true if the user was successfully deleted
-  // returns false if an error was caught
   Future<bool> deleteUser() async{
     final FirebaseUser firebaseUser = await _firebaseAuth.currentUser();
     if (firebaseUser != null){
+      print("Trying to delete user " + firebaseUser.uid);
       try{
+        await deleteFirebaseUserData(firebaseUser);
         await firebaseUser.delete();
       }
       catch(ERROR_REQUIRES_RECENT_LOGIN){
-        return false;
+        print('caught recent login error');
+        return false; // reauthentication is required to delete
       }
-      return true;
+      print('user successfully deleted');
+      return true; // user successfully deleted 
     }
-    else{
-      return false;
+    print("there was no current firebase user");
+    return true; // no firebase user is currently signed in so no user needs deletion
+  }
+
+  Future<void> deleteFirebaseUserData(FirebaseUser firebaseUser) async{
+    DocumentReference firebaseUserDocument = Firestore.instance.collection('Users').document(firebaseUser.uid);
+    DocumentSnapshot firebaseUserSnapshot = await firebaseUserDocument.get();
+    if (firebaseUserSnapshot.data != null){
+      print("deleting data for " + firebaseUserSnapshot.data['Username']);
+      await firebaseUserDocument.delete();
     }
   }
 
@@ -88,7 +99,13 @@ class Auth implements BaseAuth {
     final FirebaseUser firebaseUser = await _firebaseAuth.currentUser();
     AuthCredential credential = EmailAuthProvider.getCredential(
       email: email, password: password);
-    AuthResult result = await firebaseUser.reauthenticateWithCredential(credential);
+    AuthResult result;
+    try{
+      result = await firebaseUser.reauthenticateWithCredential(credential);
+    }
+    catch(e){
+      return e.message;
+    }
     return result.user.uid;
   }
 }
