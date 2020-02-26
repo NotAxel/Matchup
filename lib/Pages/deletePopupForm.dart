@@ -1,9 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:matchup/bizlogic/constants.dart' as ct;   //remove unused import
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:matchup/bizlogic/authProvider.dart';
 import 'package:matchup/bizlogic/authentication.dart';
+
+import 'package:provider/provider.dart';
 
 class DeletePopupForm extends StatefulWidget{
   final DocumentSnapshot conversation;
@@ -46,7 +46,7 @@ class _DeletePopupForm extends State<DeletePopupForm> {
             showButtons(),
           ],
         )
-      )
+      ),
     );
   }
 
@@ -126,7 +126,7 @@ class _DeletePopupForm extends State<DeletePopupForm> {
     });
     if (validateAndSave()){
       try {
-        final BaseAuth auth = AuthProvider.of(context).auth;
+        final BaseAuth auth = Provider.of<BaseAuth>(context);
         FirebaseUser currUser = await auth.getCurrentUser();
         Firestore.instance.collection('Users')
           .document(currUser.uid)

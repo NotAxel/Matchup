@@ -1,9 +1,17 @@
 import 'package:flutter/material.dart';
+<<<<<<< HEAD
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../bizlogic/userProvider.dart';
 import 'package:matchup/bizlogic/User.dart';
 import 'package:matchup/bizlogic/userProvider.dart';
 import 'package:matchup/Pages/filterPopupPage.dart';
+=======
+import 'package:matchup/Pages/filterPopupPage.dart';
+import 'package:provider/provider.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+
+import 'package:matchup/bizlogic/User.dart';
+>>>>>>> master
 import 'package:matchup/bizlogic/constants.dart' as con;
 import 'package:matchup/Pages/deletePopupForm.dart' as dpf;
 import './chatPage.dart' as chatp;
@@ -40,7 +48,11 @@ class MessagePageState extends State<MessagePage>{
 
   //main page layout, creates the overall list
   Widget buildConversationList(BuildContext context){
+<<<<<<< HEAD
     final User user = UserProvider.of(context).user; 
+=======
+    final User _user = Provider.of<User>(context);
+>>>>>>> master
     return Expanded(
       child: StreamBuilder(
         stream: Firestore.instance
@@ -75,6 +87,10 @@ class MessagePageState extends State<MessagePage>{
 
   //creates each tile for individual conversations
   Widget buildConversation(BuildContext context, DocumentSnapshot conversation){
+<<<<<<< HEAD
+=======
+    final User user = Provider.of<User>(context);
+>>>>>>> master
     return Container(
       child: FutureBuilder(//need FutureBuilder for the .get(), returns the data of the other user
         future: Firestore.instance.collection("Users").document(conversation.documentID).get(),
@@ -103,9 +119,16 @@ class MessagePageState extends State<MessagePage>{
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (BuildContext context) =>
+<<<<<<< HEAD
                   chatp.ChatPage(
                   peer: snapshot.data,
                   chatId: conversation.data["chatId"])
+=======
+                    chatp.ChatPage(
+                      peer: snapshot.data,
+                      chatId: conversation.data["chatId"]
+                    )
+>>>>>>> master
                   )
                 );
               }
@@ -184,7 +207,7 @@ class MessagePageState extends State<MessagePage>{
       FilterPopupPage(
         top: 200,
         left: 20,
-        bottom: 400,
+        bottom: 200,
         right: 20,
         child: Scaffold(
           appBar: AppBar(

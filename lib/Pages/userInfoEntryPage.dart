@@ -1,27 +1,33 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:matchup/Widgets/actionConfirmation.dart';
+import 'package:provider/provider.dart';
+import 'package:flutter/material.dart';
+
 import 'package:matchup/Widgets/loadingCircle.dart';
 import 'package:matchup/bizlogic/constants.dart' as con;
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
-import 'package:matchup/bizlogic/authProvider.dart';
 import 'package:matchup/bizlogic/authentication.dart';
 import 'package:matchup/bizlogic/friendCodeValidator.dart';
 import 'package:matchup/bizlogic/validator.dart';
 
 class UserInfoEntryPage extends StatefulWidget {
+  final Future<void> Function() loginCallback;
   final Future<void> Function(bool) logoutCallback;
   final String parent;
 
-  UserInfoEntryPage(this.logoutCallback, this.parent);
+  UserInfoEntryPage(this.loginCallback, this.logoutCallback, this.parent);
 
   @override
   _UserInfoEntryPage createState() => _UserInfoEntryPage();
 }
 
 class _UserInfoEntryPage extends State<UserInfoEntryPage> {
-  static const MAIN = "main";
-  static const SECONDARY = "secondary";
-  static const REGION = "region";
+  static const MAIN = "Main";
+  static const SECONDARY = "Secondary";
+  static const REGION = "Region";
+
+  BaseAuth _auth;
+  ActionConfirmation _confirmer;
 
   TextStyle style = TextStyle(fontFamily: 'Montserrat', fontSize: 20.0);
   Container _underLine = Container(height: 2, color: Colors.deepPurple);
@@ -120,7 +126,7 @@ class _UserInfoEntryPage extends State<UserInfoEntryPage> {
     Validator friendCodeValidator = new FriendCodeValidator();
     return new Center(
       child: TextFormField(
-        key: Key("friendCode"),
+        key: Key("FriendCode"),
         obscureText: false,
         maxLines: 1,
         style: style,
@@ -138,6 +144,7 @@ class _UserInfoEntryPage extends State<UserInfoEntryPage> {
   Widget showUserNameField() {
     return new Center(
       child: TextFormField(
+        key: Key("Username"),
         obscureText: false,
         maxLength: 30,
         maxLines: 1,
@@ -159,6 +166,7 @@ class _UserInfoEntryPage extends State<UserInfoEntryPage> {
         child: SizedBox(
         height: height,
           child: new RaisedButton(
+            key: Key("SaveProfile"),
             elevation: 10.0,
             color: Colors.deepOrange,
             shape: new RoundedRectangleBorder(
@@ -175,18 +183,21 @@ class _UserInfoEntryPage extends State<UserInfoEntryPage> {
       _isLoading = true;
     });
     if (validateAndSave()){
-      final BaseAuth auth = AuthProvider.of(context).auth;
-      FirebaseUser currUser = await auth.getCurrentUser();
+      FirebaseUser currUser = await _auth.getCurrentUser();
       _userID = currUser.uid;
-      Firestore.instance.collection('Users').document(_userID).setData({
+      await Firestore.instance.collection('Users').document(_userID).setData({
         'Username' : _userName, 
         'Main' : _mainChar, 
         'Secondary' : _secondaryChar, 
         'Region' : _region, 
         'Username' : _userName, 
         'NintendoID' : _nintendoID});
+      await widget.loginCallback();
       Navigator.of(context).pop();
     }
+    setState(() {
+      _isLoading = false;
+    });
   }
 
   // Check if form is valid before saving user information
@@ -196,9 +207,6 @@ class _UserInfoEntryPage extends State<UserInfoEntryPage> {
       form.save();
       return true;
     }
-    setState(() {
-      _isLoading = false;
-    });
     return false;
   }
 
@@ -216,52 +224,6 @@ class _UserInfoEntryPage extends State<UserInfoEntryPage> {
     );
   }
 
-  // yes or no option buttons that go in the cancel form alert
-  // the Key for yes button: yesButton
-  // the Key for no button: noButton
-  Widget alertButton(String hintText, VoidCallback alertButtonOnPressed){
-    return FlatButton(
-      key: Key(hintText.toLowerCase() + "Button"),
-      child: Text(hintText),
-      onPressed: alertButtonOnPressed
-    );
-  }
-
-  // allows the current page to be popped
-  // pops the dialog
-  // returns true to the onWillPop
-  // this will pop the userInfoEntry page
-  // using maybe pop if came from loginSignup
-  Future<void> yesOnPressed() async{
-    await widget.logoutCallback(true);
-    Navigator.pop(context, true);
-  }
-
-  // returns to the account creation form
-  // by popping the dialog
-  // returns false so that userInfoEntry isnt popped
-  void noOnPressed(){
-    Navigator.pop(context, false);
-  }
-
-  // popup that alerts the user they are about to cancel account creation
-  // appears when the user attempts to press the back button
-  Future<bool> cancelForm(){
-    return showDialog(
-      barrierDismissible: false,
-      context: context,
-      builder: (context)=>AlertDialog(
-        key: Key("cancelForm"),
-        title: Text("Cancel Form"),
-        content: Text('''Are you sure you want to cancel account creation?\n
-Your progress will be lost, and your email will not be associated with an account.'''),
-        actions: <Widget>[
-          alertButton("Yes", yesOnPressed),
-          alertButton("No", noOnPressed)
-        ],
-      )
-    );
-  }
 
   Widget _showUserInfoEntryForm() {
   return new Container(
@@ -286,6 +248,21 @@ Your progress will be lost, and your email will not be associated with an accoun
 
   @override
   Widget build(BuildContext context) {
+    _auth = Provider.of<BaseAuth>(context);
+
+    _confirmer = ActionConfirmation(
+      context, 
+      '''Are you sure you want to cancel Profile Customization?\n
+This will also delete your account.''',
+      // confirm cancelation 
+      () async {
+        await widget.logoutCallback(true);
+        Navigator.maybePop(context, true);
+      }, 
+      // deny cancelation
+      () async => Navigator.pop(context, false) 
+    );
+
     if (_isLoading){
       return LoadingCircle.loadingCircle();
     }
@@ -305,7 +282,7 @@ Your progress will be lost, and your email will not be associated with an accoun
             ],
           )
         ),
-        onWillPop: cancelForm,
+        onWillPop: _confirmer.confirmAction,
       );
     }
   }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:matchup/Widgets/destination.dart';
 import 'package:matchup/Widgets/destinationView.dart';
+import 'package:matchup/bizlogic/screenSize.dart';
 import './profilePage.dart' as profilep;
 import './messagePage.dart' as messagep;
 import './matchPage.dart' as matchp;
@@ -86,6 +87,7 @@ class HomePageState extends State<HomePage> with SingleTickerProviderStateMixin 
   
   @override
   Widget build(BuildContext context) {
+    ScreenSize.init(context);
     return HomePageProvider(
       widget.logoutCallback,
       Scaffold( 
