@@ -119,7 +119,8 @@ class _UserInfoEntryPage extends State<UserInfoEntryPage> {
                 child: Text(value),
               );
           }).toList(),
-      ));
+      )
+    );
   } 
 
   Widget showRegionField() {
