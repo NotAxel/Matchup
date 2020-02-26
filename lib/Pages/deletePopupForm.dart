@@ -21,18 +21,17 @@ class _DeletePopupForm extends State<DeletePopupForm> {
   String _errorMessage;
   bool _isLoading;
   final _formKey = new GlobalKey<FormState>();
-  //final SnackBar snackBar = SnackBar(content: Text("Filters saved and applyed"), duration: Duration(seconds: 3),);
-
+  
   @override
   Widget build(BuildContext context) {
     return Stack(
       children: <Widget> [
-        _showFilterForm(),
+        showDeleteForm(),
       ],
     );
   }
 
-  Widget _showFilterForm() {  //change name to delteForm
+  Widget showDeleteForm() {
     return new Container(
       padding: EdgeInsets.all(16.0),
       child: new Form(
@@ -56,7 +55,7 @@ class _DeletePopupForm extends State<DeletePopupForm> {
     );
   }
 
-  Widget showSaveButton() { //change name to YES button
+  Widget showYesButton() { 
     return new Padding(
       padding: EdgeInsets.fromLTRB(5.0, 15, 5, 0),
       child: SizedBox(
@@ -77,7 +76,7 @@ class _DeletePopupForm extends State<DeletePopupForm> {
     );
   }
 
-  Widget showResetButton() {  //change to NO button
+  Widget showNoButton() {  //change to NO button
     return new Padding(
       padding: EdgeInsets.fromLTRB(5.0, 15, 5, 0),
       child: SizedBox(
@@ -101,9 +100,9 @@ class _DeletePopupForm extends State<DeletePopupForm> {
       child: new Row(
         children: <Widget>[
           const SizedBox(width: 23),
-          showResetButton(),
+          showYesButton(),
           const SizedBox(width: 15),
-          showSaveButton(),
+          showNoButton(),
           const SizedBox(width: 24),
         ],)
     );
@@ -116,7 +115,7 @@ class _DeletePopupForm extends State<DeletePopupForm> {
     });
     if (validateAndSave()){
       try {
-        final BaseAuth auth = Provider.of<BaseAuth>(context);
+        final BaseAuth auth = Provider.of<BaseAuth>(context, listen: false);
         FirebaseUser currUser = await auth.getCurrentUser();
         Firestore.instance.collection('Users')
           .document(currUser.uid)

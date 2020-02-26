@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:matchup/Pages/filterPopupPage.dart';
 import 'package:provider/provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+import 'package:matchup/Pages/filterPopupPage.dart';
 import 'package:matchup/bizlogic/User.dart';
 import 'package:matchup/bizlogic/constants.dart' as con;
 import 'package:matchup/Pages/deletePopupForm.dart' as dpf;
+import 'package:matchup/Pages/newMessageForm.dart' as nmf;
 import './chatPage.dart' as chatp;
 
 class MessagePage extends StatefulWidget {
@@ -26,6 +27,7 @@ class MessagePageState extends State<MessagePage>{
           IconButton(
             icon: Icon(Icons.create),
             onPressed: () {
+              createConversation(context);
             },
           ),
         ]
@@ -76,7 +78,7 @@ class MessagePageState extends State<MessagePage>{
   //creates each tile for individual conversations
   Widget buildConversation(BuildContext context, DocumentSnapshot conversation, User user){
     return Container(
-      child: FutureBuilder(//need FutureBuilder for the .get(), returns the data of the other user
+      child: FutureBuilder(//need FutureBuilder for the .get(), snapshot is of the data of the other user
         future: Firestore.instance.collection("Users").document(conversation.documentID).get(),
         builder: (context, snapshot){
           if(snapshot.connectionState == ConnectionState.done){
@@ -162,29 +164,6 @@ class MessagePageState extends State<MessagePage>{
       padding: EdgeInsets.fromLTRB(0.0, 5.0, 0.0, 0.0),
     );
   }
-  
-  //when the users collection fo chats is empty
-  Widget noConversations(){
-    return Center(
-      child: Container(
-        child: Text(
-          "   No current messages :(\n\nGo to MatchList to SMASH!",
-          style: TextStyle(color: Colors.blueGrey[300], fontSize: 20),
-        ),
-      )
-    );
-  }
-
-  Widget snapshotError(AsyncSnapshot snapshot){
-    return Center(
-      child: Container(
-        child: Text(
-          "uh oh, an error occurred retrieving the Firebase snapshot:\n ${snapshot.error}",
-          style: TextStyle(color: Colors.red),
-        ),
-      )
-    );
-  }
 
   //creates the popup to confirm account deletion
   deleteConversation(BuildContext context, DocumentSnapshot conversation, AsyncSnapshot snap){
@@ -213,6 +192,60 @@ class MessagePageState extends State<MessagePage>{
           resizeToAvoidBottomPadding: false,
           body: dpf.DeletePopupForm(conversation: conversation, otherUser: snap),
         )
+      )
+    );
+  }
+
+  //create a conversation with another user based on username
+  createConversation(BuildContext context){
+    Navigator.push(
+      context,
+      FilterPopupPage(
+        top: 0,
+        left: 20,
+        bottom: 600,
+        right: 20,
+        child: Scaffold(
+          appBar: AppBar(
+            title: Text("New Message"),
+            leading: new Builder(builder: (context) {
+              return IconButton(
+                icon: Icon(Icons.arrow_back),
+                onPressed: () {
+                  try {
+                    Navigator.pop(context);
+                  } catch(e) {}
+                },
+              );
+            }),
+            brightness: Brightness.light,
+          ),
+          resizeToAvoidBottomPadding: false,
+          body: nmf.NewMessageForm(),
+        )
+      )
+    );
+  }
+
+  //when the users collection fo chats is empty
+  Widget noConversations(){
+    return Center(
+      child: Container(
+        child: Text(
+          "   No current messages :(\n\nGo to MatchList to SMASH!",
+          style: TextStyle(color: Colors.blueGrey[300], fontSize: 20),
+        ),
+      )
+    );
+  }
+
+  Widget snapshotError(AsyncSnapshot snapshot){
+    return Center(
+      child: Container(
+        child: Text(
+          "uh oh, an error occurred retrieving the Firebase snapshot:\n ${snapshot.error}",
+          style: TextStyle(color: Colors.red),
+        ),
       )
     );
   }
