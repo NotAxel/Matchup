@@ -1,17 +1,9 @@
 import 'package:flutter/material.dart';
-<<<<<<< HEAD
-import 'package:cloud_firestore/cloud_firestore.dart';
-import '../bizlogic/userProvider.dart';
-import 'package:matchup/bizlogic/User.dart';
-import 'package:matchup/bizlogic/userProvider.dart';
-import 'package:matchup/Pages/filterPopupPage.dart';
-=======
 import 'package:matchup/Pages/filterPopupPage.dart';
 import 'package:provider/provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'package:matchup/bizlogic/User.dart';
->>>>>>> master
 import 'package:matchup/bizlogic/constants.dart' as con;
 import 'package:matchup/Pages/deletePopupForm.dart' as dpf;
 import './chatPage.dart' as chatp;
@@ -48,11 +40,7 @@ class MessagePageState extends State<MessagePage>{
 
   //main page layout, creates the overall list
   Widget buildConversationList(BuildContext context){
-<<<<<<< HEAD
-    final User user = UserProvider.of(context).user; 
-=======
-    final User _user = Provider.of<User>(context);
->>>>>>> master
+    final User user = Provider.of<User>(context);
     return Expanded(
       child: StreamBuilder(
         stream: Firestore.instance
@@ -69,7 +57,7 @@ class MessagePageState extends State<MessagePage>{
             return ListView.separated(
             padding: EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 10.0),
             itemBuilder: (context, index) => //for each conversation builds a tile
-              buildConversation(context, snapshot.data.documents[index]),
+              buildConversation(context, snapshot.data.documents[index], user),
             itemCount: snapshot.data.documents.length,
             controller: listScrollController,
             scrollDirection: Axis.vertical,
@@ -86,53 +74,51 @@ class MessagePageState extends State<MessagePage>{
   }
 
   //creates each tile for individual conversations
-  Widget buildConversation(BuildContext context, DocumentSnapshot conversation){
-<<<<<<< HEAD
-=======
-    final User user = Provider.of<User>(context);
->>>>>>> master
+  Widget buildConversation(BuildContext context, DocumentSnapshot conversation, User user){
     return Container(
       child: FutureBuilder(//need FutureBuilder for the .get(), returns the data of the other user
         future: Firestore.instance.collection("Users").document(conversation.documentID).get(),
         builder: (context, snapshot){
           if(snapshot.connectionState == ConnectionState.done){
-            return ListTile(
-              title: new Text(snapshot.data['Username'],
-                style: TextStyle(
-                  fontSize: 25.0,
-                  fontWeight: FontWeight.bold,
-                )
-              ),
-              leading: new Image(
-                image: AssetImage(con.Constants.minSpritesMap[snapshot.data['Main']]),
-                height: 35.0,
-                width: 35.0,
-              ),
-              subtitle: getLastMessage(context, conversation),
-              trailing: IconButton(
-                icon: new Icon(Icons.delete_outline), 
-                onPressed: (){
-                  deleteConversation(context, conversation, snapshot);
-                },
-              ),
-              onTap: (){  //navigates to chat page
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (BuildContext context) =>
-<<<<<<< HEAD
-                  chatp.ChatPage(
-                  peer: snapshot.data,
-                  chatId: conversation.data["chatId"])
-=======
-                    chatp.ChatPage(
-                      peer: snapshot.data,
-                      chatId: conversation.data["chatId"]
-                    )
->>>>>>> master
+            try{
+              return ListTile(
+                title: new Text(snapshot.data['Username'],
+                  style: TextStyle(
+                    fontSize: 25.0,
+                    fontWeight: FontWeight.bold,
                   )
-                );
-              }
-            );
+                ),
+                leading: new Image(
+                  image: AssetImage(con.Constants.minSpritesMap[snapshot.data['Main']]),
+                  height: 35.0,
+                  width: 35.0,
+                ),
+                subtitle: getLastMessage(context, conversation),
+                trailing: IconButton(
+                  icon: new Icon(Icons.delete_outline), 
+                  onPressed: (){
+                    deleteConversation(context, conversation, snapshot);
+                  },
+                ),
+                onTap: (){  //navigates to chat page
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (BuildContext context) =>
+                      chatp.ChatPage(
+                        peer: snapshot.data,
+                        chatId: conversation.data["chatId"]
+                      )
+                    )
+                  );
+                }
+              );
+            }
+            catch(e){
+              Firestore.instance.collection('Users')
+                .document(user.getUserId)
+                .collection('Chats')
+                .document(conversation.documentID).delete();
+            }
           }
           else{
             return Text("");
@@ -207,7 +193,7 @@ class MessagePageState extends State<MessagePage>{
       FilterPopupPage(
         top: 200,
         left: 20,
-        bottom: 200,
+        bottom: 300,
         right: 20,
         child: Scaffold(
           appBar: AppBar(
@@ -225,7 +211,7 @@ class MessagePageState extends State<MessagePage>{
             brightness: Brightness.light,
           ),
           resizeToAvoidBottomPadding: false,
-          body: dpf.DeletePopupForm(conversation: conversation, otherUser: snap,),
+          body: dpf.DeletePopupForm(conversation: conversation, otherUser: snap),
         )
       )
     );

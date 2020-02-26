@@ -109,16 +109,6 @@ class _DeletePopupForm extends State<DeletePopupForm> {
     );
   }
 
-  Text assignHint(String text) {  //remove unused function
-    return Text(
-      text,
-      textAlign: TextAlign.center,
-      style: TextStyle(
-        fontSize: 20.0
-      ),
-    );
-  }
-
   validateAndSubmit() async {
     setState(() {
       _errorMessage = "";
