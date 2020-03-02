@@ -40,6 +40,8 @@ class _ChallengePageState extends State<ChallengePage> {
           body: new Center (
             child: Column(
               children: <Widget>[
+
+                
                 Text(''),
                 //Should get username from firebase
                 Text(this.widget._peer.data["Username"], style: TextStyle(fontSize: 30)),
