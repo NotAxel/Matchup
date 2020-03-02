@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:provider/provider.dart';
+
 import 'package:matchup/Pages/loginSignupPage.dart';
-import 'package:matchup/bizlogic/authProvider.dart';
 import 'package:matchup/bizlogic/authentication.dart';
 import 'package:mockito/mockito.dart';
 import './assetBundle.dart';
@@ -11,14 +12,13 @@ import './assetBundle.dart';
 Future<Widget> makeTestableWidget(WidgetTester tester, Widget child, BaseAuth auth) async{
   final AssetBundle assetBundle = TestAssetBundle(<String, List<String>>{
     'assets/images/logo.png': <String>['assets/images/logo.png'],
-    'assets/images/default_profile.jpg': <String>['assets/images/default_profile.jpg'],
-    'assets/images/regsionMap.png': <String>['assets/images/regionsMap.png'],
+    'assets/images/regionsMap.png': <String>['assets/images/regionsMap.png'],
   });
 
   return DefaultAssetBundle(
     bundle: assetBundle,
-    child: AuthProvider(
-        auth: auth,
+    child: Provider<BaseAuth>(
+        create: (context) => auth,
         child: MaterialApp(
           home: child,
         ),

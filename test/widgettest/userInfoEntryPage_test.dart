@@ -2,10 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:matchup/Pages/userInfoEntryPage.dart';
-import 'package:matchup/bizlogic/authProvider.dart';
-import 'package:matchup/bizlogic/authentication.dart';
 import 'package:mockito/mockito.dart';
+import 'package:provider/provider.dart';
 import './assetBundle.dart';
+
+import 'package:matchup/bizlogic/authentication.dart';
 
 // pages that use scaffolds must be a descendant of some type of material app
 Future<Widget> makeTestableWidget(WidgetTester tester, Widget child, BaseAuth auth) async{
@@ -17,8 +18,8 @@ Future<Widget> makeTestableWidget(WidgetTester tester, Widget child, BaseAuth au
 
   return DefaultAssetBundle(
     bundle: assetBundle,
-    child: AuthProvider(
-        auth: auth,
+    child: Provider(
+        create: (context) => auth,
         child: MaterialApp(
           home: child,
         ),

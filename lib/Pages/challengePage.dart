@@ -1,9 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
 import 'package:matchup/bizlogic/constants.dart';
 import 'package:matchup/bizlogic/User.dart';
-import 'package:matchup/bizlogic/userProvider.dart';
-import './chatPage.dart' as chatp;
 
 
 class ChallengePage extends StatelessWidget {
@@ -11,13 +11,12 @@ class ChallengePage extends StatelessWidget {
   final profStyle = TextStyle(fontSize: 25);
 
   final DocumentSnapshot _peer;
-  User _user;
 
   ChallengePage(this._peer);
 
   @override
   Widget build(BuildContext context) {
-    _user = UserProvider.of(context).user;
+    User user = Provider.of<User>(context, listen: false);
     return Scaffold(
       appBar: AppBar(
         title: Text("Challenge"),
@@ -41,7 +40,7 @@ class ChallengePage extends StatelessWidget {
                   child: Text('Chat', style: TextStyle(fontSize: 30, color: Colors.white)),
                   color: Colors.redAccent,
                   onPressed: () {
-                    goToChatPage(context);
+                    goToChatPage(context, user);
                   },
                   ),
               ],
@@ -96,8 +95,8 @@ class ChallengePage extends StatelessWidget {
      obtains the chatId between the user and the peer
      navigates to the chatPage in order to being p2p messaging
   */
-  void goToChatPage(BuildContext context) async{
-    String chatId = await initiateChatWithPeer(_user.getUserId, this._peer.documentID);
+  void goToChatPage(BuildContext context, User user) async{
+    String chatId = await initiateChatWithPeer(user.getUserId, this._peer.documentID);
     Navigator.pushNamed(context, "/chat", 
       arguments: <Object>[
         this._peer,

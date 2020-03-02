@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
-import '../bizlogic/userProvider.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:matchup/bizlogic/User.dart';
-import 'package:matchup/bizlogic/userProvider.dart';
 import 'package:matchup/Pages/filterPopupPage.dart';
-import 'package:matchup/Pages/filterPopupContent.dart';
+import 'package:provider/provider.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+
+import 'package:matchup/bizlogic/User.dart';
 import 'package:matchup/bizlogic/constants.dart' as con;
 import './chatPage.dart' as chatp;
 import 'package:matchup/Pages/filterPopupForm.dart' as fpf; //remove unused imports
@@ -41,7 +40,7 @@ class MessagePageState extends State<MessagePage>{
   }
 
   Widget buildConversationList(BuildContext context){
-    final User _user = UserProvider.of(context).user; //remove underscore; only need for privates of file
+    final User _user = Provider.of<User>(context);
     return Expanded(
       child: StreamBuilder(
         stream: Firestore.instance
@@ -76,7 +75,7 @@ class MessagePageState extends State<MessagePage>{
   }
 
   Widget buildConversation(BuildContext context, DocumentSnapshot conversation){
-    final User user = UserProvider.of(context).user;
+    final User user = Provider.of<User>(context);
     return Container(
       child: FutureBuilder(
         future: Firestore.instance.collection("Users").document(conversation.documentID).get(),
@@ -105,9 +104,16 @@ class MessagePageState extends State<MessagePage>{
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (BuildContext context) =>
+<<<<<<< HEAD
                   chatp.ChatPage(
                   peer: snapshot.data,
                   chatId: conversation.data["chatId"])
+=======
+                    chatp.ChatPage(
+                      peer: snapshot.data,
+                      chatId: conversation.data["chatId"]
+                    )
+>>>>>>> a783035b81e865ac684a71b569a0faf7a86b1bbb
                   )
                 );
               }
@@ -183,7 +189,7 @@ class MessagePageState extends State<MessagePage>{
       FilterPopupPage(
         top: 200,
         left: 20,
-        bottom: 400,
+        bottom: 200,
         right: 20,
         child: Scaffold(
           appBar: AppBar(

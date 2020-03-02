@@ -4,6 +4,7 @@ class WrappingText{
   static Widget wrappingText(Text text){
     return Center(
       child: Row(
+        mainAxisSize: MainAxisSize.min,
         children: <Widget>[
           Flexible(
             child: Column(
@@ -12,6 +13,7 @@ class WrappingText{
                 Center(child: text,)
               ],
             ),
+            fit: FlexFit.loose,
           ),
         ],
       ),

@@ -1,13 +1,14 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
 import 'package:matchup/Widgets/errorMessage.dart';
 import 'package:matchup/Widgets/loadingCircle.dart';
 import 'package:matchup/Pages/userInfoEntryPage.dart';
 import 'package:matchup/Widgets/passwordFormField.dart';
 import 'package:matchup/bizlogic/User.dart';
-import 'package:matchup/bizlogic/authProvider.dart';
 import 'package:matchup/bizlogic/authentication.dart';
-import 'package:matchup/bizlogic/userProvider.dart';
 import 'homepage.dart';
 import 'loginSignupPage.dart';
 
@@ -18,10 +19,6 @@ LOGGED_IN,
 }
 
 class RootPage extends StatefulWidget{
-  final BaseAuth auth;
-
-  RootPage(this.auth);
-
   @override
   State<StatefulWidget> createState() => _RootPageState();
 }
@@ -49,7 +46,7 @@ class _RootPageState extends State<RootPage>{
   // then initialize the users data
   Future<void> determineAuthStatus() async{
     List<String> signInMethodsForEmail;
-    BaseAuth auth = AuthProvider.of(context).auth;
+    final BaseAuth auth = Provider.of<BaseAuth>(context, listen: false);
     FirebaseUser firebaseUser = await auth.getCurrentUser();
 
     // user is signed in
@@ -60,6 +57,7 @@ class _RootPageState extends State<RootPage>{
 
       signInMethodsForEmail = await auth.fetchSignInMethodsForEmail();
       if (signInMethodsForEmail.length > 0){
+        print("Initializing user data");
         await user.initializeData(firebaseUser);
         print("setting status to LOGGED_IN");
         _authStatus = AuthStatus.LOGGED_IN;
@@ -89,7 +87,7 @@ class _RootPageState extends State<RootPage>{
       _authStatus = AuthStatus.NOT_DETERMINED;
     });
     user = User();
-    final BaseAuth auth = AuthProvider.of(context).auth;
+    final BaseAuth auth = Provider.of<BaseAuth>(context, listen: false);
     final FirebaseUser firebaseUser = await auth.getCurrentUser();
     await user.initializeData(firebaseUser);
     setState(() {
@@ -103,10 +101,11 @@ class _RootPageState extends State<RootPage>{
       print("begin logout callback");
       _authStatus = AuthStatus.NOT_DETERMINED;
     });
-    final BaseAuth auth = AuthProvider.of(context).auth;
+    final BaseAuth auth = Provider.of<BaseAuth>(context, listen: false);
     if (deleteUser){
       await tryDeleteUser(auth);
     }
+    user.tearDown();
     print("Signing out user");
     await auth.signOut();
     setState(() {
@@ -183,7 +182,6 @@ class _RootPageState extends State<RootPage>{
   bool validateAndSave() {
     final FormState form = formKey.currentState;
     if (form.validate()) {
-      email = user.getEmail;
       form.save();
       return true;
     }
@@ -195,7 +193,8 @@ class _RootPageState extends State<RootPage>{
 
   // Perform login or signup
   void validateAndSubmit() async {
-    final BaseAuth auth = AuthProvider.of(context).auth;
+    final BaseAuth auth = Provider.of<BaseAuth>(context, listen: false);
+    FirebaseUser user = await auth.getCurrentUser();
     setState(() {
       _errorMessage.setMessage = null;
       isLoading = true;
@@ -203,15 +202,15 @@ class _RootPageState extends State<RootPage>{
     if (validateAndSave()) {
       print("passed validate and save");
       try {
-        // use this future to test the loading icon
         print("calling reauthenticate function");
-        await auth.reauthenticateWithCredential(email, passwordFormField.getPassword);
+        await auth.reauthenticateWithCredential(user.email, passwordFormField.getPassword);
         setState(() {
           isLoading = false;
         });
         print("attempting to pop password form");
         Navigator.pop(context, true);
-      } catch (e) {
+      } 
+      catch (e) {
         print("IN ERROR HANDLER");
         print('Error $e');
         setState(() {
@@ -233,8 +232,8 @@ class _RootPageState extends State<RootPage>{
         break;
       case AuthStatus.NOT_LOGGED_IN:
         print("building loginSingupPage");
-        return new UserProvider(
-          user: user,
+        return Provider(
+          create: (context) => user,
           child: LogInSignupPage(
             loginCallback: loginCallback,
             logoutCallback: logoutCallback,
@@ -244,8 +243,8 @@ class _RootPageState extends State<RootPage>{
       case AuthStatus.LOGGED_IN:
         if (user.hasBeenInitialized()) {
           print("building homepage");
-          return new UserProvider(
-            user: user,
+          return Provider(
+            create: (context) => user,
             child: new HomePage(
               logoutCallback: logoutCallback,
             ),
@@ -255,7 +254,7 @@ class _RootPageState extends State<RootPage>{
         // should go to user info entry since they will have a token when they reopen
         else{
           print("building userInfoEntry from homepage");
-          return UserInfoEntryPage(logoutCallback, "RootPage");
+          return UserInfoEntryPage(loginCallback, logoutCallback, "RootPage");
         }
         break;
       default:

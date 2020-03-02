@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:matchup/bizlogic/screenSize.dart';
+import 'package:provider/provider.dart';
+
 import 'package:matchup/Widgets/errorMessage.dart';
 import 'package:matchup/Widgets/loadingCircle.dart';
 import 'package:matchup/Widgets/passwordFormField.dart';
 import 'package:matchup/Widgets/wrappingText.dart';
-import 'package:matchup/bizlogic/authProvider.dart';
 import 'package:matchup/bizlogic/authentication.dart';
 import 'package:matchup/bizlogic/emailValidator.dart';
 import 'package:matchup/bizlogic/validator.dart';
@@ -20,21 +22,28 @@ class LogInSignupPage extends StatefulWidget {
 }
 
 class _LogInSignupPageState extends State<LogInSignupPage> {
+
   _LogInSignupPageState();
+
   String _email;
-  PasswordFormField _passwordFormField = new PasswordFormField(true);
-  ErrorMessage _errorMessage = new ErrorMessage();
-  final ScrollController _listScrollController = new ScrollController();
+  FocusNode _passwordFocusNode = FocusNode();
+  PasswordFormField _passwordFormField = PasswordFormField(true);
+  ErrorMessage _errorMessage = ErrorMessage();
 
   bool _isLoginForm;
   bool _isLoading;
-  final _formKey = new GlobalKey<FormState>();
+
+  bool _showRequirements = false;
+
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   @override
   void initState() {
     _errorMessage.setMessage = null;
     _isLoading = false;
     _isLoginForm = true;
+    _passwordFocusNode.addListener(passwordFieldOnFocus);
+    _passwordFormField.setFocusNode = _passwordFocusNode;
     super.initState();
   }
 
@@ -52,83 +61,82 @@ class _LogInSignupPageState extends State<LogInSignupPage> {
     });
   } 
 
-  @override
-  Widget build(BuildContext context) {
-    Size screenSize = MediaQuery.of(context).size;
-    return Scaffold(
-      resizeToAvoidBottomInset: false,
-      body: Stack(
-      children: <Widget>[
-        _showLogInForm(),
-      ],
-    ));
+  void passwordFieldOnFocus(){
+    setState(() {
+      _showRequirements = !_showRequirements;
+    });
   }
 
   // https://stackoverflow.com/questions/52645944/flutter-expanded-vs-flexible
   Widget showEmailField(){
     Validator emailValidator = EmailValidator();
-    return Expanded(
-      child:Padding(
-        padding: EdgeInsets.fromLTRB(0.0, 10, 0.0, 0.0),
-        child: new TextFormField(
-            key: Key('email'),
-            maxLines: 1,
-            autofocus: false,
-            keyboardType: TextInputType.emailAddress,
-            decoration: InputDecoration(
-                hintText: "Email",
-                icon: new Icon(Icons.mail, 
-                color: Colors.blueGrey,
-                )),
-            validator: (value) => emailValidator.validate(value),
-            onSaved: (value) => _email = emailValidator.save(value),
+    return Container(
+      child:Center(
+        child: Padding(
+          padding: EdgeInsets.fromLTRB(0.0, 5, 0.0, 5.0),
+          child: new TextFormField(
+              key: Key('email'),
+              maxLines: 1,
+              autofocus: false,
+              keyboardType: TextInputType.emailAddress,
+              decoration: InputDecoration(
+                  hintText: "Email",
+                  icon: new Icon(Icons.mail, 
+                  color: Colors.blueGrey,
+                  )),
+              validator: (value) => emailValidator.validate(value),
+              onSaved: (value) => _email = emailValidator.save(value),
+          ),
         ),
       ),
-      flex: 4,
+      color: Colors.teal,
     );
   } 
 
   // https://stackoverflow.com/questions/50293503/how-to-set-the-width-of-a-raisedbutton-in-flutter
   Widget showLogInButton(){
-    return Flexible(
-      child: ButtonTheme(
-        minWidth: 300,
-        height: 50,
-        child: new RaisedButton(
-          key: Key('login'),
-          elevation: 5.0,
-          shape: new RoundedRectangleBorder(
-              borderRadius: new BorderRadius.circular(30.0)),
-          color: Colors.blue,
-          child: new Text(_isLoginForm ? 'Login' : 'Create account',
-              style: new TextStyle(fontSize: 20.0, color: Colors.white)),
-          onPressed: validateAndSubmit,
+    return Container(
+      child: Center(
+        child: ButtonTheme(
+          minWidth: 300,
+          height: 50,
+          child: new RaisedButton(
+            key: Key('login'),
+            elevation: 5.0,
+            shape: new RoundedRectangleBorder(
+                borderRadius: new BorderRadius.circular(30.0)),
+            color: Colors.blue,
+            child: new Text(_isLoginForm ? 'Login' : 'Create account',
+                style: new TextStyle(fontSize: 20.0, color: Colors.white)),
+            onPressed: validateAndSubmit,
+          ),
         ),
       ),
-      fit: FlexFit.loose,
-      flex: 2
+      color: Colors.green,
     );
   }
   
   Widget showSwitchButton(){
-    return Flexible(
-      child: new FlatButton(
-      key: Key('switch between login/signup'),
-      child: new Text(
-        _isLoginForm ? 'Create an account' : 'Have an account? Sign in',
-        style: new TextStyle(fontSize: 18.0, fontWeight: FontWeight.w300)),
-      onPressed: toggleFormMode),
-      fit: FlexFit.loose,
-      flex: 2
+    return Container(
+      child: Center(
+        child: new FlatButton(
+        key: Key('switch between login/signup'),
+        child: new Text(
+          _isLoginForm ? 'Create an account' : 'Have an account? Sign in',
+          style: new TextStyle(fontSize: 18.0, fontWeight: FontWeight.w300)),
+        onPressed: toggleFormMode),
+      ),
+      color: Colors.purple,
     );
   }
   Widget showLogo(){
-    return Expanded(
+    return Container(
       child: Image(
         key: Key('logo'),
         image: AssetImage('assets/images/logo.png'),
       ),
-      flex: 4
+      alignment: Alignment.center,
+      color: Colors.amber,
     );
   }
 
@@ -147,7 +155,7 @@ class _LogInSignupPageState extends State<LogInSignupPage> {
 
   // Perform login or signup
   void validateAndSubmit() async {
-    final BaseAuth auth = AuthProvider.of(context).auth;
+    final BaseAuth auth = Provider.of<BaseAuth>(context, listen: false);
     setState(() {
       _errorMessage.setMessage = null; 
       _isLoading = true;
@@ -180,7 +188,7 @@ class _LogInSignupPageState extends State<LogInSignupPage> {
         // successfully logged in and heading to user info entry page
         else if (_isLoginForm == false){
           Navigator.push(context,
-            MaterialPageRoute(builder: (context) => UserInfoEntryPage(widget.logoutCallback, "LoginSignupPage"))
+            MaterialPageRoute(builder: (context) => UserInfoEntryPage(widget.loginCallback, widget.logoutCallback, "LoginSignupPage"))
           );
         }
       } catch (e) {
@@ -205,15 +213,44 @@ class _LogInSignupPageState extends State<LogInSignupPage> {
       "  At least one special character (!@#\$&*~)\n" +
       "Password must not contain:\n"
       "  White space characters\n";
-    return Expanded(
-      child: WrappingText.wrappingText(
-         Text(
-          requirements,
-          textScaleFactor: 0.75,
-          key: Key("password requirements"),
+    if (!_isLoginForm){
+      return Expanded(
+        child: Container(
+          child: FittedBox(
+            child: WrappingText.wrappingText( 
+              Text(
+                requirements,
+                key: Key("password requirements"),
+              ),
+            ),
+          ),
+          alignment: Alignment.center,
+          color: Colors.amber,
+        ),
+        flex: 3,
+      );
+    }
+    return Container();
+  }
+
+  Widget showPasswordField(){
+    return Container(
+      child:Center(
+        child: Padding(
+          padding: EdgeInsets.fromLTRB(0.0, 5, 0.0, 5.0),
+          child: _passwordFormField.buildPasswordField(),
         ),
       ),
-    flex: 8,
+      color: Colors.lightBlue,
+    );
+  }
+
+  Widget showErrorMessage(){
+    return Container(
+      child:_errorMessage.buildErrorMessage(),
+      color: Colors.orange,
+      alignment: Alignment.center,
+      padding: EdgeInsets.all(5),
     );
   }
 
@@ -222,23 +259,42 @@ class _LogInSignupPageState extends State<LogInSignupPage> {
       return LoadingCircle.loadingCircle();
     }
     else{
-     return Container(
-        padding: EdgeInsets.all(16.0),
-        child: new Form(
-          key: _formKey,
-          child: new Column(
-            children: <Widget>[
-              showLogo(),
-              showEmailField(),
-              _passwordFormField.buildPasswordField(),
-              showLogInButton(),
-              showSwitchButton(),
-              showPasswordRequirements(),
-              _errorMessage.buildErrorMessage(),
-            ],
-          ),
-        )
+      return new Form(
+        key: _formKey,
+        child: new ListView(
+          children: <Widget>[
+            Container(
+              child: Column(
+                children: <Widget>[
+                  Expanded(child: showLogo(), flex: 3,), 
+                  Expanded(child: showEmailField(), flex: 2,), 
+                  Expanded(child: showPasswordField(), flex: 2,), 
+                  showErrorMessage(),
+                  showPasswordRequirements(),
+                  Expanded(child: showLogInButton()), 
+                  Expanded(child: showSwitchButton()),
+                ]
+              ),
+              height: ScreenSize.getSafeBlockHeight * 100,
+              width: ScreenSize.getSafeBlockWidth * 100,
+            )
+          ],
+        ),
       );
     }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    //print("In login signup page build");
+    ScreenSize.init(context);
+    return Scaffold(
+      body: SafeArea(
+        child: Stack(
+        children: <Widget>[
+          _showLogInForm(),
+        ],
+    ),
+      ));
   }
 }
