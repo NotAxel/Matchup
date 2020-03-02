@@ -21,6 +21,7 @@ class User {
   String _secondary; // Players secondary
   String _region; // Players region they are located in
   String _friendCode; // players nintendo switch friend code
+  List<User> _friendsList; // players nintendo switch friend code
 
   /*
   static int _maxFriends = 31;
@@ -73,10 +74,10 @@ class User {
   }
 
 
-  /*
   // friendsList
   List<User> get getFriendsList => _friendsList;
   set setFriendsList(List<User> friendsList) { _friendsList = friendsList; }
+  /*
 
   // friendCount
   int get getfriendCount => _friendCount;

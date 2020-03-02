@@ -13,6 +13,7 @@ import 'challengePage.dart' as cp;
 class FreindsListPage extends StatefulWidget{
   final BaseAuth auth;
   final VoidCallback logoutCallback;
+  //final String peerId;
 
   FreindsListPage({this.auth, this.logoutCallback});
   
@@ -30,7 +31,7 @@ class FreindsListPageState extends State<FreindsListPage>{
         centerTitle: true,
         title: new Center(child: Text("Friends List")),
         ),
-      body: new StreamBuilder(
+      body: new StreamBuilder( 
         stream: Firestore.instance.collection('Users').document(_user.getUserId).snapshots(),
         //gets a stream of the current user
         builder: (context, snapshot){
@@ -43,7 +44,7 @@ class FreindsListPageState extends State<FreindsListPage>{
                 subtitle: new StreamBuilder(
                     stream: Firestore.instance.collection('Users').document(userData["Friends List"][index]).snapshots(),
                     builder: (context,snapshot){
-                      var friend = snapshot.data;
+                      var friend = snapshot.data; // gets friends data
                       return new Text(friend["Main"]);
                       //returns friend's Main
                     }
@@ -51,15 +52,15 @@ class FreindsListPageState extends State<FreindsListPage>{
                 title: new StreamBuilder(
                     stream: Firestore.instance.collection('Users').document(userData["Friends List"][index]).snapshots(),
                     builder: (context,snapshot){
-                      var friend = snapshot.data;
+                      var friend = snapshot.data; // gets friends data
                       return new Text(friend["Username"]);
                       //shows friend's Username
                     }
                 ),
-                leading: new StreamBuilder(
+                leading: new StreamBuilder( 
                     stream: Firestore.instance.collection('Users').document(userData["Friends List"][index]).snapshots(),
                     builder: (context,snapshot){
-                      var friend = snapshot.data;
+                      var friend = snapshot.data; // gets friends data
                       return new Image(
                         image: AssetImage(con.Constants.minSpritesMap[friend['Main']]),
                         height: 25.0,
@@ -71,16 +72,15 @@ class FreindsListPageState extends State<FreindsListPage>{
                 ),
                 trailing: new RaisedButton(
                   child: Text('Smash'),
-                  onPressed: (){
-                    new StreamBuilder(
+                  onPressed: () {
+                    new StreamBuilder(  // when smash button pressed, change to challenge page
                       stream: Firestore.instance.collection('Users').document(userData["Friends List"][index]).snapshots(),
                       builder: (context,snapshot){
-                        var friend = snapshot.data;
                         Navigator.push(
                           context,
                           MaterialPageRoute(builder: (context) => cp.ChallengePage(
                             user: _user, 
-                            peer: snapshot.data.documents.elementAt(index)
+                            peer: snapshot.data
                           )
                           )
                         );

@@ -5,14 +5,28 @@ import 'package:matchup/bizlogic/User.dart';
 import './chatPage.dart' as chatp;
 
 
-class ChallengePage extends StatelessWidget {
-
-  final profStyle = TextStyle(fontSize: 25);
+class ChallengePage extends StatefulWidget {
 
   final User user;
   final DocumentSnapshot peer;
 
   ChallengePage({@required this.user, @required this.peer});
+
+  @override
+  _ChallengePageState createState() => _ChallengePageState();
+}
+
+class _ChallengePageState extends State<ChallengePage> {
+  final profStyle = TextStyle(fontSize: 25);
+
+  bool _visible = true;
+  void _toggle()
+  {
+    setState(() {
+      _visible = false;
+      print("success");
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -25,34 +39,44 @@ class ChallengePage extends StatelessWidget {
           body: new Center (
             child: Column(
               children: <Widget>[
+
+                
                 Text(''),
                 //Should get username from firebase
-                Text(this.peer.data["Username"], style: TextStyle(fontSize: 30)),
+                Text(this.widget.peer.data["Username"], style: TextStyle(fontSize: 30)),
 //                Text(this.peer.data["Username"] + "\nUser Id\n" + this.user.getUserId +  "\nPeer Id\n" + this.peer.documentID, style: profStyle),
                 Text(''),
                 //Should get profile pic from firebase
-                Image.asset(nameMap[this.peer["Main"]], height: 300),
+                Image.asset(nameMap[this.widget.peer["Main"]], height: 300),
                 Text(''),
                 //Should get mains from firebase
-                Text(this.peer.data["Main"], style: profStyle),
+                Text(this.widget.peer.data["Main"], style: profStyle),
+
                 RaisedButton(
+                  
                   child: Text('Smash', style: TextStyle(fontSize: 30, color: Colors.white)),
                   color: Colors.redAccent,
                   onPressed: () {
-                    goToChatPage(context, user, this.peer.documentID);
+                    goToChatPage(context, widget.user, this.widget.peer.documentID);
                   },
                   ),
-                  RaisedButton(
-                  child: Text('Add Friend', style: TextStyle(fontSize: 20, color: Colors.white)),
-                  color: Colors.redAccent,
-                  onPressed: () {
-                    Firestore.instance.collection('Users').document(user.getUserId).updateData({
-                      'Friends List' : FieldValue.arrayUnion([this.peer.documentID])});
-                    _showDialog(context);
-                    //add pop-up if successfull
-                  },
-                  ),
+                  
+                  Visibility(visible: true,
+                  child: new RaisedButton(
+                    child: Text('Add Friend', style: TextStyle(fontSize: 20, color: Colors.white)),
+                    color: Colors.redAccent,
+                    onPressed: () {
+                      Firestore.instance.collection('Users').document(widget.user.getUserId).updateData({
+                        'Friends List' : FieldValue.arrayUnion([this.widget.peer.documentID])});
+                      setState(() {
+                        _visible = false;
+                      });
+                      _showDialog(context);
 
+                      //_toggle();
+                      //add pop-up if successfull
+                    },
+                  )),
                 RaisedButton(
                   child: Text('Go back!'),
                   onPressed: () {
@@ -68,10 +92,11 @@ class ChallengePage extends StatelessWidget {
     );
   }
 
-  // returns a chatId using the userId and peerId
-  // the chatId is a combination of the two argument id
-  // based on their hash values
-  // the chatId is then stored in each users Chats and is used to create a chat between the two
+  void changeOpacity(context)
+  {
+
+  }
+
   String constructChatid(String userId, String peerId){
     String chatId;
     if (userId.hashCode <= peerId.hashCode) {
@@ -83,7 +108,6 @@ class ChallengePage extends StatelessWidget {
     return chatId;
   }
 
-  // uses the userId and peerId to construct the chatId and any necessary firebase documents required for p2p messaging
   Future<String> initiateChatWithPeer(String userId, String peerId) async{
     String chatId = constructChatid(userId, peerId);
 
@@ -108,18 +132,14 @@ class ChallengePage extends StatelessWidget {
     return chatId;
   }
 
-  /* uses the current build context, the userId, and peerId as arguments
-     obtains the chatId between the user and the peer
-     navigates to the chatPage in order to being p2p messaging
-  */
   void goToChatPage(BuildContext context, User user, String peerId) async{
     String chatId = await initiateChatWithPeer(user.getUserId, peerId);
     Navigator.push(
       context, 
       MaterialPageRoute(builder: (context) => 
         chatp.ChatPage(
-          user: this.user,
-          peer: this.peer,
+          user: this.widget.user,
+          peer: this.widget.peer,
           chatId: chatId)));
   }
 } 
