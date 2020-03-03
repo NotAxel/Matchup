@@ -104,10 +104,16 @@ class MessagePageState extends State<MessagePage>{
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (BuildContext context) =>
+<<<<<<< HEAD
+                  chatp.ChatPage(
+                  peer: snapshot.data,
+                  chatId: conversation.data["chatId"])
+=======
                     chatp.ChatPage(
                       peer: snapshot.data,
                       chatId: conversation.data["chatId"]
                     )
+>>>>>>> a783035b81e865ac684a71b569a0faf7a86b1bbb
                   )
                 );
               }
