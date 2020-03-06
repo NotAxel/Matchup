@@ -13,9 +13,8 @@ import 'package:matchup/bizlogic/validator.dart';
 class UserInfoEntryPage extends StatefulWidget {
   final Future<void> Function() loginCallback;
   final Future<void> Function(bool) logoutCallback;
-  final String parent;
 
-  UserInfoEntryPage(this.loginCallback, this.logoutCallback, this.parent);
+  UserInfoEntryPage(this.loginCallback, this.logoutCallback);
 
   @override
   _UserInfoEntryPage createState() => _UserInfoEntryPage();
@@ -186,7 +185,6 @@ class _UserInfoEntryPage extends State<UserInfoEntryPage> {
       FirebaseUser currUser = await _auth.getCurrentUser();
       _userID = currUser.uid;
       await Firestore.instance.collection('Users').document(_userID).setData({
-        'Username' : _userName, 
         'Main' : _mainChar, 
         'Secondary' : _secondaryChar, 
         'Region' : _region, 

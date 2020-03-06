@@ -6,7 +6,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:matchup/bizlogic/User.dart';
 import 'package:matchup/bizlogic/constants.dart' as con;
 import './chatPage.dart' as chatp;
-import 'package:matchup/Pages/filterPopupForm.dart' as fpf; //remove unused imports
 import 'package:matchup/Pages/deletePopupForm.dart' as dpf;
 
 class MessagePage extends StatefulWidget {
