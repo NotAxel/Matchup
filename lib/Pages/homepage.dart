@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
+import 'package:matchup/Widgets/destination.dart';
+import 'package:matchup/Widgets/destinationView.dart';
+import 'package:matchup/bizlogic/screenSize.dart';
 import './profilePage.dart' as profilep;
 import './profilePageEdit.dart' as profilepe;
 import './messagePage.dart' as messagep;
@@ -7,9 +9,9 @@ import './matchPage.dart' as matchp;
 import './friendsListPage.dart' as freindsLp;
 
 class HomePage extends StatefulWidget{
-  final VoidCallback logoutCallback;
+  final Future<void> Function(bool) logoutCallback;
 
-  HomePage({this.logoutCallback});
+  HomePage({Key key, this.logoutCallback}) : super(key: key);
 
   @override
   HomePageState createState() => new HomePageState();
@@ -17,14 +19,15 @@ class HomePage extends StatefulWidget{
 
 // this class will be used to pass the callback to the tabs created by homepage
 class HomePageProvider extends InheritedWidget{
-  final VoidCallback logoutCallback;
+  final Future<void> Function(bool) logoutCallback;
   final Widget child;
 
   HomePageProvider(this.logoutCallback, this.child);
 
   @override
-  bool updateShouldNotify(InheritedWidget oldWidget) {
-    return true;
+  bool updateShouldNotify(HomePageProvider oldWidget) {
+    return oldWidget.child != child ||
+    oldWidget.logoutCallback != logoutCallback;
   }
 
   // by using this function to add the call back to the context in the tabstate build,
@@ -34,54 +37,72 @@ class HomePageProvider extends InheritedWidget{
   }
 
 class HomePageState extends State<HomePage> with SingleTickerProviderStateMixin {
-  TabController controller;
+  int _currentIndex = 0;
 
-  @override
-  void initState() {
-    super.initState();
-    controller = new TabController(vsync: this, length: 4);
-  }
-    
-  @override 
-  void dispose() {
-    controller.dispose();
-    super.dispose();
+  static List<Destination> destinations = <Destination>[
+    // Profile Page
+    Destination(
+      'Profile', 
+      profilep.ProfilePage(), 
+      BottomNavigationBarItem(
+        icon: Icon(Icons.face),
+        title: Text("Profile"),
+        backgroundColor: Colors.blue
+      )
+    ),
+    // Match Page
+    Destination(
+      'Match', 
+      matchp.MatchPage(), 
+      BottomNavigationBarItem(
+        icon: Icon(Icons.pie_chart),
+        title: Text("Matchlist"),
+      )
+    ),
+    // Match Page
+    Destination(
+      'Messages', 
+      messagep.MessagePage(), 
+      BottomNavigationBarItem(
+        icon: Icon(Icons.chat),
+        title: Text("Messages"),
+      ),
+    ),
+  ];
+
+  void _bottomNavigationBarOnTap(int index){
+    setState(() {
+      _currentIndex = index;
+    });
   }
 
-  Widget loadingCircle(){
-    return Center(
-        child: CircularProgressIndicator(
-            valueColor: AlwaysStoppedAnimation<Color>(
-                Colors.lightBlue)));
+  Widget buildBottomNavigationBar(){
+    return BottomNavigationBar(
+      items: destinations.map((Destination destination){
+        return destination.getNavItem;
+      }).toList(),
+      currentIndex: _currentIndex,
+      onTap: _bottomNavigationBarOnTap,
+    );
   }
   
   @override
   Widget build(BuildContext context) {
+    ScreenSize.init(context);
     return HomePageProvider(
       widget.logoutCallback,
-      Scaffold( bottomNavigationBar: new Material(
-        color: Colors.blue,
-        child: 
-          TabBar(
-          controller: controller,
-          tabs: <Tab>[
-            new Tab(icon: new Icon(Icons.face)),
-            new Tab(icon: new Icon(Icons.pie_chart)),
-            new Tab(icon: new Icon(Icons.chat)),
-            new Tab(icon: new Icon(Icons.contacts)),
-          ]
+      Scaffold( 
+        body: SafeArea(
+          top: false,
+          child: IndexedStack(
+            index: _currentIndex,
+            children: destinations.map((Destination destination){
+              return DestinationView(destination);
+            }).toList(),
+          ),
         ),
+        bottomNavigationBar: buildBottomNavigationBar(),
       ),
-      body: new TabBarView(
-        controller: controller,
-        children: <Widget>[
-          new profilepe.ProfilePageEdit(),
-/*           new profilep.ProfilePage(), */
-          new matchp.MatchPage(),
-          new messagep.MessagePage(),
-          new freindsLp.FreindsListPage(),
-        ]
-      ))
     );
   }
 }

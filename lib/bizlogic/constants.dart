@@ -1,5 +1,4 @@
 class Constants {
-  static const String Empty = '';
   // Characters
   static const String Main = 'Main';
   static const String Fox = 'Fox';
@@ -85,15 +84,15 @@ class Constants {
 
   // Regions
   static const String Region = 'Region';
-  static const String NorthWest = 'North West';
-  static const String WestCoast = 'West Coast';
-  static const String Mountain = 'Mountain';
-  static const String North = 'North';
-  static const String Central = 'Central';
-  static const String South = 'South';
-  static const String MidWest = 'Mid West';
-  static const String EastCoast = 'East Coast';
-  static const String SouthEast = 'South East';
+  static const String NorthWest = 'North West (NW)';
+  static const String WestCoast = 'West Coast (WC)';
+  static const String Mountain = 'Mountain (MT)';
+  static const String North = 'North (N)';
+  static const String Central = 'Central (C)';
+  static const String South = 'South (S)';
+  static const String MidWest = 'Mid West (MW)';
+  static const String EastCoast = 'East Coast (EC)';
+  static const String SouthEast = 'South East (SE)';
 
   static const Map<String, String> minSpritesMap = {
       Falcon : 'assets/images/small_sprites/falcon_sprite',
@@ -179,7 +178,6 @@ class Constants {
 
 
   static const List<String> regions = <String>[
-    Empty,
     NorthWest,
     WestCoast,
     Mountain,
@@ -192,7 +190,6 @@ class Constants {
   ];
 
   static const List<String> characters = <String>[
-    Empty,
     Banjo,
     Bayonetta,
     Bowser,

@@ -1,14 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:matchup/bizlogic/authProvider.dart';
+import 'package:matchup/bizlogic/screenSize.dart';
+import 'package:provider/provider.dart';
+
+import 'package:matchup/Widgets/errorMessage.dart';
+import 'package:matchup/Widgets/loadingCircle.dart';
+import 'package:matchup/Widgets/passwordFormField.dart';
+import 'package:matchup/Widgets/wrappingText.dart';
 import 'package:matchup/bizlogic/authentication.dart';
 import 'package:matchup/bizlogic/emailValidator.dart';
-import 'package:matchup/bizlogic/passwordValidator.dart';
 import 'package:matchup/bizlogic/validator.dart';
 import 'userInfoEntryPage.dart';
 
 class LogInSignupPage extends StatefulWidget {
-  final VoidCallback loginCallback;
-  final VoidCallback logoutCallback;
+  final Future<void> Function() loginCallback;
+  final Future<void> Function(bool) logoutCallback;
 
   LogInSignupPage({this.loginCallback, this.logoutCallback});
   
@@ -17,166 +22,122 @@ class LogInSignupPage extends StatefulWidget {
 }
 
 class _LogInSignupPageState extends State<LogInSignupPage> {
+
   _LogInSignupPageState();
-  TextStyle style = TextStyle(fontFamily: 'Montserrat', fontSize: 20.0);
+
   String _email;
-  String _password;
-  String _errorMessage;
+  FocusNode _passwordFocusNode = FocusNode();
+  PasswordFormField _passwordFormField = PasswordFormField(true);
+  ErrorMessage _errorMessage = ErrorMessage();
 
   bool _isLoginForm;
   bool _isLoading;
-  final _formKey = new GlobalKey<FormState>();
+
+  bool _showRequirements = false;
+
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   @override
   void initState() {
-    _errorMessage = "";
+    _errorMessage.setMessage = null;
     _isLoading = false;
     _isLoginForm = true;
+    _passwordFocusNode.addListener(passwordFieldOnFocus);
+    _passwordFormField.setFocusNode = _passwordFocusNode;
     super.initState();
   }
 
   void resetForm(){
     _formKey.currentState.reset();
-    _errorMessage = "";
+    _errorMessage.setMessage = null;
     _email = null;
-    _password = null;
+    _passwordFormField.setPassword = null;
   }
 
   void toggleFormMode() {
-    resetForm();
     setState(() {
       _isLoginForm = !_isLoginForm;
+      _passwordFormField.setIsLogin = _isLoginForm;
     });
   } 
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-          body: Stack(
-          children: <Widget>[
-            _showLogInForm(),
-          ],
-        ));
+  void passwordFieldOnFocus(){
+    setState(() {
+      _showRequirements = !_showRequirements;
+    });
   }
 
   // https://stackoverflow.com/questions/52645944/flutter-expanded-vs-flexible
   Widget showEmailField(){
     Validator emailValidator = EmailValidator();
-    return Flexible(
-      child:Padding(
-        padding: EdgeInsets.fromLTRB(0.0, 10, 0.0, 0.0),
-        child: new TextFormField(
-            key: Key('email'),
-            obscureText: false,
-            maxLines: 1,
-            style: style,
-            autofocus: false,
-            keyboardType: TextInputType.emailAddress,
-            decoration: InputDecoration(
-                hintText: "Email",
-                icon: new Icon(Icons.mail, 
-                color: Colors.blueGrey,
-                )),
-            validator: (value) => emailValidator.validate(value),
-            onSaved: (value) => _email = emailValidator.save(value),
+    return Container(
+      child:Center(
+        child: Padding(
+          padding: EdgeInsets.fromLTRB(0.0, 5, 0.0, 5.0),
+          child: new TextFormField(
+              key: Key('email'),
+              maxLines: 1,
+              autofocus: false,
+              keyboardType: TextInputType.emailAddress,
+              decoration: InputDecoration(
+                  hintText: "Email",
+                  icon: new Icon(Icons.mail, 
+                  color: Colors.blueGrey,
+                  )),
+              validator: (value) => emailValidator.validate(value),
+              onSaved: (value) => _email = emailValidator.save(value),
+          ),
         ),
       ),
-      fit: FlexFit.loose,
-      flex: 1,
+      color: Colors.teal,
     );
   } 
 
-  Widget showPasswordField(){
-    Validator passwordValidator = PasswordValidator();
-    return Flexible(
-      child: Padding(
-        padding: EdgeInsets.fromLTRB(0.0, 20, 0, 50.0),
-        child: new TextFormField(
-            key: Key('password'),
-            maxLines: 1,
-            obscureText: true,
-            autofocus: false,
-            style: style,
-            decoration: InputDecoration(
-                //contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-                hintText: "Password",
-                icon: new Icon(Icons.lock,
-                color: Colors.blueGrey
-                )),
-            validator: (value) => passwordValidator.validate(value),
-            onSaved: (value) => _password = passwordValidator.save(value),
-        ),
-      ),
-      fit: FlexFit.loose,
-      flex: 1
-    );
-  }
-
   // https://stackoverflow.com/questions/50293503/how-to-set-the-width-of-a-raisedbutton-in-flutter
   Widget showLogInButton(){
-    return Flexible(
-      child: ButtonTheme(
-        minWidth: 300,
-        height: 50,
-        child: new RaisedButton(
-          key: Key('login'),
-          elevation: 5.0,
-          shape: new RoundedRectangleBorder(
-              borderRadius: new BorderRadius.circular(30.0)),
-          color: Colors.deepOrange,
-          child: new Text(_isLoginForm ? 'Login' : 'Create account',
-              style: new TextStyle(fontSize: 20.0, color: Colors.white)),
-          onPressed: validateAndSubmit,
+    return Container(
+      child: Center(
+        child: ButtonTheme(
+          minWidth: 300,
+          height: 50,
+          child: new RaisedButton(
+            key: Key('login'),
+            elevation: 5.0,
+            shape: new RoundedRectangleBorder(
+                borderRadius: new BorderRadius.circular(30.0)),
+            color: Colors.blue,
+            child: new Text(_isLoginForm ? 'Login' : 'Create account',
+                style: new TextStyle(fontSize: 20.0, color: Colors.white)),
+            onPressed: validateAndSubmit,
+          ),
         ),
       ),
-      fit: FlexFit.loose,
-      flex: 1
+      color: Colors.green,
     );
   }
   
   Widget showSwitchButton(){
-    return Flexible(
-      child: new FlatButton(
-      key: Key('switch between login/signup'),
-      child: new Text(
-        _isLoginForm ? 'Create an account' : 'Have an account? Sign in',
-        style: new TextStyle(fontSize: 18.0, fontWeight: FontWeight.w300)),
-      onPressed: toggleFormMode),
-      fit: FlexFit.loose,
-      flex: 1
+    return Container(
+      child: Center(
+        child: new FlatButton(
+        key: Key('switch between login/signup'),
+        child: new Text(
+          _isLoginForm ? 'Create an account' : 'Have an account? Sign in',
+          style: new TextStyle(fontSize: 18.0, fontWeight: FontWeight.w300)),
+        onPressed: toggleFormMode),
+      ),
+      color: Colors.purple,
     );
   }
   Widget showLogo(){
-    return Expanded(
+    return Container(
       child: Image(
         key: Key('logo'),
         image: AssetImage('assets/images/logo.png'),
       ),
-      flex: 2
+      alignment: Alignment.center,
+      color: Colors.amber,
     );
-  }
-
-  Widget showErrorMessage() {
-    if (_errorMessage.length > 0 && _errorMessage != null) {
-      print('bulding error message');
-      return Flexible(
-        child: new Text(
-        _errorMessage,
-        key: Key('error message'),
-        style: TextStyle(
-            fontSize: 15.0,
-            color: Colors.red,
-            height: 1.0,
-            fontWeight: FontWeight.w300),
-        ),
-        fit: FlexFit.loose,
-        flex: 1
-      );
-    } else {
-      return new Container(
-        height: 0.0,
-      );
-    }
   }
 
 // Check if form is valid before perform login or signup
@@ -194,9 +155,9 @@ class _LogInSignupPageState extends State<LogInSignupPage> {
 
   // Perform login or signup
   void validateAndSubmit() async {
-    final BaseAuth auth = AuthProvider.of(context).auth;
+    final BaseAuth auth = Provider.of<BaseAuth>(context, listen: false);
     setState(() {
-      _errorMessage = "";
+      _errorMessage.setMessage = null; 
       _isLoading = true;
     });
     if (validateAndSave()) {
@@ -206,11 +167,11 @@ class _LogInSignupPageState extends State<LogInSignupPage> {
         if (_isLoginForm) {
           // use this future to test the loading icon
           print("calling sign in function");
-          userId = await auth.signIn(_email, _password);
+          userId = await auth.signIn(_email, _passwordFormField.getPassword);
           print('Signed in: $userId');
         } else {
           print("calling sign up function");
-          userId = await auth.signUp(_email, _password);
+          userId = await auth.signUp(_email, _passwordFormField.getPassword);
           //widget.auth.sendEmailVerification();
           //_showVerifyEmailSentDialog();
           print('Signed up user: $userId');
@@ -222,13 +183,12 @@ class _LogInSignupPageState extends State<LogInSignupPage> {
         if (userId != null && userId.length > 0 && _isLoginForm) {
           // found user, collect their data information from the data base and initialize the users info
           // this can be done in the login call back
-          widget.loginCallback();
+          await widget.loginCallback();
         }
         // successfully logged in and heading to user info entry page
         else if (_isLoginForm == false){
-          // push a info entry page second so that once the form is completed, info entry is popped to the homepage
           Navigator.push(context,
-          MaterialPageRoute(builder: (context) => UserInfoEntryPage(logoutCallback: widget.logoutCallback))
+            MaterialPageRoute(builder: (context) => UserInfoEntryPage(widget.loginCallback, widget.logoutCallback, "LoginSignupPage"))
           );
         }
       } catch (e) {
@@ -236,43 +196,105 @@ class _LogInSignupPageState extends State<LogInSignupPage> {
         print('Error $e');
         setState(() {
           _isLoading = false;
-          _errorMessage = e.message;
+          _errorMessage.setMessage = e.message;
         });
       }
     }
   }
 
-  Widget buildWaitingScreen() {
-    print("building wait screen");
-    return Scaffold(
-      body: Container(
-        alignment: Alignment.center,
-        child: CircularProgressIndicator(),
+  Widget showPasswordRequirements(){
+    String requirements = 
+      "Minimum password length:\n" +
+      "  8 characters\n" +
+      "Password must contain:\n" +
+      "  At least one upper case character\n" +
+      "  At least one lower case character\n" +
+      "  At least one numeric digit between 0 and 9\n" +
+      "  At least one special character (!@#\$&*~)\n" +
+      "Password must not contain:\n"
+      "  White space characters\n";
+    if (!_isLoginForm){
+      return Expanded(
+        child: Container(
+          child: FittedBox(
+            child: WrappingText.wrappingText( 
+              Text(
+                requirements,
+                key: Key("password requirements"),
+              ),
+            ),
+          ),
+          alignment: Alignment.center,
+          color: Colors.amber,
+        ),
+        flex: 3,
+      );
+    }
+    return Container();
+  }
+
+  Widget showPasswordField(){
+    return Container(
+      child:Center(
+        child: Padding(
+          padding: EdgeInsets.fromLTRB(0.0, 5, 0.0, 5.0),
+          child: _passwordFormField.buildPasswordField(),
+        ),
       ),
+      color: Colors.lightBlue,
+    );
+  }
+
+  Widget showErrorMessage(){
+    return Container(
+      child:_errorMessage.buildErrorMessage(),
+      color: Colors.orange,
+      alignment: Alignment.center,
+      padding: EdgeInsets.all(5),
     );
   }
 
   Widget _showLogInForm() {
     if (_isLoading){
-      return buildWaitingScreen();
+      return LoadingCircle.loadingCircle();
     }
     else{
-     return Container(
-        padding: EdgeInsets.all(16.0),
-        child: new Form(
-          key: _formKey,
-          child: new Column(
-            children: <Widget>[
-              showLogo(),
-              showEmailField(),
-              showPasswordField(),
-              showLogInButton(),
-              showSwitchButton(),
-              showErrorMessage(),
-            ],
-          ),
-        )
+      return new Form(
+        key: _formKey,
+        child: new ListView(
+          children: <Widget>[
+            Container(
+              child: Column(
+                children: <Widget>[
+                  Expanded(child: showLogo(), flex: 3,), 
+                  Expanded(child: showEmailField(), flex: 2,), 
+                  Expanded(child: showPasswordField(), flex: 2,), 
+                  showErrorMessage(),
+                  showPasswordRequirements(),
+                  Expanded(child: showLogInButton()), 
+                  Expanded(child: showSwitchButton()),
+                ]
+              ),
+              height: ScreenSize.getSafeBlockHeight * 100,
+              width: ScreenSize.getSafeBlockWidth * 100,
+            )
+          ],
+        ),
       );
     }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    //print("In login signup page build");
+    ScreenSize.init(context);
+    return Scaffold(
+      body: SafeArea(
+        child: Stack(
+        children: <Widget>[
+          _showLogInForm(),
+        ],
+    ),
+      ));
   }
 }

@@ -1,9 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
 import 'package:matchup/bizlogic/authentication.dart';
 import 'package:matchup/bizlogic/User.dart';
-import 'package:matchup/bizlogic/userProvider.dart';
-
 import 'challengePage.dart' as cp;
 
 class FreindsListPage extends StatefulWidget{
@@ -24,7 +24,7 @@ class FreindsListPageState extends State<FreindsListPage>{
     // TODO: implement build
     
 
-    final User _user  = UserProvider.of(context).user;
+    final User _user  = Provider.of<User>(context);
     return StreamBuilder<QuerySnapshot>(
       stream: Firestore.instance.collection('Users').snapshots(),
       builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
@@ -44,8 +44,7 @@ class FreindsListPageState extends State<FreindsListPage>{
                       Navigator.push(
                       context,
                       MaterialPageRoute(builder: (context) => cp.ChallengePage(
-                        user: _user, 
-                        peer: document,
+                        document,
                         )
                       )
                     );

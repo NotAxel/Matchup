@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 abstract class BaseAuth {
@@ -15,6 +16,10 @@ abstract class BaseAuth {
   Future<bool> isEmailVerified();
 
   Future<List<String>> fetchSignInMethodsForEmail();
+
+  Future<bool> deleteUser();
+
+  Future<String> reauthenticateWithCredential(String email, String password);
 }
 
 class Auth implements BaseAuth {
@@ -56,5 +61,51 @@ class Auth implements BaseAuth {
   Future<List<String>> fetchSignInMethodsForEmail() async{
     FirebaseUser user = await _firebaseAuth.currentUser();
     return _firebaseAuth.fetchSignInMethodsForEmail(email: user.email.toString());
+  }
+
+  Future<bool> deleteUser() async{
+    final FirebaseUser firebaseUser = await _firebaseAuth.currentUser();
+    if (firebaseUser != null){
+      print("Trying to delete user " + firebaseUser.uid);
+      try{
+        await deleteFirebaseUserData(firebaseUser);
+        await firebaseUser.delete();
+      }
+      catch(ERROR_REQUIRES_RECENT_LOGIN){
+        print('caught recent login error');
+        return false; // reauthentication is required to delete
+      }
+      print('user successfully deleted');
+      return true; // user successfully deleted 
+    }
+    print("there was no current firebase user");
+    return true; // no firebase user is currently signed in so no user needs deletion
+  }
+
+  Future<void> deleteFirebaseUserData(FirebaseUser firebaseUser) async{
+    DocumentReference firebaseUserDocument = Firestore.instance.collection('Users').document(firebaseUser.uid);
+    DocumentSnapshot firebaseUserSnapshot = await firebaseUserDocument.get();
+    if (firebaseUserSnapshot.data != null){
+      print("deleting data for " + firebaseUserSnapshot.data['Username']);
+      await firebaseUserDocument.delete();
+    }
+  }
+
+  // returns null if the user was successfully authenticated 
+  // with the given email and password
+  // if there was an error, returns the error message
+  @override
+  Future<String> reauthenticateWithCredential(String email, String password) async{
+    final FirebaseUser firebaseUser = await _firebaseAuth.currentUser();
+    AuthCredential credential = EmailAuthProvider.getCredential(
+      email: email, password: password);
+    AuthResult result;
+    try{
+      result = await firebaseUser.reauthenticateWithCredential(credential);
+    }
+    catch(e){
+      return e.message;
+    }
+    return result.user.uid;
   }
 }

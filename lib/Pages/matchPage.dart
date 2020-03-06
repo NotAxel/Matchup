@@ -1,10 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
 import 'package:matchup/Pages/filterPopupPage.dart';
-import 'package:matchup/Pages/filterPopupContent.dart';
 import 'package:matchup/bizlogic/User.dart';
-import 'package:matchup/bizlogic/userProvider.dart';
-import './challengePage.dart' as cp;
 import 'package:matchup/Pages/filterPopupForm.dart' as fpf;
 import 'package:matchup/bizlogic/constants.dart' as con;
 
@@ -20,7 +19,7 @@ class MatchPageState extends State<MatchPage>{
 
   @override
   Widget build (BuildContext context) {
-    final User _user = UserProvider.of(context).user;
+    final User _user = Provider.of<User>(context);
     return new Scaffold(
       appBar: new AppBar(
         centerTitle: true,
@@ -72,14 +71,8 @@ class MatchPageState extends State<MatchPage>{
                     )
                   ),
                     onTap: (){
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => cp.ChallengePage(
-                          user: _user, 
-                          peer: snapshot.data.documents.elementAt(index),
-                        )
-                        )
-                      );
+                      Navigator.pushNamed(context, "/challenge", 
+                      arguments: <Object>[snapshot.data.documents.elementAt(index)]);
                     },
                   );
                 },
@@ -99,35 +92,32 @@ class MatchPageState extends State<MatchPage>{
     BuildContext context,
     Widget widget,
     String title,
-    {BuildContext popupContext}
   ) {
     Navigator.push(
       context,
       FilterPopupPage(
-        top: 100,
+        top: 200,
         left: 20,
-        bottom: 400,
+        bottom: 200,
         right: 20,
-        child: FilterPopupContent(
-          content: Scaffold(
-            appBar: AppBar(
-              title: Text(title),
-              leading: new Builder(builder: (context) {
-                return IconButton(
-                  icon: Icon(Icons.arrow_back),
-                  onPressed: () {
-                    try {
-                      Navigator.pop(context);
-                    } catch(e) {}
-                  },
-                );
-              }),
-              brightness: Brightness.light,
-            ),
-            resizeToAvoidBottomPadding: false,
-            body: fpf.FilterPopupForm(),
+        child: Scaffold(
+          appBar: AppBar(
+            title: Text(title),
+            leading: new Builder(builder: (context) {
+              return IconButton(
+                icon: Icon(Icons.arrow_back),
+                onPressed: () {
+                  try {
+                    Navigator.pop(context);
+                  } catch(e) {}
+                },
+              );
+            }),
+            brightness: Brightness.light,
           ),
-        )
+          resizeToAvoidBottomPadding: false,
+          body: fpf.FilterPopupForm(),
+        ),
       )
     );
   }

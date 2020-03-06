@@ -72,6 +72,27 @@ class User {
     }
   }
 
+  void tearDown(){
+    _userId = null;
+    _email = null;
+    _userName = null;
+    _main = null;
+    _secondary = null;
+    _region = null;
+    _friendCode = null;
+  }
+
+  bool hasBeenInitialized(){
+    return 
+      _userId != null &&
+      _email != null &&
+      _userName != null &&
+      _main != null && 
+      _secondary != null &&
+      _friendCode != null &&
+      _region != null;
+  }
+
 
   /*
   // friendsList
