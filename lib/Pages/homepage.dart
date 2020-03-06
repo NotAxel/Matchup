@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import './profilePageEdit.dart' as profilep;
+import './profilePage.dart' as profilep;
+import './profilePageEdit.dart' as profilepe;
 import './messagePage.dart' as messagep;
 import './matchPage.dart' as matchp;
 import './friendsListPage.dart' as freindsLp;
@@ -74,7 +75,8 @@ class HomePageState extends State<HomePage> with SingleTickerProviderStateMixin 
       body: new TabBarView(
         controller: controller,
         children: <Widget>[
-          new profilep.ProfilePageEdit(),
+          new profilepe.ProfilePageEdit(),
+/*           new profilep.ProfilePage(), */
           new matchp.MatchPage(),
           new messagep.MessagePage(),
           new freindsLp.FreindsListPage(),

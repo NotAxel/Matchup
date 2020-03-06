@@ -36,14 +36,46 @@ class ProfilePageState extends State<ProfilePageEdit> with SingleTickerProviderS
     super.initState();
   }
 
+  Widget showSecondaryField(){
+    return new Center(
+      child: DropdownButton<String>(
+        value: _secondaryChar,
+        icon: Icon(Icons.arrow_downward),
+/*         isExpanded: true, */
+        hint:Text(
+            'Select Secondary', // Text drop down at base
+            textAlign: TextAlign.justify,
+            style: TextStyle( // Text Style base 
+              fontSize: 20.0,
+              )),
+        iconSize: 24,
+          elevation: 16,
+          style: TextStyle(color: Colors.deepPurple),
+          underline: _underLine,
+          onChanged: (String newValue) {
+            setState(() {
+              _secondaryChar = newValue;
+            });
+          },
+          items: con.Constants.characters
+            .map<DropdownMenuItem<String>>((String value){
+              return DropdownMenuItem<String>(
+                value: value,
+                child: Text(value),
+              );
+          }).toList(),
+      )
+    );
+  } 
+
   Widget showMainField(){
     return new Center(
       child: DropdownButton<String>(
         value: _mainChar,
         icon: Icon(Icons.arrow_downward),
-        isExpanded: true,
+/*         isExpanded: true, */
         hint:Text(
-            'Main', // Text drop down at base
+            'Select Main', // Text drop down at base
             textAlign: TextAlign.justify,
             style: TextStyle( // Text Style base 
               fontSize: 20.0,
@@ -118,7 +150,7 @@ class ProfilePageState extends State<ProfilePageEdit> with SingleTickerProviderS
             Text("Main:"),
             showMainField(),
             Text("Secondary:"),
-            showMainField(),
+            showSecondaryField(),
             //Should get mains from firebase
 //            Text(_user.getMain, style: profStyle),
 /*             Text("Main: " + _user.getMain + "\nSecondary: " + _user.getSecondary, style: profStyle), */
