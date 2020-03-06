@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:matchup/Pages/homepage.dart';
 import 'package:matchup/bizlogic/User.dart';
 import 'package:matchup/bizlogic/constants.dart' as con;
-import 'package:matchup/bizlogic/userProvider.dart';
+import 'package:provider/provider.dart';
 
 class ProfilePageEdit extends StatefulWidget {
   final VoidCallback logoutCallback;
@@ -102,7 +102,7 @@ class ProfilePageState extends State<ProfilePageEdit> with SingleTickerProviderS
 
   var profStyle = TextStyle(fontSize: 25);
 
-  Widget showLogOutButton(VoidCallback logoutCallback){
+  Widget showLogOutButton(Future<void> Function(bool)logoutCallback){
     return new Padding(
         padding: EdgeInsets.fromLTRB(115.0, 10.0, 115.0, 0.0),
         child: SizedBox(
@@ -116,12 +116,12 @@ class ProfilePageState extends State<ProfilePageEdit> with SingleTickerProviderS
             color: Colors.blueAccent,
             child: new Text('Confirm',
                 style: new TextStyle(fontSize: 20.0, color: Colors.white)),
-            onPressed: logoutCallback 
+            onPressed: ()=>logoutCallback(false) 
           ),
         ));
   }
 
-  Widget _showForm(VoidCallback logoutCallback) {
+  Widget _showForm(Future<void> Function(bool) logoutCallback) {
     return new Container(
         padding: EdgeInsets.all(16.0),
         child: new Form(
@@ -137,8 +137,8 @@ class ProfilePageState extends State<ProfilePageEdit> with SingleTickerProviderS
 
   @override
   Widget build(BuildContext context) {
-    final User _user = UserProvider.of(context).user;
-    final VoidCallback logoutCallback = HomePageProvider.of(context).logoutCallback;
+    final User _user = Provider.of<User>(context);
+    final Future<void> Function(bool) logoutCallback = HomePageProvider.of(context).logoutCallback;
     return Column(
           children: [
             Container(height: 50),
