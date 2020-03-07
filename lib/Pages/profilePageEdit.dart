@@ -5,10 +5,9 @@ import 'package:matchup/bizlogic/constants.dart' as con;
 import 'package:provider/provider.dart';
 
 class ProfilePageEdit extends StatefulWidget {
-  final VoidCallback logoutCallback;
   final User user;
 
-  ProfilePageEdit({this.user, this.logoutCallback});
+  ProfilePageEdit({this.user});
 
   @override
   ProfilePageState createState() => ProfilePageState();
@@ -139,23 +138,26 @@ class ProfilePageState extends State<ProfilePageEdit> with SingleTickerProviderS
   Widget build(BuildContext context) {
     final User _user = Provider.of<User>(context);
     final Future<void> Function(bool) logoutCallback = HomePageProvider.of(context).logoutCallback;
-    return Column(
-          children: [
-            Container(height: 50),
+    return Scaffold(
+      appBar: AppBar(title: Text("Edit Profile"),),
+      body: Column(
+            children: [
+              Container(height: 50),
 /*             Text(_user.getUserName, style: profStyle), */
-            Text("User Configuration", style: profStyle),
-            Center(child: Image.asset(con.nameMap[_user.getMain], height: 300)), 
-            //Center(child: Image.asset(nameMap[_user.getMain], height: 300)),
+              Text("User Configuration", style: profStyle),
+              Center(child: Image.asset(con.nameMap[_user.getMain], height: 300)), 
+              //Center(child: Image.asset(nameMap[_user.getMain], height: 300)),
 /*             Container(height: 50), */
-            Text("Main:"),
-            showMainField(),
-            Text("Secondary:"),
-            showSecondaryField(),
-            //Should get mains from firebase
+              Text("Main:"),
+              showMainField(),
+              Text("Secondary:"),
+              showSecondaryField(),
+              //Should get mains from firebase
 //            Text(_user.getMain, style: profStyle),
 /*             Text("Main: " + _user.getMain + "\nSecondary: " + _user.getSecondary, style: profStyle), */
-            _showForm(logoutCallback),
-            ]
-        );
+              _showForm(logoutCallback),
+              ]
+          ),
+    );
   }
 }

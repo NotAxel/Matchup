@@ -58,6 +58,28 @@ class ProfilePageState extends State<ProfilePage>{
         )
     );
   }
+  
+  Widget showEditButton(Future<void> Function(bool) logoutCallback){
+    return new Padding(
+        padding: EdgeInsets.fromLTRB(115.0, 10.0, 115.0, 0.0),
+        child: SizedBox(
+          height: 40.0,
+          width: 100,
+          child: new RaisedButton(
+            key: Key('EditAccount'),
+            elevation: 5.0,
+            shape: new RoundedRectangleBorder(
+                borderRadius: new BorderRadius.circular(30.0)),
+            color: Colors.redAccent,
+            child: new Text('Edit Account',
+                style: new TextStyle(fontSize: 20.0, color: Colors.white)),
+            onPressed: (){
+              Navigator.pushNamed(context, "/editAccount");
+            }
+          ),
+        )
+    );
+  }
 
   Widget _showForm(void Function(bool) logoutCallback) {
     return new Container(
@@ -68,7 +90,8 @@ class ProfilePageState extends State<ProfilePage>{
             shrinkWrap: true,
             children: <Widget>[
               showLogOutButton(logoutCallback),
-              showDeleteAccountButton(logoutCallback)
+              showDeleteAccountButton(logoutCallback),
+              showEditButton(logoutCallback),
             ],
           ),
         ));
@@ -101,6 +124,7 @@ class ProfilePageState extends State<ProfilePage>{
     }
     else{
       return Scaffold(
+        appBar: AppBar(title: Text("Profile"),),
         body: Column(
         children: [
           Text(''),

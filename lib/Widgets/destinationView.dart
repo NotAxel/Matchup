@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:matchup/Pages/challengePage.dart';
 import 'package:matchup/Pages/chatPage.dart';
+import 'package:matchup/Pages/profilePageEdit.dart';
 import 'package:matchup/Widgets/destination.dart';
 
 class DestinationView extends StatefulWidget {
@@ -29,6 +30,8 @@ class _DestinationViewState extends State<DestinationView> {
                 return ChallengePage(arguments[0]);
               case '/chat':
                 return ChatPage(peer: arguments[0], chatId: arguments[1],);
+              case '/editAccount':
+                return ProfilePageEdit();
             }
           },
         );
