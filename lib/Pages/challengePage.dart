@@ -45,7 +45,6 @@ class _ChallengePageState extends State<ChallengePage> {
                 Text(''),
                 //Should get username from firebase
                 Text(this.widget._peer.data["Username"], style: TextStyle(fontSize: 30)),
-//                Text(this.peer.data["Username"] + "\nUser Id\n" + this.user.getUserId +  "\nPeer Id\n" + this.peer.documentID, style: profStyle),
                 Text(''),
                 //Should get profile pic from firebase
                 Image.asset(nameMap[this.widget._peer["Main"]], height: 300),
@@ -60,13 +59,11 @@ class _ChallengePageState extends State<ChallengePage> {
                     goToChatPage(context, user);
                   },
                   ),
-                  if(!isFriend) //checkIfFriend(context, user, this.widget._peer))
+                  if(!isFriend)
                     RaisedButton(
                       child: Text('Add Friend', style: TextStyle(fontSize: 20, color: Colors.white)),
                       color: Colors.redAccent,
                       onPressed: () {
-                        //Firestore.instance.collection('Users').document(user.getUserId).updateData({
-                        //  'Friends List' : FieldValue.arrayUnion([this._peer.documentID])});
                         Firestore.instance
                           .collection('Users').document(user.getUserId)
                           .collection('Friends').document(this.widget._peer.documentID).setData({'Friend': this.widget._peer.documentID});
