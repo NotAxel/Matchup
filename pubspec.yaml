@@ -26,6 +26,8 @@ dependencies:
   cloud_firestore:
   firebase_auth:
   firebase_database:
+  pull_to_refresh: ^1.5.7
+
 
 dev_dependencies:
   flutter_driver:
