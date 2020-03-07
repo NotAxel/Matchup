@@ -1,6 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
+
 
 import 'package:matchup/Pages/filterPopupPage.dart';
 import 'package:matchup/bizlogic/User.dart';
@@ -18,7 +21,7 @@ class MatchPageState extends State<MatchPage>{
   String _mainFilter;
 
   @override
-  Widget build (BuildContext context) {
+  Widget build(BuildContext context) {
     final User _user = Provider.of<User>(context);
     return new Scaffold(
       appBar: new AppBar(
@@ -27,7 +30,7 @@ class MatchPageState extends State<MatchPage>{
         leading: IconButton(
           icon: Icon(Icons.refresh),
           onPressed: () {
-          
+            // TODO add in a refresh page function
           },
         ),
         actions: <Widget>[
