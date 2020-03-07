@@ -18,8 +18,6 @@ class MatchPage extends StatefulWidget {
 
 class MatchPageState extends State<MatchPage>{
 
-  String _mainFilter;
-
   @override
   Widget build(BuildContext context) {
     final User _user = Provider.of<User>(context);
@@ -30,7 +28,7 @@ class MatchPageState extends State<MatchPage>{
         leading: IconButton(
           icon: Icon(Icons.refresh),
           onPressed: () {
-            // TODO add in a refresh page function
+            setState(() {});
           },
         ),
         actions: <Widget>[

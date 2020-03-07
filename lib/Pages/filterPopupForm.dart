@@ -120,7 +120,7 @@ class _FilterPopupForm extends State<FilterPopupForm> {
             borderRadius: new BorderRadius.circular(30.0)
           ),
           child: new Text('Save'),
-          onPressed: () {
+          onPressed: () { // save the data and show snackbar
             Scaffold.of(context).showSnackBar(_snackBar);
           },
         ),

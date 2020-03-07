@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:matchup/Pages/userInfoEntryPage.dart';
+import 'package:matchup/bizlogic/User.dart';
 import 'package:mockito/mockito.dart';
 import 'package:provider/provider.dart';
 import './assetBundle.dart';
@@ -16,8 +17,15 @@ Future<Widget> makeTestableWidget(WidgetTester tester, Widget child, BaseAuth au
 
   return DefaultAssetBundle(
     bundle: assetBundle,
-    child: Provider(
-        create: (context) => auth,
+    child: MultiProvider(
+      providers: [
+        Provider<BaseAuth>(
+          create: (context) => Auth()
+        ),
+        Provider<User>(
+          create: (context) => User()
+        ),
+      ],
         child: MaterialApp(
           home: child,
         ),
@@ -84,27 +92,36 @@ void main(){
     await tester.tap(mainDropdown);
     await tester.pumpAndSettle();
 
-    //// secondary
-    //Finder secondaryDropdown = find.byKey(Keys.secondary);
-    //await tester.tap(secondaryDropdown);
+    Finder mainText = find.byKey(Key("MainBowser"));
+    expect(mainText.first, findsOneWidget);
+    await tester.tap(mainText.first);
+    await tester.pumpAndSettle();
+    
+    // secondary
+    Finder secondaryDropdown = find.byKey(Keys.secondary);
+    expect(secondaryDropdown, findsOneWidget);
+    await tester.tap(secondaryDropdown);
+    await tester.pumpAndSettle();
 
-    //Finder secondaryText = find.text("Bowser");
-    //await tester.tap(secondaryText);
+    Finder secondaryText = find.byKey(Key("SecondaryBowser"));
+    expect(secondaryText.first, findsOneWidget);
+    await tester.tap(secondaryText.first);
+    await tester.pumpAndSettle();
 
-    //Finder regionDropDown = find.byKey(Keys.region);
-    //await tester.tap(regionDropDown);
+    // region 
+    Finder regionDropdown = find.byKey(Keys.region);
+    expect(regionDropdown, findsOneWidget);
+    await tester.tap(regionDropdown);
+    await tester.pumpAndSettle();
 
-    //Finder regionText = find.text('West Coast (WC)');
-    //await tester.tap(regionText);
+    Finder regionText = find.byKey(Key("RegionWest Coast (WC)"));
+    expect(regionText.first, findsOneWidget);
+    await tester.tap(regionText.first);
+    await tester.pumpAndSettle();
 
-    //Finder finder = find.byKey(Keys.saveProfile);
-    //await tester.tap(finder);
-
-    //// flutter bugged out, deletes by hand but not in tester
-    //Finder deleteButton = find.byKey(Keys.deleteAccount);
-    //await tester.tap(deleteButton);
-
-    //Finder yesButton = find.text("Yes");
-    //await tester.tap(yesButton);
+    //save
+    Finder saveButton = find.byKey(Keys.saveProfile);
+    expect(saveButton, findsOneWidget);
+    await tester.tap(saveButton);
   });
 }
