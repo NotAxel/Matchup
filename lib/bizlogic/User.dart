@@ -94,6 +94,41 @@ class User {
       _region != null;
   }
 
+  String constructChatid(String peerId){
+    String chatId;
+    if (_userId.hashCode <= peerId.hashCode) {
+      chatId = '$_userId-$peerId';
+    } 
+    else {
+      chatId = '$peerId-$_userId';
+    }
+    return chatId;
+  }
+
+  Future<String> initiateChatWithPeer(String peerId) async{
+    String chatId = constructChatid(peerId);
+
+    // dont have to use await here since they are just references like memory addresses
+    DocumentReference userReference = Firestore.instance.collection('Users').document(_userId).collection('Chats').document(peerId);
+    DocumentReference peerReference = Firestore.instance.collection('Users').document(peerId).collection('Chats').document(_userId);
+
+    // need to use await here because of the db get call 
+    DocumentSnapshot userSnapshot = await userReference.get();
+    DocumentSnapshot peerSnapshot = await peerReference.get();
+
+    // if the chat does not exist for the users, create it
+    if (!userSnapshot.exists){
+      Firestore.instance.collection('Users').document(_userId).collection('Chats').document(peerId).setData({'chatId': chatId});
+    }
+
+    // if the chat does not exist for the peer, create it
+    if (!peerSnapshot.exists){
+      Firestore.instance.collection('Users').document(peerId).collection('Chats').document(_userId).setData({'chatId': chatId});
+    }
+
+    return chatId;
+  }
+
 
   // friendsList
   List<User> get getFriendsList => _friendsList;

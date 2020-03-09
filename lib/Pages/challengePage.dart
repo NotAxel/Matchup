@@ -20,6 +20,7 @@ class ChallengePage extends StatefulWidget {
 class _ChallengePageState extends State<ChallengePage> {
   final profStyle = TextStyle(fontSize: 25);
   bool isFriend = false;
+  User _user;
 
 
   @override
@@ -29,8 +30,8 @@ class _ChallengePageState extends State<ChallengePage> {
 
   @override
   Widget build(BuildContext context){
-    User user = Provider.of<User>(context, listen: false);
-    checkIfFriend(context, user, widget._peer);
+    User _user = Provider.of<User>(context, listen: false);
+    checkIfFriend(context, _user, widget._peer);
     //initState();
     return Scaffold(
       appBar: AppBar(
@@ -57,7 +58,7 @@ class _ChallengePageState extends State<ChallengePage> {
                   child: Text('Chat', style: TextStyle(fontSize: 20, color: Colors.white)),
                   color: Colors.redAccent,
                   onPressed: () {
-                    goToChatPage(context, user);
+                    goToChatPage(context, _user);
                   },
                   ),
                   if(!isFriend)
@@ -66,7 +67,7 @@ class _ChallengePageState extends State<ChallengePage> {
                       color: Colors.redAccent,
                       onPressed: () {
                         Firestore.instance
-                          .collection('Users').document(user.getUserId)
+                          .collection('Users').document(_user.getUserId)
                           .collection('Friends').document(this.widget._peer.getUserId).setData({'Friend': this.widget._peer.getUserId});
                         _showDialog(context);
                         //add pop-up if successfull
@@ -88,43 +89,8 @@ class _ChallengePageState extends State<ChallengePage> {
     );
   }
 
-  String constructChatid(String userId, String peerId){
-    String chatId;
-    if (userId.hashCode <= peerId.hashCode) {
-      chatId = '$userId-$peerId';
-    } 
-    else {
-      chatId = '$peerId-$userId';
-    }
-    return chatId;
-  }
-
-  Future<String> initiateChatWithPeer(String userId, String peerId) async{
-    String chatId = constructChatid(userId, peerId);
-
-    // dont have to use await here since they are just references like memory addresses
-    DocumentReference userReference = Firestore.instance.collection('Users').document(userId).collection('Chats').document(peerId);
-    DocumentReference peerReference = Firestore.instance.collection('Users').document(peerId).collection('Chats').document(userId);
-
-    // need to use await here because of the db get call 
-    DocumentSnapshot userSnapshot = await userReference.get();
-    DocumentSnapshot peerSnapshot = await peerReference.get();
-
-    // if the chat does not exist for the users, create it
-    if (!userSnapshot.exists){
-      Firestore.instance.collection('Users').document(userId).collection('Chats').document(peerId).setData({'chatId': chatId});
-    }
-
-    // if the chat does not exist for the peer, create it
-    if (!peerSnapshot.exists){
-      Firestore.instance.collection('Users').document(peerId).collection('Chats').document(userId).setData({'chatId': chatId});
-    }
-
-    return chatId;
-  }
-
   void goToChatPage(BuildContext context, User user) async{
-    String chatId = await initiateChatWithPeer(user.getUserId, this.widget._peer.getUserId);
+    String chatId = await _user.initiateChatWithPeer(this.widget._peer.getUserId);
     Navigator.pushNamed(context, "/chat", 
       arguments: <Object>[
         Peer(
