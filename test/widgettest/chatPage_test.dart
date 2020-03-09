@@ -42,5 +42,5 @@ void main() {
     Peer peer = Peer('123', "testPeer", "Bowser", "Bowser", "West Coast (WC)");
     ChatPage page = ChatPage(peer, '123');
     await tester.pumpWidget(await makeTestableWidget(tester, page, mockAuth));
-  });
+  }, skip: true);
 }
