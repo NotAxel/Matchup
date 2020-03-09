@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:matchup/bizlogic/peer.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
@@ -72,8 +73,19 @@ class MatchPageState extends State<MatchPage>{
                     )
                   ),
                     onTap: (){
+                      DocumentSnapshot peer = snapshot.data.documents.elementAt(index);
                       Navigator.pushNamed(context, "/challenge", 
-                      arguments: <Object>[snapshot.data.documents.elementAt(index)]);
+                      arguments: 
+                        <Object>[
+                          Peer(
+                            peer.documentID,
+                            peer.data["Username"],
+                            peer.data["Main"],
+                            peer.data["Secondary"],
+                            peer.data["Region"],
+                          )
+                        ]
+                      );
                     },
                   );
                 },

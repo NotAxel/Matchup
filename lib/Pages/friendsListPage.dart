@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:matchup/Pages/filterPopupPage.dart';
+import 'package:matchup/bizlogic/peer.dart';
 import 'package:provider/provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -75,10 +76,10 @@ class FriendsListPageState extends State<FriendsListPage>{
     );
   }
 
-  Widget buildFriends(BuildContext context, DocumentSnapshot conversation){
+  Widget buildFriends(BuildContext context, DocumentSnapshot friend){
     return Container(
       child: FutureBuilder(
-        future: Firestore.instance.collection("Users").document(conversation.documentID).get(),
+        future: Firestore.instance.collection("Users").document(friend.documentID).get(),
         builder: (context, snapshot){
           if(snapshot.connectionState == ConnectionState.done){
             return ListTile(
@@ -108,8 +109,14 @@ class FriendsListPageState extends State<FriendsListPage>{
                     context,
                     MaterialPageRoute(builder: (BuildContext context) =>
                       chatp.ChatPage(
-                        peer: snapshot.data,
-                        chatId: conversation.data["chatId"]
+                        Peer(
+                          friend.documentID,
+                          snapshot.data["Username"],
+                          snapshot.data["Main"],
+                          snapshot.data["Secondary"],
+                          snapshot.data["Region"],
+                        ),
+                        snapshot.data["chatId"]
                       )
                     )
                   );

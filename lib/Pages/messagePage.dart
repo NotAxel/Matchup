@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:matchup/Pages/filterPopupPage.dart';
+import 'package:matchup/bizlogic/peer.dart';
 import 'package:provider/provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -73,11 +74,11 @@ class MessagePageState extends State<MessagePage>{
     );
   }
 
-  Widget buildConversation(BuildContext context, DocumentSnapshot conversation){
+  Widget buildConversation(BuildContext context, DocumentSnapshot peer){
     final User user = Provider.of<User>(context);
     return Container(
       child: FutureBuilder(
-        future: Firestore.instance.collection("Users").document(conversation.documentID).get(),
+        future: Firestore.instance.collection("Users").document(peer.documentID).get(),
         builder: (context, snapshot){
           if(snapshot.connectionState == ConnectionState.done){
             return ListTile(
@@ -92,11 +93,11 @@ class MessagePageState extends State<MessagePage>{
                 height: 35.0,
                 width: 35.0,
               ),
-              subtitle: getLastMessage(context, conversation),
+              subtitle: getLastMessage(context, peer),
               trailing: IconButton(
                 icon: new Icon(Icons.delete_outline), 
                 onPressed: (){
-                  deleteConversation(context, conversation, snapshot);
+                  deleteConversation(context, peer, snapshot);
                 },
               ),
               onTap: (){
@@ -104,8 +105,14 @@ class MessagePageState extends State<MessagePage>{
                   context,
                   MaterialPageRoute(builder: (BuildContext context) =>
                     chatp.ChatPage(
-                      peer: snapshot.data,
-                      chatId: conversation.data["chatId"]
+                      Peer(
+                       peer.documentID,
+                       snapshot.data["Username"],
+                       snapshot.data["Main"],
+                       snapshot.data["Secondary"],
+                       snapshot.data["Region"],
+                      ),
+                      snapshot.data["chatId"]
                     )
                   )
                 );
