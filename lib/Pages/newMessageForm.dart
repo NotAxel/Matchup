@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:matchup/bizlogic/User.dart';
+import 'package:matchup/bizlogic/peer.dart';
+import 'package:provider/provider.dart';
 
 import './challengePage.dart' as cp;
 class NewMessageForm extends StatefulWidget{
@@ -14,9 +17,12 @@ class _NewMessageForm extends State<NewMessageForm> {
   String _otherName = 'temp';
   final _formKey = new GlobalKey<FormState>();
 
+  User _user;
+
   TextStyle style = TextStyle(fontFamily: 'Montserrat', fontSize: 20.0);
   @override
   Widget build(BuildContext context) {
+    _user = Provider.of<User>(context);
     return Stack(
       children: <Widget> [
         showNewMessageForm(),
@@ -62,6 +68,7 @@ class _NewMessageForm extends State<NewMessageForm> {
       onSaved: (value) => _otherName = value.trim(),
     );
   }
+  
 
   validateAndSubmit() async {
     setState(() {
@@ -71,8 +78,16 @@ class _NewMessageForm extends State<NewMessageForm> {
     if (validateAndSave()){
       try {
         QuerySnapshot qs = await Firestore.instance.collection("Users").where("Username", isEqualTo: _otherName).snapshots().first;
-        DocumentSnapshot peer = qs.documents.first;
-        Navigator.popAndPushNamed(context, "/challenge", arguments: <Object>[peer]);
+        DocumentSnapshot peerDocumentSnapshot = qs.documents.first;
+        Peer peer = Peer(
+          peerDocumentSnapshot.documentID,
+          peerDocumentSnapshot.data["Username"],
+          peerDocumentSnapshot.data["Main"],
+          peerDocumentSnapshot.data["Secondary"],
+          peerDocumentSnapshot.data["Region"],
+        );
+        String chatId = await _user.initiateChatWithPeer(peer.getUserId);
+        Navigator.popAndPushNamed(context, "/chat", arguments: <Object>[peer, chatId]);
       } 
       catch (e) {
         print('Error: $e');
