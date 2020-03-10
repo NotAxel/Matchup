@@ -1,5 +1,6 @@
 import 'package:matchup/bizlogic/constants.dart' as ct;
 import 'package:flutter/material.dart';
+import 'dart:async';
 
 class FilterPopupForm extends StatefulWidget{
   @override
@@ -10,11 +11,12 @@ class _FilterPopupForm extends State<FilterPopupForm> {
   static const double ButtonWidth = 130.0;
   static const double ButtonHeight = 40.0;
 
+  List<String> filters = new List<String>(2);
   Container _underLine = Container(height: 2, color: Colors.deepPurple);
   final SnackBar _snackBar = SnackBar(content: Text("Filters saved and applyed"), duration: Duration(seconds: 3),);
   
-  String _mainFilter;
-  String _regionFilter;
+  String _mainFilter = "";
+  String _regionFilter = "";
 
   bool _isLoading;
   bool _isFilterForm;
@@ -120,8 +122,24 @@ class _FilterPopupForm extends State<FilterPopupForm> {
             borderRadius: new BorderRadius.circular(30.0)
           ),
           child: new Text('Save'),
-          onPressed: () {
+          onPressed: () { // save the data and show snackbar
             Scaffold.of(context).showSnackBar(_snackBar);
+            print(_mainFilter);
+            print(_regionFilter);
+            filters[0] = _mainFilter;
+            filters[1] = _regionFilter;
+            if(_mainFilter == null) {
+              filters[0] = "";
+            } 
+            if(_regionFilter == null) {
+              filters[1] = "";
+            }
+            print("0: " + filters[0]);
+            print("1: " + filters[1]);
+            
+            Timer(Duration(seconds: 1), () {
+              Navigator.pop(context, filters);
+            });
           },
         ),
       ),

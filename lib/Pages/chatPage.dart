@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:matchup/Widgets/timeStamp.dart';
+import 'package:matchup/bizlogic/peer.dart';
 import 'package:provider/provider.dart';
 
 import 'package:matchup/bizlogic/User.dart';
@@ -9,12 +10,10 @@ import 'package:matchup/bizlogic/constants.dart';
 import 'package:matchup/Widgets/loadingCircle.dart';
 
 class ChatPage extends StatefulWidget {
-  final DocumentSnapshot peer;
+  final Peer peer;
   final String chatId;
 
-  const ChatPage(
-    {Key key, this.peer, this.chatId})
-    : super(key: key);
+  const ChatPage(this.peer, this.chatId, {Key key}) : super(key: key);
 
   @override
   _ChatPageState createState() => _ChatPageState();
@@ -39,7 +38,7 @@ class _ChatPageState extends State<ChatPage> {
   @override
   Widget build(BuildContext context) {
     _user = Provider.of<User>(context);
-    _message = new Message("", widget.peer.documentID, _user.getUserId);
+    _message = new Message("", widget.peer.getUserId, _user.getUserId);
     return Scaffold(
       appBar: AppBar(
         title: buildPeerInfo(),
@@ -93,7 +92,8 @@ class _ChatPageState extends State<ChatPage> {
   Widget buildPeerUserName(String username){
     return Expanded(
       child: Center(
-        child: Text(username), 
+        child: Text(username,
+        key: Key("Username"),), 
       )
     );
   }
@@ -102,11 +102,11 @@ class _ChatPageState extends State<ChatPage> {
   Widget buildPeerInfo(){
     return Row(children: <Widget>[
       // puts the image of the users main left of their name
-      buildPeerMainCharacterSprite(Constants.minSpritesMap[widget.peer["Main"]]),
+      buildPeerMainCharacterSprite(Constants.minSpritesMap[widget.peer.getMain]),
       // places text for the Username in between main and secondary
-      buildPeerUserName(widget.peer["Username"]),
+      buildPeerUserName(widget.peer.getUserName),
       // puts the image of the users secondary right of their name
-      buildPeerSecondaryCharacterSprite(Constants.minSpritesMap[widget.peer["Secondary"]])
+      buildPeerSecondaryCharacterSprite(Constants.minSpritesMap[widget.peer.getSecondary])
       ],
     );
   }

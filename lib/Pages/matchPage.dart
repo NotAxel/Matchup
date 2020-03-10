@@ -1,9 +1,12 @@
+import 'dart:collection';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:matchup/bizlogic/peer.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
-
+import 'package:matchup/bizlogic/peer.dart' as Pr;
 
 import 'package:matchup/Pages/filterPopupPage.dart';
 import 'package:matchup/bizlogic/User.dart';
@@ -17,11 +20,11 @@ class MatchPage extends StatefulWidget {
 }
 
 class MatchPageState extends State<MatchPage>{
-
-  String _mainFilter;
+  List<String> filters = ["", ""];
 
   @override
   Widget build(BuildContext context) {
+
     final User _user = Provider.of<User>(context);
     return new Scaffold(
       appBar: new AppBar(
@@ -30,7 +33,9 @@ class MatchPageState extends State<MatchPage>{
         leading: IconButton(
           icon: Icon(Icons.refresh),
           onPressed: () {
-            // TODO add in a refresh page function
+            filters[0] = "";
+            filters[1] = "";
+            setState(() {});
           },
         ),
         actions: <Widget>[
@@ -42,52 +47,57 @@ class MatchPageState extends State<MatchPage>{
           ),
         ],
       ),
-      body: new StreamBuilder<QuerySnapshot>(
-        stream: Firestore.instance.collection('Users').snapshots(),
-        builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+      body: new FutureBuilder<List<Pr.Peer>>(
+        future: _getUsers(_user, filters),
+        builder: (BuildContext context, AsyncSnapshot<List<Pr.Peer>> snapshot) {
           if (snapshot.hasError)
             return new Text('Error: ${snapshot.error}');
           switch (snapshot.connectionState) {
             case ConnectionState.waiting: return new Text('Loading...');
-          default:
-          snapshot.data.documents.removeWhere((item) => item.documentID == _user.getUserId);
+          default: 
             return new ListView.separated(
-              itemCount: snapshot.data.documents.length,
               itemBuilder: (BuildContext context, int index) {
-                return ListTile(
+                return ListTile (
                   title: new Text(
-                    snapshot.data.documents.elementAt(index)['Username'],
+                    snapshot.data[index].getUserName,
                     style: TextStyle(
                       fontSize: 20.0,
-                      fontWeight: FontWeight.bold),
+                      fontWeight: FontWeight.bold,
                     ),
+                  ),
                   subtitle: new Image(
-                    image: AssetImage(con.Constants.minSpritesMap[snapshot.data.documents.elementAt(index)['Main']]),
+                    image: AssetImage(con.Constants.minSpritesMap[snapshot.data[index].getMain]),
                     height: 25.0,
                     width: 25.0,
                     alignment: Alignment.centerLeft,
                   ),
                   trailing: new Text(
-                    snapshot.data.documents.elementAt(index)['Region'],
+                    snapshot.data[index].getRegion,
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                     )
                   ),
-                    onTap: (){
+                  onTap: (){
+                      Pr.Peer peer = snapshot.data[index];
                       Navigator.pushNamed(context, "/challenge", 
-                      arguments: <Object>[snapshot.data.documents.elementAt(index)]);
+                      arguments: 
+                        <Object>[
+                          peer
+                        ]
+                      );
                     },
-                  );
-                },
+                );
+              }, 
               separatorBuilder: (BuildContext context, int index) =>  Divider(
                 color: Colors.blueGrey,
                 indent: 15,
                 endIndent: 15,
                 thickness: 1.5,
-              ),
-          );
-        }
-      })
+              ), 
+              itemCount: snapshot.data.length
+            );
+          }
+        }),
     );
   }
 
@@ -95,36 +105,48 @@ class MatchPageState extends State<MatchPage>{
     BuildContext context,
     Widget widget,
     String title,
-  ) {
-    Navigator.push(
+  ) async {
+    filters =  await Navigator.push(
       context,
-      FilterPopupPage(
-        top: 200,
-        left: 20,
-        bottom: 200,
-        right: 20,
-        child: Scaffold(
-          appBar: AppBar(
-            title: Text(title),
-            leading: new Builder(builder: (context) {
-              return IconButton(
-                icon: Icon(Icons.arrow_back),
-                onPressed: () {
-                  try {
-                    Navigator.pop(context);
-                  } catch(e) {}
-                },
-              );
-            }),
-            brightness: Brightness.light,
-          ),
-          resizeToAvoidBottomPadding: false,
-          body: fpf.FilterPopupForm(),
-        ),
-      )
+      MaterialPageRoute(builder: (context) => fpf.FilterPopupForm())
     );
+    print("coming from popup 0 " + filters[0]);
+    print("coming from popup 1 " + filters[1]);
   }
 
+  // retrives and filters users 
+  static Future<List<Pr.Peer>> _getUsers(User _user, List<String> filters) async {
+    CollectionReference ref = Firestore.instance.collection('Users');
+    QuerySnapshot userQuery = await ref.getDocuments();
+    
+    HashMap<String, Pr.Peer> userHashMap = new HashMap<String, Pr.Peer>();
+
+    userQuery.documents.forEach((document) {
+      userHashMap.putIfAbsent(document.documentID, () => new Pr.Peer(
+        document.documentID, 
+        document['Username'], 
+        document['Main'], 
+        document['Secondary'], 
+        document['Region']));
+    });
+
+    userHashMap.remove(_user.getUserId); // removes current user from list
+    print("in _getUsers");
+    print(filters[0]);
+    print(filters[1]);
+    if(filters[0] != "" && filters[1] != "") {
+      userHashMap.removeWhere((key, value) => 
+       value.getRegion != filters[1] && value.getMain != filters[0]);
+    } else if (filters[0] == "" && filters[1] != "") {
+      userHashMap.removeWhere((key, value) =>
+       value.getRegion != filters[1]);
+    } else if (filters[0] != "" && filters[1] == "") {
+      userHashMap.removeWhere((key, value) =>
+       value.getMain != filters[0]);
+    }
+
+    return userHashMap.values.toList();
+  }
 
 }
 

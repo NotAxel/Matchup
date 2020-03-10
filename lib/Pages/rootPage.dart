@@ -254,7 +254,7 @@ class _RootPageState extends State<RootPage>{
         // should go to user info entry since they will have a token when they reopen
         else{
           print("building userInfoEntry from homepage");
-          return UserInfoEntryPage(loginCallback, logoutCallback, "RootPage");
+          return UserInfoEntryPage(loginCallback, logoutCallback);
         }
         break;
       default:
