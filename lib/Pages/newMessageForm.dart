@@ -75,9 +75,9 @@ class _NewMessageForm extends State<NewMessageForm> {
     if (validateAndSave()){
       try {
         QuerySnapshot qs = await Firestore.instance.collection("Users").where("Username", isEqualTo: _otherName).snapshots().first;
-        DocumentSnapshot peer = qs.documents.first;
-        String chatId = await initiateChatWithPeer(_user.getUserId, peer.documentID);
-        Navigator.popAndPushNamed(context, "/chat", arguments: <Object>[peer, chatId]);
+        DocumentSnapshot peerDocSnap = qs.documents.first;
+        String chatId = await initiateChatWithPeer(_user.getUserId, peerDocSnap.documentID);
+        Navigator.popAndPushNamed(context, "/chat", arguments: <Object>[peerDocSnap, chatId]);
       } 
       catch (e) {
         print('Error: $e');
