@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:matchup/bizlogic/User.dart';
+import 'package:matchup/bizlogic/peer.dart';
 import 'package:provider/provider.dart';
 
 class NewMessageForm extends StatefulWidget{
@@ -76,8 +77,15 @@ class _NewMessageForm extends State<NewMessageForm> {
       try {
         QuerySnapshot qs = await Firestore.instance.collection("Users").where("Username", isEqualTo: _otherName).snapshots().first;
         DocumentSnapshot peerDocSnap = qs.documents.first;
-        String chatId = await initiateChatWithPeer(_user.getUserId, peerDocSnap.documentID);
-        Navigator.popAndPushNamed(context, "/chat", arguments: <Object>[peerDocSnap, chatId]);
+        Peer peer = Peer(
+          peerDocSnap.documentID,
+          peerDocSnap.data['Username'],
+          peerDocSnap.data['Main'],
+          peerDocSnap.data['Secondary'],
+          peerDocSnap.data['Region'],
+        );
+        String chatId = await _user.initiateChatWithPeer(peer.getUserId);
+        Navigator.popAndPushNamed(context, "/chat", arguments: <Object>[peer, chatId]);
       } 
       catch (e) {
         print('Error: $e');
