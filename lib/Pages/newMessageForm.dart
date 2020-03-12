@@ -1,10 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:matchup/bizlogic/User.dart';
-<<<<<<< HEAD
-=======
-import 'package:matchup/bizlogic/peer.dart';
->>>>>>> master
 import 'package:provider/provider.dart';
 
 class NewMessageForm extends StatefulWidget{
@@ -19,13 +15,8 @@ class _NewMessageForm extends State<NewMessageForm> {
   bool _isLoading;
   String _otherName = 'temp';
   final _formKey = new GlobalKey<FormState>();
-
-<<<<<<< HEAD
-=======
-  User _user;
->>>>>>> master
-
   TextStyle style = TextStyle(fontFamily: 'Montserrat', fontSize: 20.0);
+  
   @override
   Widget build(BuildContext context) {
     _user = Provider.of<User>(context);
@@ -84,20 +75,8 @@ class _NewMessageForm extends State<NewMessageForm> {
     if (validateAndSave()){
       try {
         QuerySnapshot qs = await Firestore.instance.collection("Users").where("Username", isEqualTo: _otherName).snapshots().first;
-<<<<<<< HEAD
         DocumentSnapshot peer = qs.documents.first;
         String chatId = await initiateChatWithPeer(_user.getUserId, peer.documentID);
-=======
-        DocumentSnapshot peerDocumentSnapshot = qs.documents.first;
-        Peer peer = Peer(
-          peerDocumentSnapshot.documentID,
-          peerDocumentSnapshot.data["Username"],
-          peerDocumentSnapshot.data["Main"],
-          peerDocumentSnapshot.data["Secondary"],
-          peerDocumentSnapshot.data["Region"],
-        );
-        String chatId = await _user.initiateChatWithPeer(peer.getUserId);
->>>>>>> master
         Navigator.popAndPushNamed(context, "/chat", arguments: <Object>[peer, chatId]);
       } 
       catch (e) {
