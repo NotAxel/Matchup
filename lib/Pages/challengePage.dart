@@ -30,7 +30,7 @@ class _ChallengePageState extends State<ChallengePage> {
 
   @override
   Widget build(BuildContext context){
-    User _user = Provider.of<User>(context, listen: false);
+    _user = Provider.of<User>(context);
     checkIfFriend(context, _user, widget._peer);
     //initState();
     return Scaffold(
