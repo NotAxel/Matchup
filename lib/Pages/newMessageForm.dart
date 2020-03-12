@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:matchup/bizlogic/User.dart';
+import 'package:provider/provider.dart';
 
-import './challengePage.dart' as cp;
 class NewMessageForm extends StatefulWidget{
 
   @override
@@ -9,14 +10,17 @@ class NewMessageForm extends StatefulWidget{
 }
 
 class _NewMessageForm extends State<NewMessageForm> {
+  User _user;
   String _errorMessage;
   bool _isLoading;
   String _otherName = 'temp';
   final _formKey = new GlobalKey<FormState>();
 
+
   TextStyle style = TextStyle(fontFamily: 'Montserrat', fontSize: 20.0);
   @override
   Widget build(BuildContext context) {
+    _user = Provider.of<User>(context);
     return Stack(
       children: <Widget> [
         showNewMessageForm(),
@@ -72,7 +76,8 @@ class _NewMessageForm extends State<NewMessageForm> {
       try {
         QuerySnapshot qs = await Firestore.instance.collection("Users").where("Username", isEqualTo: _otherName).snapshots().first;
         DocumentSnapshot peer = qs.documents.first;
-        Navigator.popAndPushNamed(context, "/challenge", arguments: <Object>[peer]);
+        String chatId = await initiateChatWithPeer(_user.getUserId, peer.documentID);
+        Navigator.popAndPushNamed(context, "/chat", arguments: <Object>[peer, chatId]);
       } 
       catch (e) {
         print('Error: $e');
@@ -102,4 +107,38 @@ class _NewMessageForm extends State<NewMessageForm> {
     }
   }
   
+  String constructChatid(String userId, String peerId){
+    String chatId;
+    if (userId.hashCode <= peerId.hashCode) {
+      chatId = '$userId-$peerId';
+    } 
+    else {
+      chatId = '$peerId-$userId';
+    }
+    return chatId;
+  }
+
+  Future<String> initiateChatWithPeer(String userId, String peerId) async{
+    String chatId = constructChatid(userId, peerId);
+
+    // dont have to use await here since they are just references like memory addresses
+    DocumentReference userReference = Firestore.instance.collection('Users').document(userId).collection('Chats').document(peerId);
+    DocumentReference peerReference = Firestore.instance.collection('Users').document(peerId).collection('Chats').document(userId);
+
+    // need to use await here because of the db get call 
+    DocumentSnapshot userSnapshot = await userReference.get();
+    DocumentSnapshot peerSnapshot = await peerReference.get();
+
+    // if the chat does not exist for the users, create it
+    if (!userSnapshot.exists){
+      Firestore.instance.collection('Users').document(userId).collection('Chats').document(peerId).setData({'chatId': chatId});
+    }
+
+    // if the chat does not exist for the peer, create it
+    if (!peerSnapshot.exists){
+      Firestore.instance.collection('Users').document(peerId).collection('Chats').document(userId).setData({'chatId': chatId});
+    }
+
+    return chatId;
+  }
 }
