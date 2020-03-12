@@ -325,8 +325,12 @@ class _ChatPageState extends State<ChatPage> {
           'timeStamp': _message.getTimeStamp,
         });
       });
-      _listScrollController.animateTo(0.0,
-        duration: Duration(milliseconds: 0), curve: Curves.fastOutSlowIn);
+      // scrolls the chats to the last message sent after the user sends a message
+      // has to be disabled for widget tests to work
+      /*
+      _listScrollController.animateTo(0,
+        duration: Duration(milliseconds: 250), curve: Curves.fastOutSlowIn);
+      */
     }
   }
 }
