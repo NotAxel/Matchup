@@ -11,7 +11,7 @@ class _FilterPopupForm extends State<FilterPopupForm> {
   static const double ButtonHeight = 40.0;
 
   Container _underLine = Container(height: 2, color: Colors.deepPurple);
-  final SnackBar snackBar = SnackBar(content: Text("Filters saved and applyed"), duration: Duration(seconds: 3),);
+  final SnackBar _snackBar = SnackBar(content: Text("Filters saved and applyed"), duration: Duration(seconds: 3),);
   
   String _mainFilter;
   String _regionFilter;
@@ -20,6 +20,7 @@ class _FilterPopupForm extends State<FilterPopupForm> {
   bool _isFilterForm;
   final _formKey = new GlobalKey<FormState>();
 
+  // sets states for form at creation
   @override
   void initState() {
     _mainFilter = null;
@@ -29,11 +30,13 @@ class _FilterPopupForm extends State<FilterPopupForm> {
     super.initState();
   }
 
+  // resets the form will be linked to refresh functionality
   resetForm() {
     _formKey.currentState.reset();
     _mainFilter = null;
     _regionFilter = null;
   }
+
 
   void toggleFormMode() {
     resetForm();
@@ -42,28 +45,22 @@ class _FilterPopupForm extends State<FilterPopupForm> {
     });
   }
 
+  // pushes form choices
   validateAndSubmit() async {
     setState(() {
       _isLoading = true;
     });
-    if(validateAndSave()) {
-      try {
-        print('test');
-      }catch (e) {
-        setState(() {
-          _isLoading = false;
-          _formKey.currentState.reset();
-        });
-      }
+    try {
+      print('test');
+    }catch (e) {
+      setState(() {
+        _isLoading = false;
+        _formKey.currentState.reset();
+      });
     }
   }
 
-  bool validateAndSave() {
-    final form = _formKey.currentState;
-    //form.save();
-    return true;
-  }
-
+  // pulls the list of characters from consts page and displays it as a drop down
   Widget showMainField() {
     return new Center(
       child: DropdownButton<String> (
@@ -86,6 +83,8 @@ class _FilterPopupForm extends State<FilterPopupForm> {
     );
   }
 
+
+  // same as show main however for the regions field
   Widget showRegionField() {
     return new Center(
       child: DropdownButton<String> (
@@ -121,8 +120,8 @@ class _FilterPopupForm extends State<FilterPopupForm> {
             borderRadius: new BorderRadius.circular(30.0)
           ),
           child: new Text('Save'),
-          onPressed: () {
-            Scaffold.of(context).showSnackBar(snackBar);
+          onPressed: () { // save the data and show snackbar
+            Scaffold.of(context).showSnackBar(_snackBar);
           },
         ),
       ),
@@ -143,7 +142,6 @@ class _FilterPopupForm extends State<FilterPopupForm> {
             borderRadius: new BorderRadius.circular(30.0)
           ),
           child: new Text('Reset'),
-          //onPressed: resetForm(),
        )
       ),
     );

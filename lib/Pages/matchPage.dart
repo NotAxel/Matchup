@@ -1,6 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:matchup/bizlogic/peer.dart';
 import 'package:provider/provider.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
+
 
 import 'package:matchup/Pages/filterPopupPage.dart';
 import 'package:matchup/bizlogic/User.dart';
@@ -15,10 +19,8 @@ class MatchPage extends StatefulWidget {
 
 class MatchPageState extends State<MatchPage>{
 
-  String _mainFilter;
-
   @override
-  Widget build (BuildContext context) {
+  Widget build(BuildContext context) {
     final User _user = Provider.of<User>(context);
     return new Scaffold(
       appBar: new AppBar(
@@ -27,7 +29,7 @@ class MatchPageState extends State<MatchPage>{
         leading: IconButton(
           icon: Icon(Icons.refresh),
           onPressed: () {
-          
+            setState(() {});
           },
         ),
         actions: <Widget>[
@@ -71,8 +73,19 @@ class MatchPageState extends State<MatchPage>{
                     )
                   ),
                     onTap: (){
+                      DocumentSnapshot peer = snapshot.data.documents.elementAt(index);
                       Navigator.pushNamed(context, "/challenge", 
-                      arguments: <Object>[snapshot.data.documents.elementAt(index)]);
+                      arguments: 
+                        <Object>[
+                          Peer(
+                            peer.documentID,
+                            peer.data["Username"],
+                            peer.data["Main"],
+                            peer.data["Secondary"],
+                            peer.data["Region"],
+                          )
+                        ]
+                      );
                     },
                   );
                 },

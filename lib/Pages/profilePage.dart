@@ -3,6 +3,7 @@ import 'package:matchup/Widgets/actionConfirmation.dart';
 import 'package:provider/provider.dart';
 
 import 'package:matchup/Pages/homepage.dart';
+import 'package:matchup/Pages/friendsListPage.dart';
 import 'package:matchup/Widgets/loadingCircle.dart';
 import 'package:matchup/bizlogic/User.dart';
 import 'package:matchup/bizlogic/constants.dart';
@@ -19,83 +20,42 @@ class ProfilePageState extends State<ProfilePage>{
   ActionConfirmation _confirmer;
   var profStyle = TextStyle(fontSize: 25);
 
-  Widget showLogOutButton(Future<void> Function(bool) logoutCallback){
-    return new Padding(
-        padding: EdgeInsets.fromLTRB(115.0, 10.0, 115.0, 0.0),
-        child: SizedBox(
-          height: 40.0,
-          width: 100,
-          child: new RaisedButton(
-            key: Key('logout'),
-            elevation: 5.0,
-            shape: new RoundedRectangleBorder(
-                borderRadius: new BorderRadius.circular(30.0)),
-            color: Colors.blueAccent,
-            child: new Text('Logout',
-                style: new TextStyle(fontSize: 20.0, color: Colors.white)),
-            onPressed: ()=>logoutCallback(false) 
-          ),
-        )
-    );
-  }
-
-  Widget showDeleteAccountButton(Future<void> Function(bool) logoutCallback){
-    return new Padding(
-        padding: EdgeInsets.fromLTRB(115.0, 10.0, 115.0, 0.0),
-        child: SizedBox(
-          height: 40.0,
-          width: 100,
-          child: new RaisedButton(
-            key: Key('DeleteAccount'),
-            elevation: 5.0,
-            shape: new RoundedRectangleBorder(
-                borderRadius: new BorderRadius.circular(30.0)),
-            color: Colors.redAccent,
-            child: new Text('Delete Account',
-                style: new TextStyle(fontSize: 20.0, color: Colors.white)),
-            onPressed: _confirmer.confirmAction 
-          ),
-        )
-    );
-  }
   
-  Widget showEditButton(Future<void> Function(bool) logoutCallback){
-    return new Padding(
-        padding: EdgeInsets.fromLTRB(115.0, 10.0, 115.0, 0.0),
-        child: SizedBox(
-          height: 40.0,
-          width: 100,
-          child: new RaisedButton(
-            key: Key('EditAccount'),
-            elevation: 5.0,
-            shape: new RoundedRectangleBorder(
-                borderRadius: new BorderRadius.circular(30.0)),
-            color: Colors.redAccent,
-            child: new Text('Edit Account',
-                style: new TextStyle(fontSize: 20.0, color: Colors.white)),
-            onPressed: (){
-              Navigator.pushNamed(context, "/editAccount");
+Widget _offsetPopup(void Function(bool) logoutCallback) => PopupMenuButton<int>(
+          itemBuilder: (context) => [
+                PopupMenuItem(
+                  value: 1,
+                  child: Text("Friends List", style: TextStyle(color: Colors.black, fontWeight: FontWeight.w700))
+                ),
+                PopupMenuItem(
+                  value: 2,
+                  child: Text("Logout", style: TextStyle(color: Colors.black, fontWeight: FontWeight.w700))
+                ),
+                PopupMenuItem(
+                  value: 3,
+                  child: Text("Delete User", style: TextStyle(color: Colors.black, fontWeight: FontWeight.w700))
+                ),
+          ],
+          onSelected: (value)
+          {
+            if(value == 1){
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => FriendsListPage()));
             }
-          ),
-        )
-    );
-  }
-
-  Widget _showForm(void Function(bool) logoutCallback) {
-    return new Container(
-        padding: EdgeInsets.all(16.0),
-        child: new Form(
-          //key: _formKey,
-          child: new ListView(
-            shrinkWrap: true,
-            children: <Widget>[
-              showLogOutButton(logoutCallback),
-              showDeleteAccountButton(logoutCallback),
-              showEditButton(logoutCallback),
-            ],
-          ),
-        ));
-  }
+            if(value == 2){
+                logoutCallback(false);
+            }
+            if(value == 3){
+              _confirmer.confirmAction();
+            }
+          },
+          
+          icon: Icon(Icons.toc, size: 35),
+          elevation: 5,
+          
+          offset: Offset(0, 100),
+        );
 
   @override
   Widget build(BuildContext context) {
@@ -129,12 +89,19 @@ class ProfilePageState extends State<ProfilePage>{
         children: [
           Text(''),
           Container(height: 50),
-          Text(_user.getUserName, style: profStyle),
+          Align(
+            alignment: Alignment.centerRight,
+            child: _offsetPopup(logoutCallback),
+          ),
+          SizedBox(
+            child: Container(
+              child: Text(_user.getUserName, style: TextStyle(fontWeight: FontWeight.bold), textAlign: TextAlign.center, textScaleFactor: 5.0),
+            ),
+          ),
           Text(''),
           Center(child: Image.asset(nameMap[_user.getMain], height: 300)), 
           Container(height: 50),
           Text("Main: " + _user.getMain + "\nSecondary: " + _user.getSecondary, style: profStyle),
-          _showForm(logoutCallback),
         ]
       ),
       );

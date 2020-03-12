@@ -188,7 +188,7 @@ class _LogInSignupPageState extends State<LogInSignupPage> {
         // successfully logged in and heading to user info entry page
         else if (_isLoginForm == false){
           Navigator.push(context,
-            MaterialPageRoute(builder: (context) => UserInfoEntryPage(widget.loginCallback, widget.logoutCallback, "LoginSignupPage"))
+            MaterialPageRoute(builder: (context) => UserInfoEntryPage(widget.loginCallback, widget.logoutCallback))
           );
         }
       } catch (e) {
