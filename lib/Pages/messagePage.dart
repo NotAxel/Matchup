@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:matchup/Pages/filterPopupPage.dart';
+import 'package:matchup/bizlogic/peer.dart';
 import 'package:provider/provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'package:matchup/Pages/filterPopupPage.dart';
 import 'package:matchup/bizlogic/User.dart';
 import 'package:matchup/bizlogic/constants.dart' as con;
+import './chatPage.dart' as chatp;
 import 'package:matchup/Pages/deletePopupForm.dart' as dpf;
 import 'package:matchup/Pages/newMessageForm.dart' as nmf;
 import './chatPage.dart' as chatp;
@@ -16,7 +19,7 @@ class MessagePage extends StatefulWidget {
 
 class MessagePageState extends State<MessagePage>{
   final ScrollController listScrollController = new ScrollController();
-  
+
   @override
   Widget build(BuildContext context){
     return new Scaffold(
@@ -52,7 +55,7 @@ class MessagePageState extends State<MessagePage>{
           if (snapshot.hasError){
             return snapshotError(snapshot);
           }
-          else if (snapshot.data.documents.length == 0) {//if collection returns an empty list
+          else if (!snapshot.hasData) {//if collection returns an empty list
             return noConversations();
           } 
           else {
@@ -76,15 +79,27 @@ class MessagePageState extends State<MessagePage>{
   }
 
   //creates each tile for individual conversations
-  Widget buildConversation(BuildContext context, DocumentSnapshot conversation, User user){
+  Widget buildConversation(BuildContext context, DocumentSnapshot peerDocumentSnapshot, User user){
     return Container(
       child: FutureBuilder(//need FutureBuilder for the .get(), snapshot is of the data of the other user
-        future: Firestore.instance.collection("Users").document(conversation.documentID).get(),
+        future: Firestore.instance.collection("Users").document(peerDocumentSnapshot.documentID).get(),
         builder: (context, snapshot){
           if(snapshot.connectionState == ConnectionState.done){
             try{
+              // create peer using the given snapshot from the future builder
+              Peer peer = Peer(
+                peerDocumentSnapshot.documentID,
+                snapshot.data["Username"],
+                snapshot.data["Main"],
+                snapshot.data["Secondary"],
+                snapshot.data["Region"],
+              );
+              // add the peer to a list of peers so it can be searched without making
+              // another backend call
               return ListTile(
                 title: new Text(snapshot.data['Username'],
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                   style: TextStyle(
                     fontSize: 25.0,
                     fontWeight: FontWeight.bold,
@@ -95,11 +110,11 @@ class MessagePageState extends State<MessagePage>{
                   height: 35.0,
                   width: 35.0,
                 ),
-                subtitle: getLastMessage(context, conversation),
+                subtitle: getLastMessage(context, peerDocumentSnapshot),
                 trailing: IconButton(
                   icon: new Icon(Icons.delete_outline), 
                   onPressed: (){
-                    deleteConversation(context, conversation, snapshot);
+                    deleteConversation(context, peerDocumentSnapshot, snapshot);
                   },
                 ),
                 onTap: (){  //navigates to chat page
@@ -107,8 +122,8 @@ class MessagePageState extends State<MessagePage>{
                     context,
                     MaterialPageRoute(builder: (BuildContext context) =>
                       chatp.ChatPage(
-                        peer: snapshot.data,
-                        chatId: conversation.data["chatId"]
+                        peer,
+                        peerDocumentSnapshot.data["chatId"]
                       )
                     )
                   );
@@ -119,7 +134,7 @@ class MessagePageState extends State<MessagePage>{
               Firestore.instance.collection('Users')
                 .document(user.getUserId)
                 .collection('Chats')
-                .document(conversation.documentID).delete();
+                .document(peerDocumentSnapshot.documentID).delete();
             }
           }
           else{
@@ -142,7 +157,7 @@ class MessagePageState extends State<MessagePage>{
             .snapshots(),
         builder: (context, AsyncSnapshot<QuerySnapshot> snapshot){  
           if(snapshot.connectionState == ConnectionState.active){
-            if(snapshot.data.documents.isNotEmpty){
+            if(snapshot.hasData && snapshot.data.documents.isNotEmpty){
               return Text(snapshot.data.documents
                   .first["content"],
                 maxLines: 1,

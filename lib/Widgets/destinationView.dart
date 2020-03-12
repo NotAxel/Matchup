@@ -28,7 +28,7 @@ class _DestinationViewState extends State<DestinationView> {
               case '/challenge':
                 return ChallengePage(arguments[0]);
               case '/chat':
-                return ChatPage(peer: arguments[0], chatId: arguments[1],);
+                return ChatPage(arguments[0], arguments[1],);
             }
           },
         );
