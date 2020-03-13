@@ -123,7 +123,6 @@ class _LogInSignupPageState extends State<LogInSignupPage> {
           ),
         ),
       ),
-      color: Colors.teal,
     );
   } 
 
@@ -146,7 +145,6 @@ class _LogInSignupPageState extends State<LogInSignupPage> {
           ),
         ),
       ),
-      color: Colors.green,
     );
   }
   
@@ -160,7 +158,6 @@ class _LogInSignupPageState extends State<LogInSignupPage> {
           style: new TextStyle(fontSize: 18.0, fontWeight: FontWeight.w300)),
         onPressed: toggleFormMode),
       ),
-      color: Colors.purple,
     );
   }
   Widget showLogo(){
@@ -170,7 +167,6 @@ class _LogInSignupPageState extends State<LogInSignupPage> {
         image: AssetImage('assets/images/logo.png'),
       ),
       alignment: Alignment.center,
-      color: Colors.amber,
     );
   }
 
@@ -259,7 +255,6 @@ class _LogInSignupPageState extends State<LogInSignupPage> {
             ),
           ),
           alignment: Alignment.center,
-          color: Colors.amber,
         ),
         flex: 3,
       );
@@ -275,39 +270,39 @@ class _LogInSignupPageState extends State<LogInSignupPage> {
           child: _passwordFormField.buildPasswordField(),
         ),
       ),
-      color: Colors.lightBlue,
     );
   }
 
   Widget showErrorMessage(){
     return Container(
       child:_errorMessage.buildErrorMessage(),
-      color: Colors.orange,
       alignment: Alignment.center,
       padding: EdgeInsets.all(5),
     );
   }
 
   Widget showForgotPassword(){
-    return Container(
-      key: Key('forgot password'),
-      child: Center(
-        child: new FlatButton(
-          
-          child: new Text(
-              'Forgot Password',
-              style: new TextStyle(fontSize: 18.0, fontWeight: FontWeight.w300)
-            ),
-          onPressed: () {
-            showPopup();
-            //String email = await  _showEmailDialog();
-          },
+    if (_isLoginForm){
+      return Container(
+        key: Key('forgot password'),
+        child: Center(
+          child: new FlatButton(
+            
+            child: new Text(
+                'Forgot Password',
+                style: new TextStyle(fontSize: 18.0, fontWeight: FontWeight.w300)
+              ),
+            onPressed: () {
+              showPopup();
+              //String email = await  _showEmailDialog();
+            },
 
-        )
-      ),
-      color: Colors.lightGreen,
-      alignment: Alignment.center,
-    );
+          )
+        ),
+        alignment: Alignment.center,
+      );
+    }
+    return Container();
   }
 
   showPopup() async {
