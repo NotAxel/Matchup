@@ -92,6 +92,7 @@ class MessagePageState extends State<MessagePage>{
                 snapshot.data["Main"],
                 snapshot.data["Secondary"],
                 snapshot.data["Region"],
+                snapshot.data["Skill"],
               );
               // add the peer to a list of peers so it can be searched without making
               // another backend call

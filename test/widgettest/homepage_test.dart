@@ -56,7 +56,7 @@ void main() {
     user.setRegion = "West Coast (WC)";
     user.setFriendCode = "SW-1234-1234-1234";
 
-    Peer peer = Peer('456', "testPeer", "Bowser", "Bowser", "West Coast (WC)");
+    Peer peer = Peer('456', "testPeer", "Bowser", "Bowser", "West Coast (WC)", "Beginner");
 
     MockAuth mockAuth = new MockAuth();
     when(mockAuth.signOut()).thenAnswer((value){return Future.value("test id");});
