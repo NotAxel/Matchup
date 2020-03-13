@@ -16,7 +16,7 @@ class DeletePopupForm extends StatefulWidget{
 }
 
 class _DeletePopupForm extends State<DeletePopupForm> {
-  static const double ButtonWidth = 130.0;
+  static const double ButtonWidth = 150.0;
   static const double ButtonHeight = 40.0;
   String _errorMessage;
   bool _isLoading;
@@ -33,8 +33,6 @@ class _DeletePopupForm extends State<DeletePopupForm> {
   Widget showDeleteForm() {
     return Container(
       margin: EdgeInsets.fromLTRB(20, 150, 20, 450),
-      // width: 350,
-      // height: 200,
       decoration: new BoxDecoration(
         border: Border.all(color: Colors.black, width: 1.0),
         borderRadius: BorderRadius.circular(20),

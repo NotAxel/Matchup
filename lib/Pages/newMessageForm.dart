@@ -5,13 +5,14 @@ import 'package:matchup/bizlogic/peer.dart';
 import 'package:provider/provider.dart';
 
 class NewMessageForm extends StatefulWidget{
+  final User user;
+  const NewMessageForm(this.user);
 
   @override
   _NewMessageForm createState()  => _NewMessageForm();
 }
 
 class _NewMessageForm extends State<NewMessageForm> {
-  User _user;
   String _errorMessage;
   bool _isLoading;
   String _otherName = 'temp';
@@ -20,25 +21,39 @@ class _NewMessageForm extends State<NewMessageForm> {
   
   @override
   Widget build(BuildContext context) {
-    _user = Provider.of<User>(context);
-    return Stack(
-      children: <Widget> [
-        showNewMessageForm(),
-      ],
+    return Material(
+        type: MaterialType.transparency,
+        child: showNewMessageForm(),
     );
   }
 
   Widget showNewMessageForm(){
-    return new Container(
-      padding: EdgeInsets.all(16.0),
-      child: new Form(
-        key: _formKey,
-        child: new ListView(
-          shrinkWrap: true,
-          children: <Widget>[
-            showOtherUserSearchField(),
-          ],
-        ),
+    return Container(
+      margin: EdgeInsets.fromLTRB(20, 50, 20, 650),
+      decoration: new BoxDecoration(
+        border: Border.all(color: Colors.black, width: 1.0),
+        borderRadius: BorderRadius.circular(20),
+        color: Colors.white,
+      ),
+      child: Center(
+        child: Padding( 
+          padding: EdgeInsets.fromLTRB(10, 5, 10, 5.0),
+          child: new Form(
+            key: _formKey,
+            child: new ListView(
+              shrinkWrap: true,
+              children: <Widget>[
+                Text("New Message", 
+                  style: TextStyle(fontSize: 22, 
+                    color: Colors.black,
+                    fontWeight: FontWeight.bold),
+                  textAlign: TextAlign.center,
+                ),
+                showOtherUserSearchField(),
+              ],
+            )
+          ),
+        )
       )
     );
   }
@@ -84,8 +99,9 @@ class _NewMessageForm extends State<NewMessageForm> {
           peerDocSnap.data['Secondary'],
           peerDocSnap.data['Region'],
         );
-        String chatId = await _user.initiateChatWithPeer(peer.getUserId);
-        Navigator.popAndPushNamed(context, "/chat", arguments: <Object>[peer, chatId]);
+        String chatId = await widget.user.initiateChatWithPeer(peer.getUserId);
+        Navigator.of(context).pop();
+        Navigator.of(context).pushNamed("/chat", arguments: <Object>[peer, chatId]);
       } 
       catch (e) {
         print('Error: $e');
@@ -113,40 +129,8 @@ class _NewMessageForm extends State<NewMessageForm> {
     if(value.isEmpty){
       return 'Username cannot be empty';
     }
-  }
-  
-  String constructChatid(String userId, String peerId){
-    String chatId;
-    if (userId.hashCode <= peerId.hashCode) {
-      chatId = '$userId-$peerId';
-    } 
-    else {
-      chatId = '$peerId-$userId';
+    else if(value.compareTo(widget.user.getUserName) == 0){
+      return 'You cannot message yourself...find a friend';
     }
-    return chatId;
-  }
-
-  Future<String> initiateChatWithPeer(String userId, String peerId) async{
-    String chatId = constructChatid(userId, peerId);
-
-    // dont have to use await here since they are just references like memory addresses
-    DocumentReference userReference = Firestore.instance.collection('Users').document(userId).collection('Chats').document(peerId);
-    DocumentReference peerReference = Firestore.instance.collection('Users').document(peerId).collection('Chats').document(userId);
-
-    // need to use await here because of the db get call 
-    DocumentSnapshot userSnapshot = await userReference.get();
-    DocumentSnapshot peerSnapshot = await peerReference.get();
-
-    // if the chat does not exist for the users, create it
-    if (!userSnapshot.exists){
-      Firestore.instance.collection('Users').document(userId).collection('Chats').document(peerId).setData({'chatId': chatId});
-    }
-
-    // if the chat does not exist for the peer, create it
-    if (!peerSnapshot.exists){
-      Firestore.instance.collection('Users').document(peerId).collection('Chats').document(userId).setData({'chatId': chatId});
-    }
-
-    return chatId;
   }
 }

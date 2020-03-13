@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:matchup/Pages/filterPopupPage.dart';
 import 'package:matchup/bizlogic/peer.dart';
 import 'package:provider/provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-import 'package:matchup/Pages/filterPopupPage.dart';
 import 'package:matchup/bizlogic/User.dart';
 import 'package:matchup/bizlogic/constants.dart' as con;
 import './chatPage.dart' as chatp;
@@ -22,6 +20,7 @@ class MessagePageState extends State<MessagePage>{
 
   @override
   Widget build(BuildContext context){
+    final User user = Provider.of<User>(context);
     return new Scaffold(
       appBar: new AppBar(
         centerTitle: true,
@@ -30,22 +29,21 @@ class MessagePageState extends State<MessagePage>{
           IconButton(
             icon: Icon(Icons.create),
             onPressed: () {
-              createConversation(context);
+              createConversation(context, user);
             },
           ),
         ]
       ),
       body: Column(
         children: <Widget>[
-          buildConversationList(context),
+          buildConversationList(context, user),
         ],
       )
     );
   }
 
   //main page layout, creates the overall list
-  Widget buildConversationList(BuildContext context){
-    final User user = Provider.of<User>(context);
+  Widget buildConversationList(BuildContext context, User user){
     return Expanded(
       child: StreamBuilder(
         stream: Firestore.instance
@@ -192,33 +190,13 @@ class MessagePageState extends State<MessagePage>{
   }
 
   //create a conversation with another user based on username
-  createConversation(BuildContext context){
-    Navigator.push(
-      context,
-      FilterPopupPage(
-        top: 0,
-        left: 20,
-        bottom: 600,
-        right: 20,
-        child: Scaffold(
-          appBar: AppBar(
-            title: Text("New Message"),
-            leading: new Builder(builder: (context) {
-              return IconButton(
-                icon: Icon(Icons.arrow_back),
-                onPressed: () {
-                  try {
-                    Navigator.pop(context);
-                  } catch(e) {}
-                },
-              );
-            }),
-            brightness: Brightness.light,
-          ),
-          resizeToAvoidBottomPadding: false,
-          body: nmf.NewMessageForm(),
-        )
-      )
+  createConversation(BuildContext context, User user){
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        // return object of type Dialog   
+        return  nmf.NewMessageForm(user);
+      },
     );
   }
 
