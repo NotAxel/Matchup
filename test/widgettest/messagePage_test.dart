@@ -39,6 +39,7 @@ class MockAuth extends Mock implements BaseAuth{}
 
 class Keys{
   static const Key NO_CONVERSATIONS = Key("no conversations");
+  static const Key CREATE_CONVERSATION= Key("create conversation");
 }
 
 void main() {
@@ -59,6 +60,11 @@ void main() {
     await tester.pumpWidget(await makeTestableWidget(tester, page, mockAuth, user));
 
     Finder finder = find.byKey(Keys.NO_CONVERSATIONS);
+    expect(finder, findsOneWidget);
+    await tester.tap(finder); // had to comment out send message animation to get this to work
+    await tester.pump();
+
+    finder = find.byKey(Keys.CREATE_CONVERSATION);
     expect(finder, findsOneWidget);
     await tester.tap(finder); // had to comment out send message animation to get this to work
     await tester.pump();
