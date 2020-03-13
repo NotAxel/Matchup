@@ -14,3 +14,6 @@ A cross-compatible Super Smash Bros Ultimate Matchmaking service.
 
 ### style guide ### 
 https://dart.dev/guides/language/effective-dart/style
+
+### code coverage ###
+https://drive.google.com/drive/folders/1Ac-K151A7M6a5iAO6YHbC12P8aj9mlXX?usp=sharing
