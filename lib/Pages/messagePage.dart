@@ -180,7 +180,6 @@ class MessagePageState extends State<MessagePage>{
   }
 
   //creates the popup to confirm account deletion
-<<<<<<< HEAD
   deleteConversation(BuildContext context, DocumentSnapshot conversation, AsyncSnapshot otherUser){
     showDialog(
       context: context,
@@ -188,41 +187,10 @@ class MessagePageState extends State<MessagePage>{
         // return object of type Dialog   
         return  dpf.DeletePopupForm(conversation: conversation, otherUser: otherUser);
       },
-=======
-  deleteConversation(BuildContext context, DocumentSnapshot conversation, AsyncSnapshot snap){
-    Navigator.push(
-      context,
-      FilterPopupPage(
-        key: Key("delete conversation"),
-        top: 200,
-        left: 20,
-        bottom: 300,
-        right: 20,
-        child: Scaffold(
-          appBar: AppBar(
-            title: Text("DELETE CONVERSATION?"),
-            leading: new Builder(builder: (context) {
-              return IconButton(
-                icon: Icon(Icons.arrow_back),
-                onPressed: () {
-                  try {
-                    Navigator.pop(context);
-                  } catch(e) {}
-                },
-              );
-            }),
-            brightness: Brightness.light,
-          ),
-          resizeToAvoidBottomPadding: false,
-          body: dpf.DeletePopupForm(conversation: conversation, otherUser: snap),
-        )
-      )
->>>>>>> master
     );
   }
 
   //create a conversation with another user based on username
-<<<<<<< HEAD
   createConversation(BuildContext context, User user){
     showDialog(
       context: context,
@@ -231,36 +199,6 @@ class MessagePageState extends State<MessagePage>{
         return  nmf.NewMessageForm(user);
       },
     );
-=======
-  createConversation(BuildContext context){
-    // Navigator.push(
-    //   context,
-    //   FilterPopupPage(
-    //     top: 0,
-    //     left: 20,
-    //     bottom: 600,
-    //     right: 20,
-    //     child: Scaffold(
-    //       appBar: AppBar(
-    //         title: Text("New Message"),
-    //         leading: new Builder(builder: (context) {
-    //           return IconButton(
-    //             icon: Icon(Icons.arrow_back),
-    //             onPressed: () {
-    //               try {
-    //                 Navigator.pop(context);
-    //               } catch(e) {}
-    //             },
-    //           );
-    //         }),
-    //         brightness: Brightness.light,
-    //       ),
-    //       resizeToAvoidBottomPadding: false,
-    //       body: nmf.NewMessageForm(),
-    //     )
-    //   )
-    // );
->>>>>>> master
   }
 
   //when the users collection fo chats is empty
