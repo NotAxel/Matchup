@@ -20,6 +20,7 @@ class MessagePageState extends State<MessagePage>{
 
   @override
   Widget build(BuildContext context){
+    final User user = Provider.of<User>(context);
     return new Scaffold(
       appBar: new AppBar(
         centerTitle: true,
@@ -29,22 +30,21 @@ class MessagePageState extends State<MessagePage>{
             icon: Icon(Icons.create),
             key: Key("create conversation"),
             onPressed: () {
-              createConversation(context);
+              createConversation(context, user);
             },
           ),
         ]
       ),
       body: Column(
         children: <Widget>[
-          buildConversationList(context),
+          buildConversationList(context, user),
         ],
       )
     );
   }
 
   //main page layout, creates the overall list
-  Widget buildConversationList(BuildContext context){
-    final User user = Provider.of<User>(context);
+  Widget buildConversationList(BuildContext context, User user){
     return Expanded(
       child: StreamBuilder(
         stream: Firestore.instance
@@ -180,66 +180,25 @@ class MessagePageState extends State<MessagePage>{
   }
 
   //creates the popup to confirm account deletion
-  deleteConversation(BuildContext context, DocumentSnapshot conversation, AsyncSnapshot snap){
-    Navigator.push(
-      context,
-      FilterPopupPage(
-        key: Key("delete conversation"),
-        top: 200,
-        left: 20,
-        bottom: 300,
-        right: 20,
-        child: Scaffold(
-          appBar: AppBar(
-            title: Text("DELETE CONVERSATION?"),
-            leading: new Builder(builder: (context) {
-              return IconButton(
-                icon: Icon(Icons.arrow_back),
-                onPressed: () {
-                  try {
-                    Navigator.pop(context);
-                  } catch(e) {}
-                },
-              );
-            }),
-            brightness: Brightness.light,
-          ),
-          resizeToAvoidBottomPadding: false,
-          body: dpf.DeletePopupForm(conversation: conversation, otherUser: snap),
-        )
-      )
+  deleteConversation(BuildContext context, DocumentSnapshot conversation, AsyncSnapshot otherUser){
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        // return object of type Dialog   
+        return  dpf.DeletePopupForm(conversation: conversation, otherUser: otherUser);
+      },
     );
   }
 
   //create a conversation with another user based on username
-  createConversation(BuildContext context){
-    // Navigator.push(
-    //   context,
-    //   FilterPopupPage(
-    //     top: 0,
-    //     left: 20,
-    //     bottom: 600,
-    //     right: 20,
-    //     child: Scaffold(
-    //       appBar: AppBar(
-    //         title: Text("New Message"),
-    //         leading: new Builder(builder: (context) {
-    //           return IconButton(
-    //             icon: Icon(Icons.arrow_back),
-    //             onPressed: () {
-    //               try {
-    //                 Navigator.pop(context);
-    //               } catch(e) {}
-    //             },
-    //           );
-    //         }),
-    //         brightness: Brightness.light,
-    //       ),
-    //       resizeToAvoidBottomPadding: false,
-    //       body: nmf.NewMessageForm(),
-    //     )
-    //   )
-    // );
+  createConversation(BuildContext context, User user){
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        // return object of type Dialog   
+        return  nmf.NewMessageForm(user);
+      },
+    );
   }
 
   //when the users collection fo chats is empty
