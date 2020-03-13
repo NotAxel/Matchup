@@ -24,50 +24,73 @@ class _DeletePopupForm extends State<DeletePopupForm> {
   
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: <Widget> [
-        showDeleteForm(),
-      ],
+    return Material(
+        type: MaterialType.transparency,
+        child: showDeleteForm(),
     );
   }
 
   Widget showDeleteForm() {
-    return new Container(
-      padding: EdgeInsets.all(16.0),
-      child: new Form(
-        key: _formKey,
-        child: new ListView(
-          shrinkWrap: true,
-          children: <Widget>[
-            const SizedBox(height: 15),
-            showConfirmationMessage(),
-            const SizedBox(height: 20),
-            showButtons(),
-          ],
-        )
+    return Container(
+      margin: EdgeInsets.fromLTRB(20, 150, 20, 450),
+      // width: 350,
+      // height: 200,
+      decoration: new BoxDecoration(
+        border: Border.all(color: Colors.black, width: 1.0),
+        borderRadius: BorderRadius.circular(20),
+        color: Colors.white,
       ),
+      child: Center(
+        child: Padding( 
+          padding: EdgeInsets.fromLTRB(10, 5, 10, 5.0),
+          child: new Form(
+            key: _formKey,
+            child: new ListView(
+              shrinkWrap: true,
+              children: <Widget>[
+                Text("DELETE CONVERSATION?", 
+                  style: TextStyle(fontSize: 22, 
+                    color: Colors.black,
+                    fontWeight: FontWeight.bold),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 10),
+                showConfirmationMessage(),
+                const SizedBox(height: 10),
+                showButtons(),
+              ],
+            )
+          ),
+        )
+      )
     );
   }
 
   Widget showConfirmationMessage() {
-    return new Center(
-      child: Text("Delete conversation with " + widget.otherUser.data['Username'] + "?")
+    return Center(
+      child: Text("Delete conversation with " + widget.otherUser.data['Username'] + "?", 
+        style: TextStyle(fontSize: 20.0, 
+          color: Colors.black,
+          fontWeight: FontWeight.normal
+          ),
+        textAlign: TextAlign.center,
+      ),
     );
   }
 
-  Widget showYesButton() { 
+  Widget showDeleteButton() { 
     return new Padding(
-      padding: EdgeInsets.fromLTRB(5.0, 15, 5, 0),
+      padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
       child: SizedBox(
         height: ButtonHeight,
         width: ButtonWidth,
         child: new RaisedButton(
-          elevation: 10.0,
-          color: Colors.lightGreen,
+          elevation: 5.0,
+          color: Colors.red,
           shape: new RoundedRectangleBorder(
             borderRadius: new BorderRadius.circular(30.0)
           ),
-          child: new Text('YES'),
+          child: new Text('Delete'),
           onPressed: () {
             validateAndSubmit();
           },
@@ -76,19 +99,18 @@ class _DeletePopupForm extends State<DeletePopupForm> {
     );
   }
 
-  Widget showNoButton() {  //change to NO button
+  Widget showCancelButton() {  
     return new Padding(
-      padding: EdgeInsets.fromLTRB(5.0, 15, 5, 0),
+      padding: EdgeInsets.fromLTRB(5.0, 5, 5, 0),
       child: SizedBox(
         height: ButtonHeight,
         width: ButtonWidth,
-        child: new RaisedButton(
-          elevation: 10.0,
-          color: Colors.deepOrange,
+        child: new FlatButton(
+          color: Colors.white,
           shape: new RoundedRectangleBorder(
             borderRadius: new BorderRadius.circular(30.0)
           ),
-          child: new Text('NO'),
+          child: new Text('Cancel'),
           onPressed: (){Navigator.of(context).pop();}
        )
       ),
@@ -97,13 +119,10 @@ class _DeletePopupForm extends State<DeletePopupForm> {
 
   Widget showButtons() {
     return new Container(
-      child: new Row(
+      child: new Column(
         children: <Widget>[
-          const SizedBox(width: 23),
-          showYesButton(),
-          const SizedBox(width: 15),
-          showNoButton(),
-          const SizedBox(width: 24),
+          showDeleteButton(),
+          showCancelButton(),
         ],)
     );
   }
