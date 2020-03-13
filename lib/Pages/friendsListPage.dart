@@ -23,7 +23,7 @@ class FriendsListPageState extends State<FriendsListPage>{
         title: new Center(child: Text("Friends List")),
         actions: <Widget>[
           IconButton(
-            key: Key("showInfoButton"),
+            key: Key("infoButton"),
             icon: Icon(Icons.person), 
             onPressed: () { 
               _showInfo(context);

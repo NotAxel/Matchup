@@ -1,4 +1,4 @@
-// friendsList page test
+// FriendsList Page Test
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -39,7 +39,7 @@ Future<Widget> makeTestableWidget(WidgetTester tester, Widget child, BaseAuth au
 class MockAuth extends Mock implements BaseAuth{}
 
 class Keys{
-  static const Key SHOW_INFO = Key("showInfoButton");
+  static const Key SHOW_INFO = Key("infoButton");
   static const Key CLOSE_SHOW_INFO = Key("closeShowInfo");
   static const Key CHAT = Key("chatButton");
   static const Key NO_FRIENDS = Key("noFriends");

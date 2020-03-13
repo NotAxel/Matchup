@@ -1,4 +1,4 @@
-// challenge page test
+// Challenge Page Test
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -40,10 +40,11 @@ class MockAuth extends Mock implements BaseAuth{}
 
 class Keys{
   static const Key ADD_FRIEND = Key("addFriend");
+  static const Key GO_CHAT = Key("goChat");
 }
 
 void main() {
-  testWidgets('send friend code', (WidgetTester tester) async {
+  testWidgets('challenge page tests', (WidgetTester tester) async {
     MockAuth mockAuth = new MockAuth();
 
     User user = User();
@@ -61,9 +62,15 @@ void main() {
     ChallengePage page = ChallengePage(peer);
     await tester.pumpWidget(await makeTestableWidget(tester, page, mockAuth, user));
 
-    Finder finder = find.byKey(Keys.ADD_FRIEND);
+    Finder finder = find.byKey(Keys.GO_CHAT);
+    expect(finder, findsOneWidget);
+    await tester.tap(finder); // had to comment out send message animation to get this to work
+    await tester.pump();
+
+    finder = find.byKey(Keys.ADD_FRIEND);
     expect(finder, findsOneWidget);
     await tester.tap(finder); // had to comment out send message animation to get this to work
     await tester.pump();
   });
+ 
 }

@@ -246,7 +246,7 @@ class _RootPageState extends State<RootPage>{
           return Provider(
             create: (context) => user,
             child: new HomePage(
-              logoutCallback: logoutCallback,
+              logoutCallback,
             ),
           );
         } 
