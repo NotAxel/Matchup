@@ -29,6 +29,7 @@ class MessagePageState extends State<MessagePage>{
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.create),
+            key: Key("create conversation"),
             onPressed: () {
               createConversation(context);
             },
@@ -55,7 +56,7 @@ class MessagePageState extends State<MessagePage>{
           if (snapshot.hasError){
             return snapshotError(snapshot);
           }
-          else if (snapshot.data.documents.length == 0) {//if collection returns an empty list
+          else if (!snapshot.hasData) {//if collection returns an empty list
             return noConversations();
           } 
           else {
@@ -157,7 +158,7 @@ class MessagePageState extends State<MessagePage>{
             .snapshots(),
         builder: (context, AsyncSnapshot<QuerySnapshot> snapshot){  
           if(snapshot.connectionState == ConnectionState.active){
-            if(snapshot.data.documents.isNotEmpty){
+            if(snapshot.hasData && snapshot.data.documents.isNotEmpty){
               return Text(snapshot.data.documents
                   .first["content"],
                 maxLines: 1,
@@ -185,6 +186,7 @@ class MessagePageState extends State<MessagePage>{
     Navigator.push(
       context,
       FilterPopupPage(
+        key: Key("delete conversation"),
         top: 200,
         left: 20,
         bottom: 300,
@@ -245,6 +247,7 @@ class MessagePageState extends State<MessagePage>{
   //when the users collection fo chats is empty
   Widget noConversations(){
     return Center(
+      key: Key("no conversations"),
       child: Container(
         child: Text(
           "   No current messages :(\n\nGo to MatchList to SMASH!",
