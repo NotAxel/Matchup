@@ -12,7 +12,7 @@ import './friendsListPage.dart' as freindsLp;
 class HomePage extends StatefulWidget{
   final Future<void> Function(bool) logoutCallback;
 
-  HomePage({Key key, this.logoutCallback}) : super(key: key);
+  HomePage(this.logoutCallback);
 
   @override
   HomePageState createState() => new HomePageState();
