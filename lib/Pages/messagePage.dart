@@ -29,6 +29,7 @@ class MessagePageState extends State<MessagePage>{
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.create),
+            key: Key("create conversation"),
             onPressed: () {
               createConversation(context);
             },
@@ -185,6 +186,7 @@ class MessagePageState extends State<MessagePage>{
     Navigator.push(
       context,
       FilterPopupPage(
+        key: Key("delete conversation"),
         top: 200,
         left: 20,
         bottom: 300,
@@ -245,6 +247,7 @@ class MessagePageState extends State<MessagePage>{
   //when the users collection fo chats is empty
   Widget noConversations(){
     return Center(
+      key: Key("no conversations"),
       child: Container(
         child: Text(
           "   No current messages :(\n\nGo to MatchList to SMASH!",

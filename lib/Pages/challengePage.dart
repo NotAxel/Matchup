@@ -60,7 +60,7 @@ class _ChallengePageState extends State<ChallengePage> {
                   onPressed: () {
                     goToChatPage(context, _user);
                   },
-                  ),
+                ),
                   if(!isFriend)
                     RaisedButton(
                       key: Key("addFriend"),

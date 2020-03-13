@@ -84,6 +84,7 @@ Widget _offsetPopup(void Function(bool) logoutCallback) => PopupMenuButton<int>(
     }
     else{
       return Scaffold(
+        appBar: AppBar(title: Text("Profile"),),
         body: Column(
         children: [
           Expanded(

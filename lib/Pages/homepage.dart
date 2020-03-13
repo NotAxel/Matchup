@@ -3,6 +3,7 @@ import 'package:matchup/Widgets/destination.dart';
 import 'package:matchup/Widgets/destinationView.dart';
 import 'package:matchup/bizlogic/screenSize.dart';
 import './profilePage.dart' as profilep;
+import './profilePageEdit.dart' as profilepe;
 import './messagePage.dart' as messagep;
 import './matchPage.dart' as matchp;
 
