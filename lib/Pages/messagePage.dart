@@ -191,14 +191,15 @@ class MessagePageState extends State<MessagePage>{
   }
 
   //create a conversation with another user based on username
-  createConversation(BuildContext context, User user){
-    showDialog(
+  createConversation(BuildContext context, User user) async {
+    List <Object> peerChatID = await showDialog(
       context: context,
       builder: (BuildContext context) {
         // return object of type Dialog   
         return  nmf.NewMessageForm(user);
       },
     );
+    Navigator.of(context).pushNamed("/chat", arguments: <Object>[peerChatID[0], peerChatID[1]]);
   }
 
   //when the users collection fo chats is empty
