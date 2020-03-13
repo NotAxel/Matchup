@@ -63,6 +63,7 @@ class _ChallengePageState extends State<ChallengePage> {
                 ),
                   if(!isFriend)
                     RaisedButton(
+                      key: Key("addFriend"),
                       child: Text('Add Friend', style: TextStyle(fontSize: 20, color: Colors.white)),
                       color: Colors.redAccent,
                       onPressed: () {
@@ -73,14 +74,6 @@ class _ChallengePageState extends State<ChallengePage> {
                         //add pop-up if successfull
                       },
                     ),
-
-                RaisedButton(
-                  child: Text('Go back!'),
-                  onPressed: () {
-                    // goes back
-                    Navigator.pop(context);
-                  },
-                ),
               ],
             )
           )
@@ -112,9 +105,7 @@ class _ChallengePageState extends State<ChallengePage> {
         isFriend = ds.exists;
       });
     }
-
-}
-
+  }
 } 
 
 
