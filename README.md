@@ -2,6 +2,16 @@
 
 A cross-compatible Super Smash Bros Ultimate Matchmaking service.
 
+## testing strategy document $$
+https://docs.google.com/document/d/1QvZtGZR3PCzE3iM-k-qfzkhvzPBWfQeZCFPb8Vx6zY8/edit?usp=sharing
+
+## code coverage report ##
+
+## Acceptance Tests ##
+
+## Continuous Integration ##
+
+
 ## requirements ##
   * flutter version 1.15.21
   * firebase library
@@ -14,6 +24,3 @@ A cross-compatible Super Smash Bros Ultimate Matchmaking service.
 
 ### style guide ### 
 https://dart.dev/guides/language/effective-dart/style
-
-### code coverage ###
-https://drive.google.com/drive/folders/1Ac-K151A7M6a5iAO6YHbC12P8aj9mlXX?usp=sharing
