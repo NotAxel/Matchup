@@ -245,6 +245,7 @@ class MessagePageState extends State<MessagePage>{
   //when the users collection fo chats is empty
   Widget noConversations(){
     return Center(
+      key: Key("no conversations"),
       child: Container(
         child: Text(
           "   No current messages :(\n\nGo to MatchList to SMASH!",
