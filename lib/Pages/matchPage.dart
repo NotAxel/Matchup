@@ -42,21 +42,6 @@ class MatchPageState extends State<MatchPage>{
       appBar: new AppBar(
         centerTitle: true,
         title: new Center(child: Text("MatchList")),
-<<<<<<< HEAD
-        // leading: IconButton(
-        //   icon: Icon(Icons.refresh),
-        //   onPressed: () {
-        //     // TODO add in a refresh page function
-        //   },
-        // ),
-=======
-        leading: IconButton(
-          icon: Icon(Icons.refresh),
-          onPressed: () {
-            setState(() {});
-          },
-        ),
->>>>>>> master
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.filter_list),
@@ -88,31 +73,41 @@ class MatchPageState extends State<MatchPage>{
                             fontSize: 20.0,
                             fontWeight: FontWeight.bold),
                           ),
-                        subtitle: new Image(
-                          image: AssetImage(con.Constants.minSpritesMap[snapshot.data.documents.elementAt(index)['Main']]),
-                          height: 25.0,
-                          width: 25.0,
-                          alignment: Alignment.centerLeft,
-                        ),
-                        trailing: new Text(
-                          snapshot.data.documents.elementAt(index)['Region'],
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                          )
-                        ),
+                          subtitle: new Image(
+                            image: AssetImage(con.Constants.minSpritesMap[snapshot.data.documents.elementAt(index)['Main']]),
+                            height: 25.0,
+                            width: 25.0,
+                            alignment: Alignment.centerLeft,
+                          ),
+                          trailing: new Text(
+                            snapshot.data.documents.elementAt(index)['Region'],
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                            )
+                          ),
                           onTap: (){
+                            DocumentSnapshot peer = snapshot.data.documents.elementAt(index);
                             Navigator.pushNamed(context, "/challenge", 
-                            arguments: <Object>[snapshot.data.documents.elementAt(index)]);
+                            arguments: 
+                              <Object>[
+                                Peer(
+                                  peer.documentID,
+                                  peer.data["Username"],
+                                  peer.data["Main"],
+                                  peer.data["Secondary"],
+                                  peer.data["Region"],
+                                )
+                              ]
+                            );
                           },
                         );
                       },
-                    separatorBuilder: (BuildContext context, int index) =>  Divider(
-                      color: Colors.blueGrey,
-                      indent: 15,
-                      endIndent: 15,
-                      thickness: 1.5,
-                    ),
-<<<<<<< HEAD
+                      separatorBuilder: (BuildContext context, int index) =>  Divider(
+                        color: Colors.blueGrey,
+                        indent: 15,
+                        endIndent: 15,
+                        thickness: 1.5,
+                      ),
                 );
               }
             })
@@ -121,46 +116,6 @@ class MatchPageState extends State<MatchPage>{
           )
         )
       )
-=======
-                  subtitle: new Image(
-                    image: AssetImage(con.Constants.minSpritesMap[snapshot.data.documents.elementAt(index)['Main']]),
-                    height: 25.0,
-                    width: 25.0,
-                    alignment: Alignment.centerLeft,
-                  ),
-                  trailing: new Text(
-                    snapshot.data.documents.elementAt(index)['Region'],
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                    )
-                  ),
-                    onTap: (){
-                      DocumentSnapshot peer = snapshot.data.documents.elementAt(index);
-                      Navigator.pushNamed(context, "/challenge", 
-                      arguments: 
-                        <Object>[
-                          Peer(
-                            peer.documentID,
-                            peer.data["Username"],
-                            peer.data["Main"],
-                            peer.data["Secondary"],
-                            peer.data["Region"],
-                          )
-                        ]
-                      );
-                    },
-                  );
-                },
-              separatorBuilder: (BuildContext context, int index) =>  Divider(
-                color: Colors.blueGrey,
-                indent: 15,
-                endIndent: 15,
-                thickness: 1.5,
-              ),
-          );
-        }
-      })
->>>>>>> master
     );
   }
 

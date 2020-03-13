@@ -36,6 +36,8 @@ class Keys{
   static const Key login = Key('login'); // the login button found on login/signup
   static const Key switchButton = Key('switch between login/signup'); // the button that switches login/signup found on login/signup
   static const Key errorMessage = Key('error message'); // the error message text found on login/signup
+  static const Key forgotPassword = Key('forgot password');
+  static const Key closeDialog = Key('closeDialog');
 }
 
 // THE SIZE OF THE WIDGET TEST SCREEN IS
@@ -327,4 +329,18 @@ void main() {
 
     });
   });
+testWidgets('check forgot Password', (WidgetTester tester)async{
+  LogInSignupPage logInSignupPage = LogInSignupPage();
+  MockAuth mockAuth = new MockAuth();
+  await tester.pumpWidget(await makeTestableWidget(tester, logInSignupPage,mockAuth));
+  Finder finder = find.byKey(Keys.forgotPassword);
+  expect(finder, findsOneWidget);
+  Container button = finder.evaluate().first.widget;
+
+  await tester.pump();
+
+  // finder = find.byKey(Keys.closeDialog);
+  // expect(finder, findsOneWidget);
+});
+
 }
