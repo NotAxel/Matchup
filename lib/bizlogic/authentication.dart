@@ -91,6 +91,10 @@ class Auth implements BaseAuth {
     }
   }
 
+  Future<void> resetPassword(String email) async {
+      FirebaseAuth  fAuth =  FirebaseAuth.instance;
+      await fAuth.sendPasswordResetEmail(email: email);
+  }
   // returns null if the user was successfully authenticated 
   // with the given email and password
   // if there was an error, returns the error message
@@ -108,4 +112,5 @@ class Auth implements BaseAuth {
     }
     return result.user.uid;
   }
+  
 }
