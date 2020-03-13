@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'dart:collection';
 import 'package:matchup/Widgets/loadingCircle.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -15,7 +17,18 @@ class MatchPage extends StatefulWidget {
   MatchPageState createState() => MatchPageState();
 }
 
+
+
 class MatchPageState extends State<MatchPage>{
+  Future<void> _refreshMatchPage()
+  {
+    Future<bool> res = Future.value(true);
+    setState((){
+
+    });
+    return res;
+  }
+  
   List<String> filters = ["", ""];
 
   @override

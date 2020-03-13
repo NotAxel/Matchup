@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:matchup/bizlogic/screenSize.dart';
 import 'package:provider/provider.dart';
@@ -29,6 +30,7 @@ class _LogInSignupPageState extends State<LogInSignupPage> {
   FocusNode _passwordFocusNode = FocusNode();
   PasswordFormField _passwordFormField = PasswordFormField(true);
   ErrorMessage _errorMessage = ErrorMessage();
+  final TextEditingController _emailController = new TextEditingController();
 
   bool _isLoginForm;
   bool _isLoading;
@@ -67,6 +69,37 @@ class _LogInSignupPageState extends State<LogInSignupPage> {
     });
   }
 
+  
+
+  // user defined function
+  Widget _showEmailDialog() {
+    // flutter defined function
+        // return object of type Dialog
+        return AlertDialog(
+          title: new Text("enter email of lost account into email field and repress button"),
+          elevation: 100.0,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+          content: showEmailField(),
+          actions: <Widget>[
+            new FlatButton(
+              child: new Text("Close"),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              key: Key('closeDialog')
+            ),
+            new FlatButton(
+              child: new Text("Submit"),
+              onPressed: () {
+                Navigator.pop(context, _emailController.text);
+              },
+            ),
+          ],
+        );
+  }
+
+
+
   // https://stackoverflow.com/questions/52645944/flutter-expanded-vs-flexible
   Widget showEmailField(){
     Validator emailValidator = EmailValidator();
@@ -76,6 +109,7 @@ class _LogInSignupPageState extends State<LogInSignupPage> {
           padding: EdgeInsets.fromLTRB(0.0, 5, 0.0, 5.0),
           child: new TextFormField(
               key: Key('email'),
+              controller: _emailController,
               maxLines: 1,
               autofocus: false,
               keyboardType: TextInputType.emailAddress,
@@ -254,6 +288,41 @@ class _LogInSignupPageState extends State<LogInSignupPage> {
     );
   }
 
+  Widget showForgotPassword(){
+    return Container(
+      key: Key('forgot password'),
+      child: Center(
+        child: new FlatButton(
+          
+          child: new Text(
+              'Forgot Password',
+              style: new TextStyle(fontSize: 18.0, fontWeight: FontWeight.w300)
+            ),
+          onPressed: () {
+            showPopup();
+            //String email = await  _showEmailDialog();
+          },
+
+        )
+      ),
+      color: Colors.lightGreen,
+      alignment: Alignment.center,
+    );
+  }
+
+  showPopup() async {
+    final Auth auth = Provider.of<BaseAuth>(context, listen: false);
+    String email = await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return _showEmailDialog();
+      }
+    );
+
+
+    auth.resetPassword(email);
+  }
+
   Widget _showLogInForm() {
     if (_isLoading){
       return LoadingCircle.loadingCircle();
@@ -272,6 +341,7 @@ class _LogInSignupPageState extends State<LogInSignupPage> {
                   showErrorMessage(),
                   showPasswordRequirements(),
                   Expanded(child: showLogInButton()), 
+                  Expanded(child: showForgotPassword()),
                   Expanded(child: showSwitchButton()),
                 ]
               ),
