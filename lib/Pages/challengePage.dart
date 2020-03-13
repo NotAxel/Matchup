@@ -28,6 +28,15 @@ class _ChallengePageState extends State<ChallengePage> {
     super.initState();
   }
 
+  Widget showSkill(){
+    if (widget._peer.getSkill != null){
+      return Text("Skill: " + this.widget._peer.getSkill, style: profStyle);
+    }
+    else {
+      return Text("Skill: unknown", style: profStyle);
+    }
+  }
+
   @override
   Widget build(BuildContext context){
     _user = Provider.of<User>(context);
@@ -44,15 +53,13 @@ class _ChallengePageState extends State<ChallengePage> {
               children: <Widget>[
 
                 
-                Text(''),
                 //Should get username from firebase
                 Text(this.widget._peer.getUserName, style: TextStyle(fontSize: 30)),
-                Text(''),
                 //Should get profile pic from firebase
                 Image.asset(nameMap[this.widget._peer.getMain], height: 300),
-                Text(''),
                 //Should get mains from firebase
                 Text(this.widget._peer.getMain, style: profStyle),
+                showSkill(),
                 
                 RaisedButton(
                   key: Key("goChat"),
@@ -87,13 +94,7 @@ class _ChallengePageState extends State<ChallengePage> {
     String chatId = await _user.initiateChatWithPeer(this.widget._peer.getUserId);
     Navigator.pushNamed(context, "/chat", 
       arguments: <Object>[
-        Peer(
-          this.widget._peer.getUserId,
-          this.widget._peer.getUserName,
-          this.widget._peer.getMain,
-          this.widget._peer.getSecondary,
-          this.widget._peer.getRegion,
-        ),
+        this.widget._peer,
         chatId
       ]
     );

@@ -114,6 +114,7 @@ class FriendsListPageState extends State<FriendsListPage>{
                           snapshot.data["Main"],
                           snapshot.data["Secondary"],
                           snapshot.data["Region"],
+                          snapshot.data["Skill"],
                         ),
                         snapshot.data["chatId"]
                       )

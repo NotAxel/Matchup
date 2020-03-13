@@ -98,6 +98,7 @@ class _NewMessageForm extends State<NewMessageForm> {
           peerDocSnap.data['Main'],
           peerDocSnap.data['Secondary'],
           peerDocSnap.data['Region'],
+          peerDocSnap.data['Skill'],
         );
         String chatId = await widget.user.initiateChatWithPeer(peer.getUserId);
         Navigator.of(context).pop(<Object>[peer, chatId]);
