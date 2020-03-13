@@ -22,16 +22,20 @@ class ProfilePageState extends State<ProfilePage>{
 
   
 Widget _offsetPopup(void Function(bool) logoutCallback) => PopupMenuButton<int>(
+          key: Key("menuKT"),
           itemBuilder: (context) => [
                 PopupMenuItem(
+                  key: Key("profileFL"),
                   value: 1,
                   child: Text("Friends List", style: TextStyle(color: Colors.black, fontWeight: FontWeight.w700))
                 ),
                 PopupMenuItem(
+                  key: Key("profileLog"),
                   value: 2,
                   child: Text("Logout", style: TextStyle(color: Colors.black, fontWeight: FontWeight.w700))
                 ),
                 PopupMenuItem(
+                  key: Key("profileDU"),
                   value: 3,
                   child: Text("Delete User", style: TextStyle(color: Colors.black, fontWeight: FontWeight.w700))
                 ),
@@ -65,7 +69,7 @@ Widget _offsetPopup(void Function(bool) logoutCallback) => PopupMenuButton<int>(
     // auth.getCurrentUser().then((value){
 
     final User _user = Provider.of<User>(context);
-    final Future<void> Function(bool) logoutCallback = HomePageProvider.of(context).logoutCallback;
+    final Future<void> Function(bool) logoutCallback = Provider.of<Future<void> Function(bool)>(context);
 
     _confirmer = ActionConfirmation(
       context,
@@ -84,24 +88,28 @@ Widget _offsetPopup(void Function(bool) logoutCallback) => PopupMenuButton<int>(
     }
     else{
       return Scaffold(
-        appBar: AppBar(title: Text("Profile"),),
+        key: Key("MainScaffold"),
         body: Column(
         children: [
-          Text(''),
-          Container(height: 50),
-          Align(
-            alignment: Alignment.centerRight,
-            child: _offsetPopup(logoutCallback),
-          ),
-          SizedBox(
-            child: Container(
-              child: Text(_user.getUserName, style: TextStyle(fontWeight: FontWeight.bold), textAlign: TextAlign.center, textScaleFactor: 5.0),
+          Expanded(
+            child: Align(
+              alignment: Alignment.centerRight,
+              child: _offsetPopup(logoutCallback),
             ),
+            flex: 1
           ),
-          Text(''),
-          Center(child: Image.asset(nameMap[_user.getMain], height: 300)), 
-          Container(height: 50),
-          Text("Main: " + _user.getMain + "\nSecondary: " + _user.getSecondary, style: profStyle),
+          Expanded(
+            child: Text(_user.getUserName, style: TextStyle(fontWeight: FontWeight.bold), textAlign: TextAlign.center, textScaleFactor: 5.0),
+            flex: 1,
+          ),
+          Expanded(
+            child: Center(child: Image.asset(nameMap[_user.getMain])), 
+            flex: 2,
+          ),
+          Expanded(
+            child: Text("Main: " + _user.getMain + "\nSecondary: " + _user.getSecondary, style: profStyle),
+            flex: 2,
+          ),
         ]
       ),
       );
