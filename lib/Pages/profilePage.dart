@@ -86,21 +86,25 @@ Widget _offsetPopup(void Function(bool) logoutCallback) => PopupMenuButton<int>(
       return Scaffold(
         body: Column(
         children: [
-          Text(''),
-          Container(height: 50),
-          Align(
-            alignment: Alignment.centerRight,
-            child: _offsetPopup(logoutCallback),
-          ),
-          SizedBox(
-            child: Container(
-              child: Text(_user.getUserName, style: TextStyle(fontWeight: FontWeight.bold), textAlign: TextAlign.center, textScaleFactor: 5.0),
+          Expanded(
+            child: Align(
+              alignment: Alignment.centerRight,
+              child: _offsetPopup(logoutCallback),
             ),
+            flex: 1
           ),
-          Text(''),
-          Center(child: Image.asset(nameMap[_user.getMain], height: 300)), 
-          Container(height: 50),
-          Text("Main: " + _user.getMain + "\nSecondary: " + _user.getSecondary, style: profStyle),
+          Expanded(
+            child: Text(_user.getUserName, style: TextStyle(fontWeight: FontWeight.bold), textAlign: TextAlign.center, textScaleFactor: 5.0),
+            flex: 1,
+          ),
+          Expanded(
+            child: Center(child: Image.asset(nameMap[_user.getMain])), 
+            flex: 2,
+          ),
+          Expanded(
+            child: Text("Main: " + _user.getMain + "\nSecondary: " + _user.getSecondary, style: profStyle),
+            flex: 2,
+          ),
         ]
       ),
       );

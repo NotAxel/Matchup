@@ -9,7 +9,7 @@ import './matchPage.dart' as matchp;
 class HomePage extends StatefulWidget{
   final Future<void> Function(bool) logoutCallback;
 
-  HomePage({Key key, this.logoutCallback}) : super(key: key);
+  HomePage(this.logoutCallback);
 
   @override
   HomePageState createState() => new HomePageState();
