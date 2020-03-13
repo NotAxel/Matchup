@@ -55,7 +55,7 @@ void main() {
     user.setFriendCode = "SW-1234-1234-1234";
     user.setFriendCode = "SW-1234-1234-1234";
 
-    Peer peer = Peer('456', "testPeer", "Bowser", "Bowser", "West Coast (WC)");
+    Peer peer = Peer('456', "testPeer", "Bowser", "Bowser", "West Coast (WC)", "Beginner");
 
     ChatPage page = ChatPage(peer, '123');
     await tester.pumpWidget(await makeTestableWidget(tester, page, mockAuth, user));

@@ -4,8 +4,9 @@ class Peer {
   String _main; // Players main character
   String _secondary; // Players secondary
   String _region; // Players region they are located in
+  String _skill; // Players region they are located in
 
-  Peer(this._userId, this._userName, this._main, this._secondary, this._region);
+  Peer(this._userId, this._userName, this._main, this._secondary, this._region, this._skill);
 
   // userId
   String get getUserId => _userId;
@@ -26,4 +27,7 @@ class Peer {
   // region
   String get getRegion => _region;
   set setRegion(String region) { _region = region; }
+
+  String get getSkill => _skill;
+  set setSkill(String skill) { _skill = skill; }
 }

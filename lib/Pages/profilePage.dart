@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:matchup/Pages/profilePageEdit.dart';
+import 'package:matchup/Pages/userInfoEntryPage.dart';
 import 'package:matchup/Widgets/actionConfirmation.dart';
+import 'package:matchup/bizlogic/authentication.dart';
 import 'package:provider/provider.dart';
 
 import 'package:matchup/Pages/homepage.dart';
@@ -18,6 +21,7 @@ class ProfilePage extends StatefulWidget {
 class ProfilePageState extends State<ProfilePage>{
 
   ActionConfirmation _confirmer;
+  User _user;
   var profStyle = TextStyle(fontSize: 25);
 
   
@@ -35,9 +39,14 @@ Widget _offsetPopup(void Function(bool) logoutCallback) => PopupMenuButton<int>(
                   child: Text("Logout", style: TextStyle(color: Colors.black, fontWeight: FontWeight.w700))
                 ),
                 PopupMenuItem(
-                  key: Key("profileDU"),
+                  key: Key("profileEdit"),
                   value: 3,
-                  child: Text("Delete User", style: TextStyle(color: Colors.black, fontWeight: FontWeight.w700))
+                  child: Text("Edit Profile", style: TextStyle(color: Colors.black, fontWeight: FontWeight.w700))
+                ),
+                PopupMenuItem(
+                  key: Key("profileDU"),
+                  value: 4,
+                  child: Text("Delete my Account", style: TextStyle(color: Colors.black, fontWeight: FontWeight.w700))
                 ),
           ],
           onSelected: (value)
@@ -51,6 +60,11 @@ Widget _offsetPopup(void Function(bool) logoutCallback) => PopupMenuButton<int>(
                 logoutCallback(false);
             }
             if(value == 3){
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => ProfilePageEdit(_user)));
+            }
+            if(value == 4){
               _confirmer.confirmAction();
             }
           },
@@ -68,7 +82,7 @@ Widget _offsetPopup(void Function(bool) logoutCallback) => PopupMenuButton<int>(
     // final BaseAuth auth = AuthProvider.of(context).auth;
     // auth.getCurrentUser().then((value){
 
-    final User _user = Provider.of<User>(context);
+    _user = Provider.of<User>(context);
     final Future<void> Function(bool) logoutCallback = Provider.of<Future<void> Function(bool)>(context);
 
     _confirmer = ActionConfirmation(
@@ -81,38 +95,41 @@ Widget _offsetPopup(void Function(bool) logoutCallback) => PopupMenuButton<int>(
       useRootNavigatior: false
     );
 
-    if (_user.getUserName == null ||
-      _user.getMain == null ||
-      _user.getSecondary == null){
-      return LoadingCircle.loadingCircle();
+    if (_user.getSkill == null){
+      setState(() {
+        _user.setSkill = "Beginner";
+      });
     }
-    else{
-      return Scaffold(
-        key: Key("MainScaffold"),
-        body: Column(
-        children: [
-          Expanded(
-            child: Align(
-              alignment: Alignment.centerRight,
-              child: _offsetPopup(logoutCallback),
-            ),
-            flex: 1
+    return Scaffold(
+      key: Key("MainScaffold"),
+      body: Column(
+      children: [
+        Expanded(
+          child: Align(
+            alignment: Alignment.centerRight,
+            child: _offsetPopup(logoutCallback),
           ),
-          Expanded(
+          flex: 1
+        ),
+        Expanded(
+          child: Container(
             child: Text(_user.getUserName, style: TextStyle(fontWeight: FontWeight.bold), textAlign: TextAlign.center, textScaleFactor: 5.0),
-            flex: 1,
           ),
-          Expanded(
-            child: Center(child: Image.asset(nameMap[_user.getMain])), 
-            flex: 2,
-          ),
-          Expanded(
-            child: Text("Main: " + _user.getMain + "\nSecondary: " + _user.getSecondary, style: profStyle),
-            flex: 2,
-          ),
-        ]
-      ),
-      );
-    }
+          flex: 2,
+        ),
+        Expanded(
+          child: Center(child: Image.asset(nameMap[_user.getMain])), 
+          flex: 3,
+        ),
+        Expanded(
+          child: Text("Main: " + _user.getMain + 
+          "\nSecondary: " + _user.getSecondary +
+          "\nSkill Level: " + _user.getSkill, 
+          style: profStyle),
+          flex: 2,
+        ),
+      ]
+    ),
+    );
   }
 }

@@ -11,12 +11,13 @@ class _FilterPopupForm extends State<FilterPopupForm> {
   static const double ButtonWidth = 130.0;
   static const double ButtonHeight = 40.0;
 
-  List<String> filters = new List<String>(2);
+  List<String> filters = new List<String>(3);
   Container _underLine = Container(height: 2, color: Colors.deepPurple);
   final SnackBar _snackBar = SnackBar(content: Text("Filters saved and applyed"), duration: Duration(seconds: 3),);
   
-  String _mainFilter = "";
-  String _regionFilter = "";
+  String _mainFilter;
+  String _regionFilter;
+  String _skillFilter;
 
   bool _isLoading;
   bool _isFilterForm;
@@ -109,6 +110,29 @@ class _FilterPopupForm extends State<FilterPopupForm> {
     );
   }
 
+  // same as show main however for the skill field
+  Widget showSkillField() {
+    return new Center(
+      child: DropdownButton<String> (
+        value: _skillFilter,
+        isExpanded: true,
+        hint: assignHint('Skill'),
+        onChanged: (String newValue) {
+          setState(() {
+            _skillFilter = newValue;
+          });
+        },
+        items: <String>["Beginner", "Intermediate", "Advanced"].
+        map<DropdownMenuItem<String>>((String value) {
+          return DropdownMenuItem<String>(
+            value: value,
+            child: Text(value),
+          );
+        }).toList(),
+      )
+    );
+  }
+
   Widget showSaveButton() {
     return new FlatButton(
       child: new Text('Save'),
@@ -116,16 +140,10 @@ class _FilterPopupForm extends State<FilterPopupForm> {
       onPressed: () { // save the data and show snackbar
         print(_mainFilter);
         print(_regionFilter);
+        print(_skillFilter);
         filters[0] = _mainFilter;
         filters[1] = _regionFilter;
-        if(_mainFilter == null) {
-          filters[0] = "";
-        } 
-        if(_regionFilter == null) {
-          filters[1] = "";
-        }
-        print("0: " + filters[0]);
-        print("1: " + filters[1]);
+        filters[2] = _skillFilter;
         Timer(Duration(seconds: 1), () {
           Navigator.pop(context, filters);
         });
@@ -142,6 +160,7 @@ class _FilterPopupForm extends State<FilterPopupForm> {
           children: <Widget> [
             showMainField(),
             showRegionField(),
+            showSkillField()
           ]
         )
       ),

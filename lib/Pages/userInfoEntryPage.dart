@@ -24,6 +24,7 @@ class _UserInfoEntryPage extends State<UserInfoEntryPage> {
   static const MAIN = "Main";
   static const SECONDARY = "Secondary";
   static const REGION = "Region";
+  static const SKILL = "Skill";
 
   BaseAuth _auth;
   ActionConfirmation _confirmer;
@@ -34,6 +35,7 @@ class _UserInfoEntryPage extends State<UserInfoEntryPage> {
   String _secondaryChar;
   String _userName = 'temp';
   String _region = 'Please select a region';
+  String _skill;
   String _nintendoID;
   String _userID;
 
@@ -68,6 +70,9 @@ class _UserInfoEntryPage extends State<UserInfoEntryPage> {
     else if (hintText == REGION){
       return _region;
     }
+    else if (hintText == SKILL){
+      return _skill;
+    }
     return null;
   }
 
@@ -81,6 +86,9 @@ class _UserInfoEntryPage extends State<UserInfoEntryPage> {
       }
       else if (hintText == REGION){
         _region = value;
+      }
+      else if (hintText == SKILL){
+        _skill = value;
       }
     });
   }
@@ -191,6 +199,7 @@ class _UserInfoEntryPage extends State<UserInfoEntryPage> {
         'Main' : _mainChar, 
         'Secondary' : _secondaryChar, 
         'Region' : _region, 
+        'Skill' : _skill,
         'Username' : _userName, 
         'NintendoID' : _nintendoID});
       await widget.loginCallback();
@@ -237,6 +246,7 @@ class _UserInfoEntryPage extends State<UserInfoEntryPage> {
             showDropdown(MAIN, con.Constants.characters),
             showDropdown(SECONDARY, con.Constants.characters),
             showDropdown(REGION, con.Constants.regions),
+            showDropdown(SKILL, <String>["Beginner", "Intermediate", "Advanced"]),
             showNintendoFriendCodeEntryForm(),
             showUserNameField(),
             showSaveButton(),

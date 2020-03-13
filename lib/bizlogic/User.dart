@@ -21,7 +21,7 @@ class User {
   String _secondary; // Players secondary
   String _region; // Players region they are located in
   String _friendCode; // players nintendo switch friend code
-  List<User> _friendsList; // players nintendo switch friend code
+  String _skill = "";
 
   /*
   static int _maxFriends = 31;
@@ -57,6 +57,9 @@ class User {
   String get getFriendCode => _friendCode;
   set setFriendCode(String friendCode) { _friendCode= friendCode; }
 
+  String get getSkill => _skill;
+  set setSkill(String skill) { _skill = skill; }
+
   // takes a user id as a string
   // sets the users userId and populates the users remaining fields
   // by collecting data from the firebase
@@ -70,6 +73,7 @@ class User {
       _secondary = userInformation['Secondary'];
       _friendCode = userInformation['NintendoID'];
       _region = userInformation['Region'];
+      _skill = userInformation['Skill'];
     }
   }
 
@@ -128,9 +132,4 @@ class User {
 
     return chatId;
   }
-
-
-  // friendsList
-  List<User> get getFriendsList => _friendsList;
-  set setFriendsList(List<User> friendsList) { _friendsList = friendsList; }
 }
