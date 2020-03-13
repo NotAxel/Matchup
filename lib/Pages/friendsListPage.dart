@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:matchup/Pages/filterPopupPage.dart';
 import 'package:matchup/bizlogic/peer.dart';
 import 'package:provider/provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';

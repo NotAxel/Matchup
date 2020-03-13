@@ -1,14 +1,10 @@
 import 'dart:collection';
-
+import 'package:matchup/Widgets/loadingCircle.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:matchup/bizlogic/peer.dart';
 import 'package:provider/provider.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:matchup/bizlogic/peer.dart' as Pr;
-
-import 'package:matchup/Pages/filterPopupPage.dart';
 import 'package:matchup/bizlogic/User.dart';
 import 'package:matchup/Pages/filterPopupForm.dart' as fpf;
 import 'package:matchup/bizlogic/constants.dart' as con;
@@ -41,6 +37,7 @@ class MatchPageState extends State<MatchPage>{
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.filter_list),
+            key: Key('filter'),
             onPressed: () {
               showPopup(context, widget, 'Filters');
             },
@@ -53,7 +50,7 @@ class MatchPageState extends State<MatchPage>{
           if (snapshot.hasError)
             return new Text('Error: ${snapshot.error}');
           switch (snapshot.connectionState) {
-            case ConnectionState.waiting: return new Text('Loading...');
+            case ConnectionState.waiting: return LoadingCircle.loadingCircle();
           default: 
             return new ListView.separated(
               itemBuilder: (BuildContext context, int index) {
@@ -106,12 +103,13 @@ class MatchPageState extends State<MatchPage>{
     Widget widget,
     String title,
   ) async {
-    filters =  await Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => fpf.FilterPopupForm())
+    filters = await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return fpf.FilterPopupForm();
+      }
     );
-    print("coming from popup 0 " + filters[0]);
-    print("coming from popup 1 " + filters[1]);
+    setState(() {});
   }
 
   // retrives and filters users 
@@ -131,20 +129,18 @@ class MatchPageState extends State<MatchPage>{
     });
 
     userHashMap.remove(_user.getUserId); // removes current user from list
-    print("in _getUsers");
-    print(filters[0]);
-    print(filters[1]);
-    if(filters[0] != "" && filters[1] != "") {
-      userHashMap.removeWhere((key, value) => 
-       value.getRegion != filters[1] && value.getMain != filters[0]);
-    } else if (filters[0] == "" && filters[1] != "") {
-      userHashMap.removeWhere((key, value) =>
-       value.getRegion != filters[1]);
-    } else if (filters[0] != "" && filters[1] == "") {
-      userHashMap.removeWhere((key, value) =>
-       value.getMain != filters[0]);
+    if(filters != null) {
+      if(filters[0] != "" && filters[1] != "") {
+        userHashMap.removeWhere((key, value) => 
+        value.getRegion != filters[1] && value.getMain != filters[0]);
+      } else if (filters[0] == "" && filters[1] != "") {
+        userHashMap.removeWhere((key, value) =>
+        value.getRegion != filters[1]);
+      } else if (filters[0] != "" && filters[1] == "") {
+        userHashMap.removeWhere((key, value) =>
+        value.getMain != filters[0]);
+      }
     }
-
     return userHashMap.values.toList();
   }
 

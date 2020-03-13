@@ -98,7 +98,7 @@ Widget _offsetPopup(void Function(bool) logoutCallback) => PopupMenuButton<int>(
             ),
           ),
           Text(''),
-          //Center(child: Image.asset(nameMap[_user.getMain], height: 300)), 
+          Center(child: Image.asset(nameMap[_user.getMain], height: 300)), 
           Container(height: 50),
           Text("Main: " + _user.getMain + "\nSecondary: " + _user.getSecondary, style: profStyle),
         ]
