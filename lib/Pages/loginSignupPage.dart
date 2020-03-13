@@ -106,7 +106,7 @@ class _LogInSignupPageState extends State<LogInSignupPage> {
     return Container(
       child:Center(
         child: Padding(
-          padding: EdgeInsets.fromLTRB(0.0, 5, 0.0, 5.0),
+          padding: EdgeInsets.fromLTRB(20, 5, 60, 5.0),
           child: new TextFormField(
               key: Key('email'),
               controller: _emailController,
@@ -266,7 +266,7 @@ class _LogInSignupPageState extends State<LogInSignupPage> {
     return Container(
       child:Center(
         child: Padding(
-          padding: EdgeInsets.fromLTRB(0.0, 5, 0.0, 5.0),
+          padding: EdgeInsets.fromLTRB(20, 5, 60, 5.0),
           child: _passwordFormField.buildPasswordField(),
         ),
       ),
@@ -287,7 +287,6 @@ class _LogInSignupPageState extends State<LogInSignupPage> {
         key: Key('forgot password'),
         child: Center(
           child: new FlatButton(
-            
             child: new Text(
                 'Forgot Password',
                 style: new TextStyle(fontSize: 18.0, fontWeight: FontWeight.w300)
@@ -353,13 +352,23 @@ class _LogInSignupPageState extends State<LogInSignupPage> {
   Widget build(BuildContext context) {
     //print("In login signup page build");
     ScreenSize.init(context);
-    return Scaffold(
-      body: SafeArea(
-        child: Stack(
-        children: <Widget>[
-          _showLogInForm(),
-        ],
-    ),
-      ));
+    return Container(
+      decoration: BoxDecoration(
+        image: DecorationImage(
+          image: AssetImage('assets/images/matchupBackground.png'), 
+          fit: BoxFit.cover
+        )
+      ),
+      child: Scaffold(
+        backgroundColor: Colors.transparent,
+        body: SafeArea(
+          child: Stack(
+          children: <Widget>[
+            _showLogInForm(),
+            ],
+          ),
+        )
+      )
+    );
   }
 }
