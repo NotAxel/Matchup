@@ -55,6 +55,7 @@ class _ChallengePageState extends State<ChallengePage> {
                 Text(this.widget._peer.getMain, style: profStyle),
                 
                 RaisedButton(
+                  key: Key("goChat"),
                   child: Text('Chat', style: TextStyle(fontSize: 20, color: Colors.white)),
                   color: Colors.redAccent,
                   onPressed: () {

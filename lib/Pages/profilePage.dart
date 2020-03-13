@@ -22,16 +22,20 @@ class ProfilePageState extends State<ProfilePage>{
 
   
 Widget _offsetPopup(void Function(bool) logoutCallback) => PopupMenuButton<int>(
+          key: Key("menuKT"),
           itemBuilder: (context) => [
                 PopupMenuItem(
+                  key: Key("profileFL"),
                   value: 1,
                   child: Text("Friends List", style: TextStyle(color: Colors.black, fontWeight: FontWeight.w700))
                 ),
                 PopupMenuItem(
+                  key: Key("profileLog"),
                   value: 2,
                   child: Text("Logout", style: TextStyle(color: Colors.black, fontWeight: FontWeight.w700))
                 ),
                 PopupMenuItem(
+                  key: Key("profileDU"),
                   value: 3,
                   child: Text("Delete User", style: TextStyle(color: Colors.black, fontWeight: FontWeight.w700))
                 ),
@@ -65,7 +69,7 @@ Widget _offsetPopup(void Function(bool) logoutCallback) => PopupMenuButton<int>(
     // auth.getCurrentUser().then((value){
 
     final User _user = Provider.of<User>(context);
-    final Future<void> Function(bool) logoutCallback = HomePageProvider.of(context).logoutCallback;
+    final Future<void> Function(bool) logoutCallback = Provider.of<Future<void> Function(bool)>(context);
 
     _confirmer = ActionConfirmation(
       context,
@@ -84,11 +88,13 @@ Widget _offsetPopup(void Function(bool) logoutCallback) => PopupMenuButton<int>(
     }
     else{
       return Scaffold(
+        key: Key("MainScaffold"),
         body: Column(
         children: [
           Text(''),
           Container(height: 50),
           Align(
+            key: Key("profileMenu"),
             alignment: Alignment.centerRight,
             child: _offsetPopup(logoutCallback),
           ),
