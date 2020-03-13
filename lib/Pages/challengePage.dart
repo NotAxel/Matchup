@@ -55,14 +55,16 @@ class _ChallengePageState extends State<ChallengePage> {
                 Text(this.widget._peer.getMain, style: profStyle),
                 
                 RaisedButton(
+                  key: Key("goChat"),
                   child: Text('Chat', style: TextStyle(fontSize: 20, color: Colors.white)),
                   color: Colors.redAccent,
                   onPressed: () {
                     goToChatPage(context, _user);
                   },
-                  ),
+                ),
                   if(!isFriend)
                     RaisedButton(
+                      key: Key("addFriend"),
                       child: Text('Add Friend', style: TextStyle(fontSize: 20, color: Colors.white)),
                       color: Colors.redAccent,
                       onPressed: () {
@@ -73,14 +75,6 @@ class _ChallengePageState extends State<ChallengePage> {
                         //add pop-up if successfull
                       },
                     ),
-
-                RaisedButton(
-                  child: Text('Go back!'),
-                  onPressed: () {
-                    // goes back
-                    Navigator.pop(context);
-                  },
-                ),
               ],
             )
           )
@@ -112,9 +106,7 @@ class _ChallengePageState extends State<ChallengePage> {
         isFriend = ds.exists;
       });
     }
-
-}
-
+  }
 } 
 
 

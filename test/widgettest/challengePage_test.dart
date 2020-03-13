@@ -1,11 +1,13 @@
+// Challenge Page Test
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:matchup/Pages/challengePage.dart';
 import 'package:matchup/bizlogic/User.dart';
 import 'package:matchup/bizlogic/peer.dart';
 import 'package:provider/provider.dart';
 
-import 'package:matchup/Pages/chatPage.dart';
 import 'package:matchup/bizlogic/authentication.dart';
 import 'package:mockito/mockito.dart';
 import './assetBundle.dart';
@@ -13,9 +15,8 @@ import './assetBundle.dart';
 // pages that use scaffolds must be a descendant of some type of material app
 Future<Widget> makeTestableWidget(WidgetTester tester, Widget child, BaseAuth auth, User user) async{
   final AssetBundle assetBundle = TestAssetBundle(<String, List<String>>{
-    'smallSprites': <String>[
-      'assets/images/small_sprites/bowser_sprite.png',
-      'assets/images/small_sprites/marth_sprite.png',
+    'characterPortraits': <String>[
+      'assets/images/characterPortraits/Bowser.png',
     ],
   });
 
@@ -38,11 +39,12 @@ Future<Widget> makeTestableWidget(WidgetTester tester, Widget child, BaseAuth au
 class MockAuth extends Mock implements BaseAuth{}
 
 class Keys{
-  static const Key SEND_FRIEND_CODE = Key("SEND_FRIEND_CODE_BUTTON");
+  static const Key ADD_FRIEND = Key("addFriend");
+  static const Key GO_CHAT = Key("goChat");
 }
 
 void main() {
-  testWidgets('send friend code', (WidgetTester tester) async {
+  testWidgets('challenge page tests', (WidgetTester tester) async {
     MockAuth mockAuth = new MockAuth();
 
     User user = User();
@@ -57,12 +59,18 @@ void main() {
 
     Peer peer = Peer('456', "testPeer", "Bowser", "Bowser", "West Coast (WC)");
 
-    ChatPage page = ChatPage(peer, '123');
+    ChallengePage page = ChallengePage(peer);
     await tester.pumpWidget(await makeTestableWidget(tester, page, mockAuth, user));
 
-    Finder finder = find.byKey(Keys.SEND_FRIEND_CODE);
+    Finder finder = find.byKey(Keys.GO_CHAT);
+    expect(finder, findsOneWidget);
+    await tester.tap(finder); // had to comment out send message animation to get this to work
+    await tester.pump();
+
+    finder = find.byKey(Keys.ADD_FRIEND);
     expect(finder, findsOneWidget);
     await tester.tap(finder); // had to comment out send message animation to get this to work
     await tester.pump();
   });
+ 
 }

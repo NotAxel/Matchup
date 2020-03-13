@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:matchup/Pages/filterPopupPage.dart';
 import 'package:matchup/bizlogic/peer.dart';
 import 'package:provider/provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -7,8 +6,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:matchup/bizlogic/User.dart';
 import 'package:matchup/bizlogic/constants.dart' as con;
 import './chatPage.dart' as chatp;
-import 'package:matchup/Pages/filterPopupForm.dart' as fpf; //remove unused imports
-import 'package:matchup/Pages/deletePopupForm.dart' as dpf;
 
 class FriendsListPage extends StatefulWidget {
   @override
@@ -26,6 +23,7 @@ class FriendsListPageState extends State<FriendsListPage>{
         title: new Center(child: Text("Friends List")),
         actions: <Widget>[
           IconButton(
+            key: Key("infoButton"),
             icon: Icon(Icons.person), 
             onPressed: () { 
               _showInfo(context);
@@ -103,6 +101,7 @@ class FriendsListPageState extends State<FriendsListPage>{
               ),
 
               trailing: IconButton(
+                key: Key("chatButton"),
                 icon: new Icon(Icons.chat), 
                 onPressed: (){
                   Navigator.push(
@@ -159,6 +158,7 @@ class FriendsListPageState extends State<FriendsListPage>{
         actions: <Widget>[
           // button at the bottom of the dialog
           new FlatButton(
+            key: Key("closeShowInfo"),
             child: new Text("Close"),
             onPressed: () {
               Navigator.of(context).pop();
@@ -206,6 +206,7 @@ void _showID(BuildContext context, AsyncSnapshot snapshot) {
       child: Container(
         child: Text(
           "No current friends :(",
+          key: Key("noFriends"),
           style: TextStyle(color: Colors.blueGrey[300]),
         ),
       )

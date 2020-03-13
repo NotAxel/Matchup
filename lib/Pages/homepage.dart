@@ -1,16 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:matchup/Widgets/destination.dart';
 import 'package:matchup/Widgets/destinationView.dart';
+import 'package:matchup/bizlogic/User.dart';
 import 'package:matchup/bizlogic/screenSize.dart';
 import './profilePage.dart' as profilep;
+import './profilePageEdit.dart' as profilepe;
 import './messagePage.dart' as messagep;
 import './matchPage.dart' as matchp;
+import 'package:provider/provider.dart';
 import './friendsListPage.dart' as freindsLp;
 
 class HomePage extends StatefulWidget{
   final Future<void> Function(bool) logoutCallback;
 
-  HomePage({Key key, this.logoutCallback}) : super(key: key);
+  HomePage(this.logoutCallback);
 
   @override
   HomePageState createState() => new HomePageState();
@@ -88,9 +91,9 @@ class HomePageState extends State<HomePage> with SingleTickerProviderStateMixin 
   @override
   Widget build(BuildContext context) {
     ScreenSize.init(context);
-    return HomePageProvider(
-      widget.logoutCallback,
-      Scaffold( 
+    return Provider(
+      create: (context) => widget.logoutCallback,
+      child: Scaffold( 
         body: SafeArea(
           top: false,
           child: IndexedStack(
