@@ -145,7 +145,7 @@ class MatchPageState extends State<MatchPage>{
     if(filters != null) {
       if(filters[0] != "" && filters[1] != "") {
         userHashMap.removeWhere((key, value) => 
-        value.getRegion != filters[1] && value.getMain != filters[0]);
+        value.getRegion != filters[1] || value.getMain != filters[0]);
       } else if (filters[0] == "" && filters[1] != "") {
         userHashMap.removeWhere((key, value) =>
         value.getRegion != filters[1]);
