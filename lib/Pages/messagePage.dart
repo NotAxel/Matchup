@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:matchup/Pages/filterPopupPage.dart';
 import 'package:matchup/bizlogic/peer.dart';
 import 'package:provider/provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-import 'package:matchup/Pages/filterPopupPage.dart';
 import 'package:matchup/bizlogic/User.dart';
 import 'package:matchup/bizlogic/constants.dart' as con;
 import './chatPage.dart' as chatp;
@@ -29,6 +27,7 @@ class MessagePageState extends State<MessagePage>{
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.create),
+            key: Key("create conversation"),
             onPressed: () {
               createConversation(context);
             },
@@ -185,6 +184,7 @@ class MessagePageState extends State<MessagePage>{
     Navigator.push(
       context,
       FilterPopupPage(
+        key: Key("delete conversation"),
         top: 200,
         left: 20,
         bottom: 300,
@@ -213,38 +213,39 @@ class MessagePageState extends State<MessagePage>{
 
   //create a conversation with another user based on username
   createConversation(BuildContext context){
-    Navigator.push(
-      context,
-      FilterPopupPage(
-        top: 0,
-        left: 20,
-        bottom: 600,
-        right: 20,
-        child: Scaffold(
-          appBar: AppBar(
-            title: Text("New Message"),
-            leading: new Builder(builder: (context) {
-              return IconButton(
-                icon: Icon(Icons.arrow_back),
-                onPressed: () {
-                  try {
-                    Navigator.pop(context);
-                  } catch(e) {}
-                },
-              );
-            }),
-            brightness: Brightness.light,
-          ),
-          resizeToAvoidBottomPadding: false,
-          body: nmf.NewMessageForm(),
-        )
-      )
-    );
+    // Navigator.push(
+    //   context,
+    //   FilterPopupPage(
+    //     top: 0,
+    //     left: 20,
+    //     bottom: 600,
+    //     right: 20,
+    //     child: Scaffold(
+    //       appBar: AppBar(
+    //         title: Text("New Message"),
+    //         leading: new Builder(builder: (context) {
+    //           return IconButton(
+    //             icon: Icon(Icons.arrow_back),
+    //             onPressed: () {
+    //               try {
+    //                 Navigator.pop(context);
+    //               } catch(e) {}
+    //             },
+    //           );
+    //         }),
+    //         brightness: Brightness.light,
+    //       ),
+    //       resizeToAvoidBottomPadding: false,
+    //       body: nmf.NewMessageForm(),
+    //     )
+    //   )
+    // );
   }
 
   //when the users collection fo chats is empty
   Widget noConversations(){
     return Center(
+      key: Key("no conversations"),
       child: Container(
         child: Text(
           "   No current messages :(\n\nGo to MatchList to SMASH!",

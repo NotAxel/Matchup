@@ -1,2 +1,9 @@
+<<<<<<< HEAD
+=======
+arguments=
+auto.sync=false
+build.scans.enabled=false
+connection.gradle.distribution=GRADLE_DISTRIBUTION(VERSION(6.0))
+>>>>>>> master
 connection.project.dir=
 eclipse.preferences.version=1
