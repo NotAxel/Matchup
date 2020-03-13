@@ -5,7 +5,6 @@ import 'package:matchup/bizlogic/screenSize.dart';
 import './profilePage.dart' as profilep;
 import './messagePage.dart' as messagep;
 import './matchPage.dart' as matchp;
-import './friendsListPage.dart' as freindsLp;
 
 class HomePage extends StatefulWidget{
   final Future<void> Function(bool) logoutCallback;
