@@ -15,7 +15,7 @@ Acceptance criteria: https://docs.google.com/document/d/1rXT-mYxFa7P5AgCAggB8yFH
 
 ## Continuous Integration ##
 CI is run using the Travis CI server that runs unit and widget tests
-Travis CI Server
+\nTravis CI Server
 https://travis-ci.com/github/NotAxel/Matchup/builds
 
 ## requirements ##
@@ -37,4 +37,4 @@ https://dart.dev/guides/language/effective-dart/style
 ### Static Code Analysis ###
 to run:
    flutter analyze lib > static_code_analysis.txt
-see static_code_analysis.txt for results
+\nsee static_code_analysis.txt for results
