@@ -35,6 +35,7 @@ void main() {
       }
     });
 
+    // acceptance test # 1
     test('Successful login to an existing account', () async{
       String expectedEmail = 'driverTestAccount@gmail.com';
       String expectedPassword = 'Test123!';
@@ -53,7 +54,8 @@ void main() {
       await driver.tap(loginButton);
     });
 
-    test('unsuccessful login an existing account', () async{
+    // acceptance test # 2
+   test('unsuccessful login an existing account', () async{
 
       try{
         SerializableFinder logoutButton = find.byValueKey(Keys.logout);
@@ -84,6 +86,7 @@ void main() {
       expect(await driver.getText(errorMessage), expectedErrorMessage);
     });
 
+    // acceptance test # 3
     test('Successful signup', () async{
       String expectedEmail = 'SuccessfulSignupTest@gmail.com';
       String expectedPassword = 'Test123!';
@@ -119,6 +122,7 @@ void main() {
       await driver.tap(yesButton);
     });
 
+    // acceptance test # 4
     test('unsuccessful signup', () async {
       String expectedEmail = '1@gmail.com';
       String expectedPassword = 'Test123!';
@@ -159,6 +163,7 @@ void main() {
       expect(await driver.getText(errorMessage), expectedErrorMessage);
     });
 
+    // acceptance test # 5
     test('Successful signup, customize profile, then delete account from profile page', () async{
       await driver.runUnsynchronized(() async{
         String expectedEmail = 'SuccessfulSignupTest@gmail.com';
@@ -230,6 +235,128 @@ void main() {
         SerializableFinder yesButton = find.text("Yes");
         await driver.tap(yesButton);
       });
-    }, skip: true);
+
+    // acceptance test # 6
+    test('Successful signup, customize profile, then send a message', () async{
+      await driver.runUnsynchronized(() async{
+        String expectedEmail = 'SuccessfulSignupTest@gmail.com';
+        String expectedPassword = 'Test123!';
+
+        try{
+          SerializableFinder logoutButton = find.byValueKey(Keys.logout);
+          await driver.tap(logoutButton, timeout: Duration(seconds: 1));
+        }
+        catch(e){
+          print("Didn't have to logout");
+        }
+
+        // login signup page
+        // last test ends on sign up page so we dont need to switch
+
+        SerializableFinder emailField = find.byValueKey(Keys.email);
+        await driver.tap(emailField);  // acquire focus
+        await driver.enterText(expectedEmail);  // enter text
+        await driver.waitFor(find.text(expectedEmail));  // verify text appears on UI
+
+        SerializableFinder passwordField = find.byValueKey(Keys.password);
+        await driver.tap(passwordField);  // acquire focus
+        await driver.enterText(expectedPassword);  // enter text
+        await driver.waitFor(find.text(expectedPassword));  // verify text appears on UI
+
+        SerializableFinder loginButton = find.byValueKey(Keys.login);
+        await driver.tap(loginButton);
+
+        // userInfoEntry Page
+        // username
+        SerializableFinder usernameField = find.byValueKey(Keys.userName);
+        await driver.tap(usernameField);
+        await driver.enterText('test');
+
+        // friend code
+        SerializableFinder friendCodeField = find.byValueKey(Keys.friendCode);
+        await driver.tap(friendCodeField);
+        await driver.enterText('SW-1234-1234-1234');
+
+        // main
+        SerializableFinder mainDropdown = find.byValueKey(Keys.main);
+        await driver.tap(mainDropdown);
+
+        SerializableFinder mainText = find.text("Bowser");
+        await driver.tap(mainText);
+
+        // secondary
+        SerializableFinder secondaryDropdown = find.byValueKey(Keys.secondary);
+        await driver.tap(secondaryDropdown);
+
+        SerializableFinder secondaryText = find.text("Bowser");
+        await driver.tap(secondaryText);
+
+        SerializableFinder regionDropDown = find.byValueKey(Keys.region);
+        await driver.tap(regionDropDown);
+
+        SerializableFinder regionText = find.text('West Coast (WC)');
+        await driver.tap(regionText);
+
+        SerializableFinder finder = find.byValueKey(Keys.saveProfile);
+        await driver.tap(finder);
+
+        // tap the match page
+        finder = find.byValueKey("matchPage");
+        await driver.tap(finder);
+
+        // tap the first peer profile
+        finder = find.byValueKey("peerProfile");
+        await driver.tap(finder);
+
+        // tap chat button
+        finder = find.byValueKey("chat");
+        await driver.tap(finder);
+
+        // tap send friend code button
+        finder = find.byValueKey("sendFriendCode");
+        await driver.tap(finder);
+      });
+    });
+
+    // acceptance test # 7
+    test('type and send a message', () async{
+        // tap send friend code button
+        SerializableFinder finder = find.byValueKey("messageInputField");
+        await driver.tap(finder);
+        await driver.enterText("testing sending a message");
+        
+        // press the send button
+        finder = find.byValueKey("sendButton");
+        await driver.tap(finder);
+
+        // expect the chat box
+        finder = find.byType("chatBox");
+    });
+
+    // acceptance test # 8
+    test('go into conversations and make sure chat is there and send a message from the conversation page', () async{
+        // go to the conversation tab
+        SerializableFinder finder = find.byValueKey("conversationTab");
+        await driver.tap(finder);
+
+        // check and make sure the conversation is there
+        finder = find.byValueKey("conversation");
+        await driver.tap(finder);
+
+        // tap send friend code button
+        finder = find.byValueKey("messageInputField");
+        await driver.tap(finder);
+        await driver.enterText("testing sending a message");
+        
+        // press the send button
+        finder = find.byValueKey("sendButton");
+        await driver.tap(finder);
+
+        // expect the chat box
+        finder = find.byType("chatBox");
+    });
+
   });
+  }
+);
 }

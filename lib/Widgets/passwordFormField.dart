@@ -31,8 +31,10 @@ class PasswordFormField{
           //contentPadding: EdgeInsets.fromLTRB(0.0, 15.0, 20.0, 0.0),
           hintText: "Password",
           icon: new Icon(Icons.lock,
-          color: Colors.blueGrey
-          )
+          color: Colors.white,
+          ),
+          fillColor: Colors.white,
+          filled: true
         ),
         validator: (value) => passwordValidator.validate(value),
         onSaved: (value) => _password = passwordValidator.save(value),

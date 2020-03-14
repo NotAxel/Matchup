@@ -116,8 +116,11 @@ class _LogInSignupPageState extends State<LogInSignupPage> {
               decoration: InputDecoration(
                   hintText: "Email",
                   icon: new Icon(Icons.mail, 
-                  color: Colors.blueGrey,
-                  )),
+                  color: Colors.white,
+                  ),
+                  filled: true,
+                  fillColor: Colors.white
+              ),
               validator: (value) => emailValidator.validate(value),
               onSaved: (value) => _email = emailValidator.save(value),
           ),
@@ -155,7 +158,7 @@ class _LogInSignupPageState extends State<LogInSignupPage> {
         key: Key('switch between login/signup'),
         child: new Text(
           _isLoginForm ? 'Create an account' : 'Have an account? Sign in',
-          style: new TextStyle(fontSize: 18.0, fontWeight: FontWeight.w300)),
+          style: new TextStyle(color: Colors.white, fontSize: 18.0, fontWeight: FontWeight.w300)),
         onPressed: toggleFormMode),
       ),
     );
@@ -251,6 +254,7 @@ class _LogInSignupPageState extends State<LogInSignupPage> {
               Text(
                 requirements,
                 key: Key("password requirements"),
+                style: new TextStyle(color: Colors.white),
               ),
             ),
           ),
@@ -289,7 +293,7 @@ class _LogInSignupPageState extends State<LogInSignupPage> {
           child: new FlatButton(
             child: new Text(
                 'Forgot Password',
-                style: new TextStyle(fontSize: 18.0, fontWeight: FontWeight.w300)
+                style: new TextStyle(color: Colors.white, fontSize: 18.0, fontWeight: FontWeight.w300)
               ),
             onPressed: () {
               showPopup();

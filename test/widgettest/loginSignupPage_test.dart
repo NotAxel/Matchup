@@ -11,8 +11,11 @@ import './assetBundle.dart';
 // pages that use scaffolds must be a descendant of some type of material app
 Future<Widget> makeTestableWidget(WidgetTester tester, Widget child, BaseAuth auth) async{
   final AssetBundle assetBundle = TestAssetBundle(<String, List<String>>{
-    'assets/images/logo.png': <String>['assets/images/logo.png'],
-    'assets/images/regionsMap.png': <String>['assets/images/regionsMap.png'],
+    'images': <String>[
+      'assets/images/logo.png',
+      'assets/images/matchupBackground.png',
+      'assets/images/regionsMap.png'
+    ],
   });
 
   return DefaultAssetBundle(

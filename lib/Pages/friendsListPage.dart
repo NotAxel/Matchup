@@ -14,9 +14,12 @@ class FriendsListPage extends StatefulWidget {
 
 class FriendsListPageState extends State<FriendsListPage>{
   final ScrollController listScrollController = new ScrollController();
+
+  User _user;
   
   @override
   Widget build(BuildContext context){
+    _user = Provider.of<User>(context);
     return new Scaffold(
       appBar: new AppBar(
         centerTitle: true,
@@ -104,6 +107,7 @@ class FriendsListPageState extends State<FriendsListPage>{
                 key: Key("chatButton"),
                 icon: new Icon(Icons.chat), 
                 onPressed: (){
+                  String chatId = _user.constructChatid(friend.documentID);
                   Navigator.push(
                     context,
                     MaterialPageRoute(builder: (BuildContext context) =>
@@ -116,8 +120,8 @@ class FriendsListPageState extends State<FriendsListPage>{
                           snapshot.data["Region"],
                           snapshot.data["Skill"],
                         ),
-                        snapshot.data["chatId"]
-                      )
+                        chatId
+                      ),
                     )
                   );
                 },
