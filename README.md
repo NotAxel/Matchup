@@ -40,5 +40,6 @@ https://dart.dev/guides/language/effective-dart/style
 
 ### Static Code Analysis ###
 to run:
-   flutter analyze lib > static_code_analysis.txt
+   flutter analyze lib > static_code_analysis.txt 
+   
 see static_code_analysis.txt for results
