@@ -18,6 +18,9 @@ https://drive.google.com/drive/folders/1Ac-K151A7M6a5iAO6YHbC12P8aj9mlXX?usp=sha
   * firebase library
  
 ## set-up ##
+  * follow flutter devs getting started guide: https://flutter.dev/docs/get-started/install
+  
+  summary of steps
   * install all requirements to system
   * code can be built in Xcode or Android Studio
   * clone code into a directory
