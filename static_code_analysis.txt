@@ -1,0 +1,33 @@
+Analyzing 2 directories...                                      
+
+   info • The for, if, and spread elements weren't supported until version 2.3.0, but this code is required to be able to run on earlier versions • lib/Pages/challengePage.dart:72:19 • sdk_version_ui_as_code
+   info • The value of the field '_errorMessage' isn't used • lib/Pages/deletePopupForm.dart:21:10 • unused_field
+   info • The value of the field '_isLoading' isn't used • lib/Pages/deletePopupForm.dart:22:8 • unused_field
+   info • The value of the field '_underLine' isn't used • lib/Pages/filterPopupForm.dart:15:13 • unused_field
+   info • The value of the field '_snackBar' isn't used • lib/Pages/filterPopupForm.dart:16:18 • unused_field
+   info • The value of the field '_isLoading' isn't used • lib/Pages/filterPopupForm.dart:22:8 • unused_field
+   info • Unused import: 'package:matchup/bizlogic/User.dart' • lib/Pages/homepage.dart:4:8 • unused_import
+   info • Unused import: './profilePageEdit.dart' • lib/Pages/homepage.dart:7:8 • unused_import
+   info • Unused import: './friendsListPage.dart' • lib/Pages/homepage.dart:11:8 • unused_import
+   info • Unused import: 'package:firebase_auth/firebase_auth.dart' • lib/Pages/loginSignupPage.dart:1:8 • unused_import
+   info • The declaration '_refreshMatchPage' isn't referenced • lib/Pages/matchPage.dart:23:16 • unused_element
+   info • Duplicate import • lib/Pages/messagePage.dart:11:8 • duplicate_import
+   info • This function has a return type of 'StatelessWidget', but doesn't end with a return statement • lib/Pages/messagePage.dart:85:18 • missing_return
+   info • Unused import: 'package:provider/provider.dart' • lib/Pages/newMessageForm.dart:5:8 • unused_import
+   info • The value of the field '_errorMessage' isn't used • lib/Pages/newMessageForm.dart:16:10 • unused_field
+   info • The value of the field '_isLoading' isn't used • lib/Pages/newMessageForm.dart:17:8 • unused_field
+   info • This function has a return type of 'String', but doesn't end with a return statement • lib/Pages/newMessageForm.dart:129:10 • missing_return
+   info • Unused import: 'package:matchup/Pages/userInfoEntryPage.dart' • lib/Pages/profilePage.dart:3:8 • unused_import
+   info • Unused import: 'package:matchup/bizlogic/authentication.dart' • lib/Pages/profilePage.dart:5:8 • unused_import
+   info • Unused import: 'package:matchup/Pages/homepage.dart' • lib/Pages/profilePage.dart:8:8 • unused_import
+   info • Unused import: 'package:matchup/Widgets/loadingCircle.dart' • lib/Pages/profilePage.dart:10:8 • unused_import
+   info • Unused import: 'package:cloud_firestore/cloud_firestore.dart' • lib/Pages/rootPage.dart:1:8 • unused_import
+   info • Unused import: 'package:matchup/Pages/profilePageEdit.dart' • lib/Widgets/destinationView.dart:4:8 • unused_import
+   info • This function has a return type of 'Widget', but doesn't end with a return statement • lib/Widgets/destinationView.dart:24:20 • missing_return
+   info • The value of the local variable 'peer' isn't used • test/widgettest/friendsListPage_test.dart:62:10 • unused_local_variable
+   info • The value of the local variable 'peer' isn't used • test/widgettest/homepage_test.dart:59:10 • unused_local_variable
+   info • The value of the local variable 'didSignOut' isn't used • test/widgettest/homepage_test.dart:64:10 • unused_local_variable
+   info • The value of the local variable 'button' isn't used • test/widgettest/loginSignupPage_test.dart:341:13 • unused_local_variable
+   info • The value of the local variable 'didSignIn' isn't used • test/widgettest/userInfoEntryPage_test.dart:59:10 • unused_local_variable
+   info • The value of the local variable 'didLogOut' isn't used • test/widgettest/userInfoEntryPage_test.dart:60:10 • unused_local_variable
+
