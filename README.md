@@ -43,3 +43,4 @@ to run:
    flutter analyze lib > static_code_analysis.txt 
    
 see static_code_analysis.txt for results
+The errors here are do not affect program behavior and have not been fixed due to lack of time.
